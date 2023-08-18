@@ -4,7 +4,8 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    namespace = "com.joelkanyi.focusbloom.android"
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.company.kmp_template.android"
@@ -14,6 +15,11 @@ android {
         versionName = "1.0.0"
     }
     buildTypes {
+        // debug
+        getByName("debug") {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
         getByName("release") {
             isMinifyEnabled = false
         }
@@ -33,7 +39,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 

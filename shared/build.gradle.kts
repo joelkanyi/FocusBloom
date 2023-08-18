@@ -10,11 +10,9 @@ plugins {
 
 android {
     namespace = "com.joelkanyi.focusbloom.shared"
-    compileSdk = 33
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
-        targetSdk = compileSdk
     }
 }
 
