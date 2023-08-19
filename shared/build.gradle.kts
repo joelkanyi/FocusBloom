@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
@@ -17,7 +15,7 @@ android {
 }
 
 kotlin {
-    android {
+    androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
@@ -26,6 +24,7 @@ kotlin {
     }
 
     jvm()
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -38,29 +37,38 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "shared"
-            isStatic = true
         }
     }
 
-
-    /*    val iosTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
-            when {
-                System.getenv("SDK_NAME")?.startsWith("iphoneos") == true -> ::iosArm64
-                System.getenv("NATIVE_ARCH")?.startsWith("arm") == true -> ::iosSimulatorArm64
-                else -> ::iosX64
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+            transitiveExport = true
+            compilations.all {
+                kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
             }
-        iosTarget("iOS") {}*/
+            export(project(":feature:settings"))
+            export(project(":feature:statistics"))
+            export(project(":feature:calendar"))
+            export(project(":feature:home"))
+            export(project(":core:common"))
+        }
+    }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(project(":core:common"))
+                api(project(":feature:settings"))
+                api(project(":feature:statistics"))
+                api(project(":feature:calendar"))
+                api(project(":feature:home"))
                 api(libs.koin.core)
 
-                api(libs.ktor.core)
-                api(libs.ktor.cio)
-                implementation(libs.ktor.contentNegotiation)
-                implementation(libs.ktor.json)
-                implementation(libs.ktor.logging)
+                // api(libs.ktor.core)
+                // api(libs.ktor.cio)
+                // implementation(libs.ktor.contentNegotiation)
+                // implementation(libs.ktor.json)
+                // implementation(libs.ktor.logging)
 
                 implementation(libs.kotlinX.serializationJson)
 
@@ -104,7 +112,7 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
-                implementation(libs.sqlDelight.native)
+                // implementation(libs.sqlDelight.native)
             }
         }
     }

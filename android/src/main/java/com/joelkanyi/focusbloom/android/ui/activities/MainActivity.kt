@@ -10,7 +10,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.joelkanyi.focusbloom.android.ui.screens.MainScreen
+import com.joelkanyi.focusbloom.android.ui.screens.SettingsScreen
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -23,9 +23,9 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
-                    MainScreen()
+                    SettingsScreen()
                 }
             }
         }

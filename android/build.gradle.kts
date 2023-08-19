@@ -44,7 +44,11 @@ android {
 }
 
 dependencies {
-    api(project(":shared"))
+    implementation(project(":core:common"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:statistics"))
+    implementation(project(":feature:calendar"))
+    implementation(project(":feature:home"))
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidX.core)

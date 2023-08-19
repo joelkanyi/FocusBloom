@@ -4,7 +4,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":core:common"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:statistics"))
+    implementation(project(":feature:calendar"))
+    implementation(project(":feature:home"))
 
     implementation(compose.desktop.currentOs)
 

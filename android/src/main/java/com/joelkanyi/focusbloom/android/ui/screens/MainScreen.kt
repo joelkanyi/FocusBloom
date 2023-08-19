@@ -1,3 +1,4 @@
+/*
 package com.joelkanyi.focusbloom.android.ui.screens
 
 import androidx.compose.foundation.layout.Box
@@ -20,8 +21,9 @@ fun MainScreen(viewModel: MainViewModel = get()) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = it,
-                color = Color.Black
+                color = Color.Black,
             )
         }
     }
 }
+*/
