@@ -4,6 +4,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven { url = uri("https://jitpack.io") }
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 

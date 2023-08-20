@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -54,6 +55,9 @@ dependencies {
     implementation(libs.androidX.core)
 
     implementation(libs.material)
+    implementation(libs.compose.material3)
+
+    implementation(libs.accompanist.systemUIController)
 
     implementation(libs.compose.ui)
     implementation(libs.compose.material)
@@ -70,6 +74,11 @@ dependencies {
 
     // Compose Navigation-Navigation between various screens
     implementation(libs.navigation.compose)
+
+    // Compose Destination
+    implementation(libs.compose.destinations.core)
+    ksp(libs.compose.destinations.ksp)
+    implementation(libs.compose.destinations.animations.core)
 
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)
