@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.company.kmp_template.android"
+        applicationId = "com.joelkanyi.focusbloom.android"
         minSdk = 21
         targetSdk = compileSdk
         versionCode = 1
@@ -80,6 +80,9 @@ dependencies {
     ksp(libs.compose.destinations.ksp)
     implementation(libs.compose.destinations.animations.core)
 
+    // Chart
+    implementation(libs.vico.compose.m3)
+
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)
     testImplementation(libs.mockk)
@@ -89,4 +92,6 @@ dependencies {
 
     androidTestImplementation(libs.test.rules)
     androidTestImplementation(libs.test.runner)
+
+    implementation(libs.compose.icons.extended)
 }

@@ -15,6 +15,6 @@ fun AllTasksScreen(
     navigator: DestinationsNavigator,
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "All Tasks Screen")
+        Text(text = "All Tasks")
     }
 }

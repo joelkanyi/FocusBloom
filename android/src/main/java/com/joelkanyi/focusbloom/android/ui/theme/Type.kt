@@ -25,14 +25,14 @@ import com.joelkanyi.focusbloom.android.R
 
 // Font family
 val poppins = FontFamily(
-    Font(R.font.urbanist_thin, FontWeight.W100),
-    Font(R.font.urbanist_extralight, FontWeight.W200),
-    Font(R.font.urbanist_light, FontWeight.W300),
-    Font(R.font.urbanist_regular, FontWeight.W400),
-    Font(R.font.urbanist_medium, FontWeight.W500),
-    Font(R.font.urbanist_semibold, FontWeight.W600),
-    Font(R.font.urbanist_bold, FontWeight.W700),
-    Font(R.font.urbanist_black, FontWeight.W800),
+    Font(R.font.montserrat_thin, FontWeight.W100),
+    Font(R.font.montserrat_extralight, FontWeight.W200),
+    Font(R.font.montserrat_light, FontWeight.W300),
+    Font(R.font.montserrat_regular, FontWeight.W400),
+    Font(R.font.montserrat_medium, FontWeight.W500),
+    Font(R.font.montserrat_semibold, FontWeight.W600),
+    Font(R.font.montserrat_bold, FontWeight.W700),
+    Font(R.font.montserrat_black, FontWeight.W800),
 )
 
 // Set of Material typography styles to start with

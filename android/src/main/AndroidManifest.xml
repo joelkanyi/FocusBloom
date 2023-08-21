@@ -5,6 +5,7 @@
         android:name="com.joelkanyi.focusbloom.android.AndroidApplication"
         android:allowBackup="false"
         android:supportsRtl="true"
+        android:label="@string/focusbloom"
         android:theme="@style/AppTheme">
         <activity
             android:name="com.joelkanyi.focusbloom.android.ui.activities.MainActivity"

@@ -20,12 +20,10 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -93,20 +91,36 @@ class MainActivity : ComponentActivity() {
                                                 ),
                                                 contentDescription = item.label,
                                                 modifier = Modifier.size(24.dp),
+                                                tint = if (isSelected) {
+                                                    MaterialTheme.colorScheme.onBackground
+                                                } else {
+                                                    MaterialTheme.colorScheme.onBackground.copy(
+                                                        alpha = 0.8f,
+                                                    )
+                                                },
                                             )
                                         },
-                                        label = {
-                                            Text(
-                                                text = item.label,
-                                                style = MaterialTheme.typography.bodySmall.copy(
-                                                    fontWeight = if (isSelected) {
-                                                        FontWeight.SemiBold
-                                                    } else {
-                                                        FontWeight.Normal
-                                                    },
-                                                ),
-                                            )
-                                        },
+                                        /*
+                                                                                label = {
+                                                                                    Text(
+                                                                                        text = item.label,
+                                                                                        style = MaterialTheme.typography.bodySmall.copy(
+                                                                                            fontWeight = if (isSelected) {
+                                                                                                FontWeight.SemiBold
+                                                                                            } else {
+                                                                                                FontWeight.Normal
+                                                                                            },
+                                                                                            color = if (isSelected) {
+                                                                                                MaterialTheme.colorScheme.onBackground
+                                                                                            } else {
+                                                                                                MaterialTheme.colorScheme.onBackground.copy(
+                                                                                                    alpha = 0.8f,
+                                                                                                )
+                                                                                            },
+                                                                                        ),
+                                                                                    )
+                                                                                },
+                                        */
                                         selected = isSelected,
                                         onClick = {
                                             navController.navigate(item.destination.route) {

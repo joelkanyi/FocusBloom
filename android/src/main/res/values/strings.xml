@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="focusbloom">Focus Bloom</string>
+    <string name="add_task">Add Task</string>
+    <string name="focus_sessions">Focus Sessions</string>
+    <string name="enter_date">Enter date</string>
+    <string name="date">Date</string>
+    <string name="enter_task_name">Enter task name</string>
+    <string name="task">Task</string>
+</resources>

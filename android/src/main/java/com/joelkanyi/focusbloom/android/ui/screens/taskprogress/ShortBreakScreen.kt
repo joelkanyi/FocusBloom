@@ -12,6 +12,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun ShortBreakScreen(
+    taskId: Int,
     navigator: DestinationsNavigator,
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

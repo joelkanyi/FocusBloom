@@ -10,6 +10,7 @@ firebaseAppDistribution = "3.0.3"
 firebaseCrashlytics = "2.9.2"
 firebasePerformance = "1.4.2"
 compose-destinations = "1.9.52"
+vico = "1.10.1"
 
 # Kotlin Multiplatform Version
 kotlinxCoroutines = "1.6.4"
@@ -154,6 +155,12 @@ oneBoneToolbar = { module = "me.onebone:toolbar-compose", version.ref = "oneBone
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 compose-destinations-animations-core = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
+
+vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vico" }
+vico-compose = { module = "com.patrykandpatrick.vico:compose", version.ref = "vico" }
+vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
+
+compose-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 
 #Tests Lib Dependencies
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
