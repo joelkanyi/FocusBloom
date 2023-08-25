@@ -34,3 +34,7 @@ val BackgroundDarkColor = Color(0xff121212)
 
 val ErrorColor = Color(0xFFFF8989)
 val OnErrorColor = Color(0xFF000000)
+
+val SessionColor = Color(0xFfBA4949)
+val ShortBreakColor = Color(0xFf38858A)
+val LongBreakColor = Color(0xFf397097)

@@ -7,4 +7,6 @@
     <string name="date">Date</string>
     <string name="enter_task_name">Enter task name</string>
     <string name="task">Task</string>
+    <string name="schedule">Schedule</string>
+    <string name="all_tasks">All Tasks</string>
 </resources>

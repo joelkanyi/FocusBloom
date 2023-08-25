@@ -94,4 +94,6 @@ dependencies {
     androidTestImplementation(libs.test.runner)
 
     implementation(libs.compose.icons.extended)
+    implementation(libs.compose.horizontal.calendar)
+
 }

@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.component.BloomButton
@@ -32,6 +33,7 @@ import com.joelkanyi.focusbloom.android.component.BloomIncrementer
 import com.joelkanyi.focusbloom.android.component.BloomInputTextField
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -175,5 +177,22 @@ private fun AddTaskScreenContent(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun AddTaskScreenContentPreview() {
+    FocusBloomTheme {
+        AddTaskScreenContent(
+            taskName = "Task Name",
+            date = "Today",
+            focusSessions = 2,
+            onClickNavigateBack = {},
+            onTaskNameChange = {},
+            onDateChange = {},
+            onIncrementFocusSessions = {},
+            onClickAddTask = {},
+        )
     }
 }
