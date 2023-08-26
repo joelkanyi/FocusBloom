@@ -9,4 +9,5 @@
     <string name="task">Task</string>
     <string name="schedule">Schedule</string>
     <string name="all_tasks">All Tasks</string>
+    <string name="statistics">Statistics</string>
 </resources>

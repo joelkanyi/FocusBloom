@@ -32,7 +32,6 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -331,18 +330,12 @@ val settingsOption = listOf(
                     horizontalAlignment = Alignment.End,
                 ) {
                     BloomDropDown(
-                        modifier = Modifier.height(42.dp).fillMaxWidth(),
-                        placeholder = "",
+                        modifier = Modifier.height(42.dp),
                         options = listOf("Focus Session", "Break", "Both", "None"),
                         selectedOption = TextFieldState(selectedReminderType),
-                        textStyle = MaterialTheme.typography.labelSmall,
                         onOptionSelected = {
                             selectedReminderType = it
                         },
-                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        ),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -380,18 +373,12 @@ private fun SoundSelection(
     ) {
         Text(text = title)
         BloomDropDown(
-            modifier = Modifier.height(42.dp).fillMaxWidth(.65f),
-            placeholder = "",
+            modifier = Modifier.height(42.dp),
             options = options,
             selectedOption = TextFieldState(text = selectedOption),
-            textStyle = MaterialTheme.typography.labelSmall,
             onOptionSelected = {
                 onSelectOption.toString()
             },
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
         )
     }
 }
