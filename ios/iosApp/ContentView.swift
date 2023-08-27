@@ -11,12 +11,7 @@ struct ContentView: View {
 
 
 	var body: some View {
-		VStack {
-			Text(homeViewmodel.getHome())
-			Text(settingsViewmodel.getSettings())
-			Text(calendarViewmodel.getCalendar())
-			Text(statisticsViewmodel.getStatistics())
-		}
+	  MainScreen()
 	}
 }
 
