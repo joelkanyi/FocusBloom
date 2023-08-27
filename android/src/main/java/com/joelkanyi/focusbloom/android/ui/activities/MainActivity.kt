@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
@@ -24,9 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.ui.screens.NavGraphs
 import com.joelkanyi.focusbloom.android.ui.screens.destinations.AddTaskScreenDestination
@@ -38,17 +42,29 @@ import com.joelkanyi.focusbloom.android.ui.screens.destinations.StatisticsScreen
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
 import com.joelkanyi.focusbloom.android.ui.theme.Theme
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.rememberNavHostEngine
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterialNavigationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            val navHostEngine = rememberNavHostEngine()
+            val navHostEngine = rememberAnimatedNavHostEngine(
+                rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                    /* enterTransition = { scaleIn(animationSpec = tween(500)) },
+                     exitTransition = { scaleOut(animationSpec = tween(500)) },*/
+
+                    enterTransition = { slideIn { IntOffset(it.width, 0) } },
+                    exitTransition = { slideOut { IntOffset(-it.width, 0) } },
+                    popEnterTransition = { slideIn { IntOffset(-it.width, 0) } },
+                    popExitTransition = { slideOut { IntOffset(it.width, 0) } },
+                ),
+            )
             val newBackStackEntry by navController.currentBackStackEntryAsState()
             val route = newBackStackEntry?.destination?.route
             val navBackStackEntry by navController.currentBackStackEntryAsState()
