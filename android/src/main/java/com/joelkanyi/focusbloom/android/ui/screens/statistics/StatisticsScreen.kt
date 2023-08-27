@@ -30,14 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.component.BloomDropDown
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.android.domain.model.Task
 import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.android.ui.screens.calendar.DayFormatter
+import com.joelkanyi.focusbloom.android.ui.screens.calendar.TaskTimeFormatter
+import com.joelkanyi.focusbloom.android.ui.screens.home.component.durationInMinutes
 import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.StatsChart
 import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.statsData
+import com.joelkanyi.focusbloom.samples.sampleTasks
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -69,13 +75,16 @@ fun StatisticsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
+                        modifier = Modifier.fillMaxWidth(.7f),
                         text = "Your Statistics Graph",
                         style = MaterialTheme.typography.displaySmall.copy(
                             fontSize = 18.sp,
                         ),
                     )
                     BloomDropDown(
-                        modifier = Modifier,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(32.dp),
                         options = listOf(
                             "This Week",
                             "This Month",
@@ -123,9 +132,9 @@ fun StatisticsScreen(
                 }
             }
 
-            items(historyData) { history ->
+            items(sampleTasks) { history ->
                 HistoryCard(
-                    history = history,
+                    task = history,
                     modifier = Modifier
                         .fillMaxWidth(),
                 )
@@ -136,7 +145,7 @@ fun StatisticsScreen(
 
 @Composable
 fun HistoryCard(
-    history: History,
+    task: Task,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -152,9 +161,11 @@ fun HistoryCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = history.date,
+                    text = task.date.format(DayFormatter),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.secondary,
                     ),
                 )
                 Icon(
@@ -164,86 +175,45 @@ fun HistoryCard(
                 )
             }
             Text(
-                text = history.taskName,
-                style = MaterialTheme.typography.titleMedium,
+                text = task.name,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
+            if (task.description != null) {
+                Text(
+                    text = task.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "${history.minutes} minutes",
+                    text = "${task.durationInMinutes()} minutes",
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
                     ),
                 )
                 Text(
-                    text = "${history.startTime} - ${history.endTime}",
+                    text = "${task.start.format(TaskTimeFormatter)} - ${
+                        task.end.format(
+                            TaskTimeFormatter,
+                        )
+                    }",
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
                     ),
                 )
             }
         }
     }
 }
-
-data class History(
-    val date: String,
-    val taskName: String,
-    val minutes: Int,
-    val startTime: String,
-    val endTime: String,
-)
-
-val historyData = listOf(
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI for 2 hours and 30 minutes",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-    History(
-        date = "Mon, 12 July",
-        taskName = "Start Working on iOS UI/UX with SwiftUI",
-        minutes = 100,
-        startTime = "12:00 AM",
-        endTime = "1:00 AM",
-    ),
-)

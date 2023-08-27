@@ -10,4 +10,7 @@
     <string name="schedule">Schedule</string>
     <string name="all_tasks">All Tasks</string>
     <string name="statistics">Statistics</string>
+    <string name="task_type">Task Type</string>
+    <string name="description">Description</string>
+    <string name="enter_description">Enter task description</string>
 </resources>

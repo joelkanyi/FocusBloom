@@ -23,7 +23,7 @@ fun BloomInputTextField(
     trailingIcon: (@Composable () -> Unit)? = null,
     value: TextFieldState,
     onValueChange: (String) -> Unit,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+    textStyle: TextStyle = MaterialTheme.typography.titleSmall,
     shape: CornerBasedShape = MaterialTheme.shapes.small,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
@@ -35,6 +35,8 @@ fun BloomInputTextField(
             Spacer(modifier = Modifier.height(4.dp))
         }
         OutlinedTextField(
+            modifier = Modifier
+                .height(56.dp),
             value = value.text,
             onValueChange = onValueChange,
             placeholder = placeholder,

@@ -32,7 +32,7 @@ import com.joelkanyi.focusbloom.android.ui.screens.destinations.FocusTimeScreenD
 import com.joelkanyi.focusbloom.android.ui.screens.home.component.TaskCard
 import com.joelkanyi.focusbloom.android.ui.screens.home.component.TaskProgress
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.samples.tasks
+import com.joelkanyi.focusbloom.samples.sampleTasks
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -115,7 +115,7 @@ private fun HomeScreenContent(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "Today's Tasks (${tasks.size})",
+                            text = "Today's Tasks (${sampleTasks.size})",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                             ),
@@ -131,7 +131,7 @@ private fun HomeScreenContent(
                         }
                     }
                 }
-                items(tasks.take(4)) {
+                items(sampleTasks.take(4)) {
                     TaskCard(
                         task = it,
                         onClick = onClickTask,

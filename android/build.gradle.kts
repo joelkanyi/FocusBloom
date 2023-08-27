@@ -27,6 +27,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -83,6 +84,8 @@ dependencies {
     // Chart
     implementation(libs.vico.compose.m3)
 
+    coreLibraryDesugaring(libs.core.library.desugaring)
+
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)
     testImplementation(libs.mockk)
@@ -96,4 +99,5 @@ dependencies {
     implementation(libs.compose.icons.extended)
     implementation(libs.compose.horizontal.calendar)
 
+    implementation(libs.kotlinX.dateTime)
 }

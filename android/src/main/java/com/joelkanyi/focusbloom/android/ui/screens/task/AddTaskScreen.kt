@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.DateRange
@@ -24,11 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.component.BloomButton
+import com.joelkanyi.focusbloom.android.component.BloomDropDown
 import com.joelkanyi.focusbloom.android.component.BloomIncrementer
 import com.joelkanyi.focusbloom.android.component.BloomInputTextField
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
@@ -43,11 +46,17 @@ fun AddTaskScreen(
     navigator: DestinationsNavigator,
 ) {
     var taskName by remember { mutableStateOf("") }
+    var taskDescription by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     var focusSessions by remember { mutableIntStateOf(0) }
+    val taskTypes = listOf("Work", "Study", "Personal", "Other")
+    var selectedOption by remember { mutableStateOf(taskTypes.last()) }
 
     AddTaskScreenContent(
+        taskOptions = taskTypes,
+        selectedOption = selectedOption,
         taskName = taskName,
+        taskDescription = taskDescription,
         date = date,
         focusSessions = focusSessions,
         onClickNavigateBack = {
@@ -64,13 +73,24 @@ fun AddTaskScreen(
         },
         onClickAddTask = {
         },
+        onSelectedOptionChange = {
+            selectedOption = it
+        },
+        onTaskDescriptionChange = {
+            taskDescription = it
+        },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddTaskScreenContent(
+    taskOptions: List<String>,
+    selectedOption: String,
+    onSelectedOptionChange: (String) -> Unit,
     taskName: String,
+    taskDescription: String,
+    onTaskDescriptionChange: (String) -> Unit,
     date: String,
     focusSessions: Int,
     onClickNavigateBack: () -> Unit,
@@ -112,6 +132,25 @@ private fun AddTaskScreenContent(
                     placeholder = {
                         Text(text = stringResource(R.string.enter_task_name))
                     },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Words,
+                    ),
+                )
+            }
+            item {
+                BloomInputTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = {
+                        Text(text = stringResource(R.string.description))
+                    },
+                    value = TextFieldState(text = taskDescription),
+                    onValueChange = onTaskDescriptionChange,
+                    placeholder = {
+                        Text(text = stringResource(R.string.enter_description))
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
                 )
             }
             item {
@@ -133,6 +172,18 @@ private fun AddTaskScreenContent(
                             )
                         }
                     },
+                )
+            }
+
+            item {
+                BloomDropDown(
+                    label = {
+                        Text(text = stringResource(R.string.task_type))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    options = taskOptions,
+                    selectedOption = TextFieldState(selectedOption),
+                    onOptionSelected = onSelectedOptionChange,
                 )
             }
 
@@ -193,6 +244,11 @@ fun AddTaskScreenContentPreview() {
             onDateChange = {},
             onIncrementFocusSessions = {},
             onClickAddTask = {},
+            taskOptions = listOf("Work", "Study", "Personal", "Other"),
+            selectedOption = "Other",
+            onSelectedOptionChange = {},
+            taskDescription = "Task Description",
+            onTaskDescriptionChange = {},
         )
     }
 }

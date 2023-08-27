@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.LightMode
@@ -32,6 +31,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -143,7 +143,7 @@ val settingsOption = listOf(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SessionTime(
-                    modifier = Modifier.height(64.dp).weight(1f),
+                    modifier = Modifier.weight(1f),
                     title = "Session",
                     currentValue = focusSessionMinutes,
                     onValueChange = {
@@ -151,7 +151,7 @@ val settingsOption = listOf(
                     },
                 )
                 SessionTime(
-                    modifier = Modifier.height(64.dp).weight(1f),
+                    modifier = Modifier.weight(1f),
                     title = "Short Break",
                     currentValue = shortBreakMinutes,
                     onValueChange = {
@@ -159,7 +159,7 @@ val settingsOption = listOf(
                     },
                 )
                 SessionTime(
-                    modifier = Modifier.height(64.dp).weight(1f),
+                    modifier = Modifier.weight(1f),
                     title = "Long Break",
                     currentValue = longBreakMinutes,
                     onValueChange = {
@@ -330,7 +330,6 @@ val settingsOption = listOf(
                     horizontalAlignment = Alignment.End,
                 ) {
                     BloomDropDown(
-                        modifier = Modifier.height(42.dp),
                         options = listOf("Focus Session", "Break", "Both", "None"),
                         selectedOption = TextFieldState(selectedReminderType),
                         onOptionSelected = {
@@ -343,7 +342,7 @@ val settingsOption = listOf(
                         horizontalArrangement = Arrangement.End,
                     ) {
                         BloomInputTextField(
-                            modifier = Modifier.weight(1f).height(42.dp),
+                            modifier = Modifier.weight(1f),
                             value = TextFieldState(text = howManyMinutesToReminder),
                             onValueChange = {
                                 howManyMinutesToReminder = it
@@ -359,7 +358,6 @@ val settingsOption = listOf(
 )
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SoundSelection(
     options: List<String>,
     title: String,
@@ -371,9 +369,13 @@ private fun SoundSelection(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = title)
+        Text(
+            modifier = Modifier.fillMaxWidth(.5f),
+            text = title,
+        )
         BloomDropDown(
-            modifier = Modifier.height(42.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
             options = options,
             selectedOption = TextFieldState(text = selectedOption),
             onOptionSelected = {

@@ -33,13 +33,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.android.domain.model.Task
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.samples.tasks
+import com.joelkanyi.focusbloom.samples.sampleTasks
+import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,12 +69,29 @@ fun TaskCard(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth(.85f),
-                    text = task.name,
-                    style = MaterialTheme.typography.titleSmall,
-                )
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = task.name,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    if (task.description != null) {
+                        Text(
+                            text = task.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
                 Icon(
                     modifier = Modifier
                         .clickable {
@@ -100,12 +119,12 @@ fun TaskCard(
                             ) {
                                 append("${task.current}")
                             }
-                            append("/${task.totalCycles}")
+                            append("/${task.taskCycles()}")
                         },
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${task.duration} minutes",
+                        text = "${task.durationInMinutes()} minutes",
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -168,8 +187,26 @@ fun TaskCard(
 fun TaskCardPreview() {
     FocusBloomTheme {
         TaskCard(
-            task = tasks.first(),
+            task = sampleTasks.first(),
             onClick = {},
         )
     }
+}
+
+fun Task.durationInMinutes(): Int {
+    /**
+     * Difference between start and end time in minutes
+     * They are in LocalDateTime format
+     */
+    return ChronoUnit.MINUTES.between(this.start, this.end).toInt()
+}
+
+fun Task.taskCycles(): Int {
+    /**
+     * A Focus Session Task 25 minutes
+     * A Short Break 5 minutes
+     * A Long Break 15 minutes
+     * A Task Cycle is a Focus Session Task + Short Break + Long Break
+     */
+    return this.durationInMinutes() / 25
 }

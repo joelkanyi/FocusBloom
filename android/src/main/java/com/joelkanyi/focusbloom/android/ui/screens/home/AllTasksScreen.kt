@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.android.ui.screens.home.component.TaskCard
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.samples.tasks
+import com.joelkanyi.focusbloom.samples.sampleTasks
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -56,7 +56,7 @@ fun AllTasksScreenContent(
                     }
                 },
             ) {
-                Text(text = "Today's Tasks (${tasks.size})")
+                Text(text = "Today's Tasks (${sampleTasks.size})")
             }
         },
     ) { paddingValues ->
@@ -69,7 +69,7 @@ fun AllTasksScreenContent(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(tasks) {
+                items(sampleTasks) {
                     TaskCard(
                         task = it,
                         onClick = { },
