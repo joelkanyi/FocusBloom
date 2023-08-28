@@ -36,14 +36,14 @@ import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.component.BloomDropDown
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.domain.model.Task
 import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.android.ui.screens.calendar.DayFormatter
 import com.joelkanyi.focusbloom.android.ui.screens.calendar.TaskTimeFormatter
-import com.joelkanyi.focusbloom.android.ui.screens.home.component.durationInMinutes
+import com.joelkanyi.focusbloom.presentation.component.durationInMinutes
 import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.StatsChart
 import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.statsData
-import com.joelkanyi.focusbloom.samples.sampleTasks
+import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.samples.sampleTasks
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -132,7 +132,7 @@ fun StatisticsScreen(
                 }
             }
 
-            items(sampleTasks) { history ->
+            items(com.joelkanyi.samples.sampleTasks) { history ->
                 HistoryCard(
                     task = history,
                     modifier = Modifier
@@ -161,7 +161,7 @@ fun HistoryCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = task.date.format(DayFormatter),
+                    text = "task.date.format(DayFormatter),",
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -185,7 +185,7 @@ fun HistoryCard(
             )
             if (task.description != null) {
                 Text(
-                    text = task.description,
+                    text = "task.description,",
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
@@ -203,11 +203,12 @@ fun HistoryCard(
                     ),
                 )
                 Text(
-                    text = "${task.start.format(TaskTimeFormatter)} - ${
+                    "",
+                    /*text = "${task.start.format(TaskTimeFormatter)} - ${
                         task.end.format(
                             TaskTimeFormatter,
                         )
-                    }",
+                    }",*/
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,

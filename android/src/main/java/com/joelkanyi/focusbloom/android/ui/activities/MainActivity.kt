@@ -41,6 +41,7 @@ import com.joelkanyi.focusbloom.android.ui.screens.destinations.SettingsScreenDe
 import com.joelkanyi.focusbloom.android.ui.screens.destinations.StatisticsScreenDestination
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
 import com.joelkanyi.focusbloom.android.ui.theme.Theme
+import com.joelkanyi.focusbloom.presentation.App
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
@@ -177,11 +178,12 @@ class MainActivity : ComponentActivity() {
                     },
                 ) { paddingValues ->
                     Box(modifier = Modifier.padding(paddingValues)) {
-                        DestinationsNavHost(
+                        /*DestinationsNavHost(
                             navGraph = NavGraphs.root,
                             navController = navController,
                             engine = navHostEngine,
-                        )
+                        )*/
+                        App()
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.home.component
+package com.joelkanyi.focusbloom.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -35,13 +35,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.joelkanyi.focusbloom.android.domain.model.Task
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.samples.sampleTasks
-import java.time.temporal.ChronoUnit
+import com.joelkanyi.focusbloom.domain.model.Task
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +81,7 @@ fun TaskCard(
                     )
                     if (task.description != null) {
                         Text(
-                            text = task.description,
+                            text = task.description!!,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
@@ -182,23 +178,14 @@ fun TaskCard(
     }
 }
 
-@Preview
-@Composable
-fun TaskCardPreview() {
-    FocusBloomTheme {
-        TaskCard(
-            task = sampleTasks.first(),
-            onClick = {},
-        )
-    }
-}
 
 fun Task.durationInMinutes(): Int {
     /**
      * Difference between start and end time in minutes
      * They are in LocalDateTime format
      */
-    return ChronoUnit.MINUTES.between(this.start, this.end).toInt()
+    // return ChronoUnit.MINUTES.between(this.start, this.end).toInt()
+    return 25
 }
 
 fun Task.taskCycles(): Int {

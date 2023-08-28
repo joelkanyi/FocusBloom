@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.home.component
+package com.joelkanyi.focusbloom.presentation.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

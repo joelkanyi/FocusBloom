@@ -5,10 +5,12 @@ plugins {
     alias(libs.plugins.multiplatform) apply false
     alias(libs.plugins.jvm) apply false
     alias(libs.plugins.nativeCocoapod) apply false
+    alias(libs.plugins.compose.multiplatform)
 
     alias(libs.plugins.ktLint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.gradleVersionUpdates)
+
 }
 
 allprojects {

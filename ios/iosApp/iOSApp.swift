@@ -5,7 +5,18 @@ import shared
 struct iOSApp: App {
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			ComposeView()
 		}
 	}
+}
+
+struct ComposeView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> some UIViewController {
+        // File name "Main" + "Kt" -> "Function Name"
+        return MainKt.MainViewController()
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        
+    }
 }

@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.jvm)
-    alias(libs.plugins.compose.desktop.plugin)
+    alias(libs.plugins.compose.multiplatform)
 }
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":shared"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:calendar"))

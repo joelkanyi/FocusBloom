@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.android.component.BloomTimerControls
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.ui.screens.home.component.TaskProgress
+import com.joelkanyi.focusbloom.presentation.component.TaskProgress
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -121,7 +121,7 @@ fun FocusTimeScreenContent(onClickNavigateBack: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                 ) {
-                    TaskProgress(
+                    com.joelkanyi.focusbloom.presentation.component.TaskProgress(
                         percentage = 36f,
                         radius = 50.dp,
                         content = "23:54",

@@ -72,6 +72,7 @@ turbine = "0.12.3"
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
 gradleVersionUpdates = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionUpdate" }
 kotlinX-testResources = { id = "com.goncalossilva.resources", version.ref = "kotlinxTestResources" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -80,7 +81,6 @@ android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "gradle" }
 android-application = { id = "com.android.application", version.ref = "gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-compose-desktop-plugin = { id = "org.jetbrains.compose", version.ref = "composeDesktop" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kmp-NativeCoroutines-plugin = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "kmpNativeCoroutines" }
 sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }

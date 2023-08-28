@@ -1,14 +1,15 @@
-package com.joelkanyi.focusbloom.samples
+package com.joelkanyi.samples
 
 import androidx.compose.ui.graphics.Color
-import com.joelkanyi.focusbloom.android.domain.model.Task
-import java.time.LocalDateTime
+import com.joelkanyi.focusbloom.domain.model.Task
+import kotlinx.datetime.LocalDateTime
 
 val sampleTasks = listOf(
     // Today
     Task(
         name = "iOS App Development with Swift",
-        color = Color(0xFFF4BFDB),
+        // color = Color(0xFFF4BFDB),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-08-27T10:00:00"),
@@ -17,7 +18,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Implement Desktop support",
-        color = Color(0xFF6DD3CE),
+        // color = Color(0xFF6DD3CE),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T01:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-08-27T11:00:00"),
@@ -27,7 +29,8 @@ val sampleTasks = listOf(
     // Tomorrow
     Task(
         name = "Implement the new feature",
-        color = Color(0xFF1B998B),
+        // color = Color(0xFF1B998B),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T20:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-08-28T20:00:00"),
@@ -36,7 +39,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Refactor the code to make it more readable",
-        color = Color(0xFFAFBBF2),
+        // color = Color(0xFFAFBBF2),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T08:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-08-28T08:00:00"),
@@ -46,7 +50,8 @@ val sampleTasks = listOf(
     // The day after tomorrow
     Task(
         name = "Write a blog post about the new feature",
-        color = Color(0xFFAFBBF2),
+        // color = Color(0xFFAFBBF2),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-08-29T09:00:00"),
@@ -73,7 +78,8 @@ val sampleTasks = listOf(
     ),*/
     Task(
         name = "Ride my bike around the city",
-        color = Color(0xFFAFBBF2),
+        // color = Color(0xFFAFBBF2),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T06:00:00"),
@@ -82,7 +88,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Write a blog post about the new feature",
-        color = Color(0xFFAFBBF2),
+        // color = Color(0xFFAFBBF2),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T09:00:00"),
@@ -91,7 +98,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Refactor the code to make it more readable",
-        color = Color(0xFFAFBBF2),
+        // color = Color(0xFFAFBBF2),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T09:00:00"),
@@ -100,7 +108,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Implement the new feature",
-        color = Color(0xFF1B998B),
+        // color = Color(0xFF1B998B),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T10:00:00"),
@@ -109,7 +118,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "Implement Desktop support",
-        color = Color(0xFF6DD3CE),
+        // color = Color(0xFF6DD3CE),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T11:00:00"),
@@ -118,7 +128,8 @@ val sampleTasks = listOf(
     ),
     Task(
         name = "iOS App Development with Swift",
-        color = Color(0xFFF4BFDB),
+        // color = Color(0xFFF4BFDB),
+        color = Color(0xFF1B998B).hashCode(),
         date = LocalDateTime.parse("2021-05-18T12:00:00"),
         current = 4,
         start = LocalDateTime.parse("2021-05-18T10:00:00"),

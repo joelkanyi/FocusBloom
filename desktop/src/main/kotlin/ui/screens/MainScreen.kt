@@ -13,6 +13,7 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import com.joelkanyi.focusbloom.presentation.App
 import com.joelkanyi.focusbloom.presentation.CalendarViewModel
 import com.joelkanyi.focusbloom.presentation.HomeViewModel
 import com.joelkanyi.focusbloom.presentation.SettingsViewModel
@@ -39,7 +40,8 @@ fun MainScreen(
         ),
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column {
+            App()
+            /*Column {
                 Text(
                     text = "Settings: ${settingsViewModel.getSettings()}",
                     color = Color.Black,
@@ -56,7 +58,7 @@ fun MainScreen(
                     text = "Statistics: ${statisticsViewModel.getStatistics()}",
                     color = Color.Black,
                 )
-            }
+            }*/
         }
     }
 }

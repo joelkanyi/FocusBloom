@@ -52,7 +52,7 @@ import com.joelkanyi.focusbloom.android.R
 import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.android.domain.model.Task
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.samples.sampleTasks
+import com.joelkanyi.samples.sampleTasks
 import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -68,10 +68,10 @@ import kotlin.math.roundToInt
 fun CalendarScreen(
     navigator: DestinationsNavigator,
 ) {
-    CalendarScreenContent()
+    // CalendarScreenContent()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreenContent() {
     Scaffold(
@@ -104,8 +104,8 @@ fun CalendarScreenContent() {
                 },
             )
 
-            val todaysTasks =
-                sampleTasks.filter { it.start.toLocalDate().dayOfMonth == selectedDay.dayOfMonth }
+            // val todaysTasks = com.joelkanyi.samples.sampleTasks.filter { it.start.toLocalDate().dayOfMonth == selectedDay.dayOfMonth }
+            val todaysTasks = sampleTasks
             if (todaysTasks.isNotEmpty()) {
                 Schedule(
                     tasks = todaysTasks.sortedBy { it.start },
@@ -122,7 +122,7 @@ fun CalendarScreenContent() {
             }
         }
     }
-}
+}*/
 
 @Composable
 fun BasicTask(
@@ -461,13 +461,13 @@ fun CalendarTimeBandPreview() {
     }
 }
 
-@Preview
+/*@Preview
 @Composable
 fun CalendarScreenContentPreview() {
     FocusBloomTheme {
         CalendarScreenContent()
     }
-}
+}*/
 
 inline class SplitType private constructor(val value: Int) {
     companion object {

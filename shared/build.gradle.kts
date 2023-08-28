@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinX.serialization.plugin)
     alias(libs.plugins.sqlDelight.plugin)
     alias(libs.plugins.nativeCocoapod)
+    alias(libs.plugins.compose.multiplatform)
 }
 
 android {
@@ -63,6 +64,9 @@ kotlin {
                 api(project(":feature:calendar"))
                 api(project(":feature:home"))
                 api(libs.koin.core)
+
+                implementation(compose.material3)
+                implementation(compose.material)
 
                 // api(libs.ktor.core)
                 // api(libs.ktor.cio)

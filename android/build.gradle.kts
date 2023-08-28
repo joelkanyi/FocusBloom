@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":shared"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:calendar"))

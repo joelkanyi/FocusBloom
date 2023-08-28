@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    alias(libs.plugins.compose.desktop.plugin)
+    alias(libs.plugins.compose.multiplatform)
 }
 
 android {
