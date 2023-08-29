@@ -68,6 +68,12 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.material)
 
+                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.bottomSheetNavigator)
+                implementation(libs.voyager.transitions)
+                implementation(libs.voyager.tabNavigator)
+                // implementation(libs.voyager.koin)
+
                 // api(libs.ktor.core)
                 // api(libs.ktor.cio)
                 // implementation(libs.ktor.contentNegotiation)
@@ -75,6 +81,8 @@ kotlin {
                 // implementation(libs.ktor.logging)
 
                 implementation(libs.kotlinX.serializationJson)
+
+                implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.3.1")
 
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
