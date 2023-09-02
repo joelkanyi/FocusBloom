@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.home
+package com.joelkanyi.focusbloom.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,24 +16,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.presentation.component.TaskCard
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.samples.sampleTasks
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
 @Composable
-fun AllTasksScreen(
-    navigator: DestinationsNavigator,
-) {
+fun AllTasksScreen() {
     AllTasksScreenContent(
         onClickNavigateBack = {
-            navigator.popBackStack()
+            // navigator.popBackStack()
         },
     )
 }
@@ -77,13 +67,5 @@ fun AllTasksScreenContent(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun AllTasksScreenContentPreview() {
-    FocusBloomTheme {
-        AllTasksScreenContent()
     }
 }

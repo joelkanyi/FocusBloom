@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.home
+package com.joelkanyi.focusbloom.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,36 +24,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.android.domain.model.Task
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.AllTasksScreenDestination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.FocusTimeScreenDestination
 // import com.joelkanyi.focusbloom.presentation.component.TaskCard
 // import com.joelkanyi.focusbloom.presentation.component.TaskProgress
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-// import com.joelkanyi.samples.sampleTasks
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.presentation.component.TaskCard
+import com.joelkanyi.focusbloom.presentation.component.TaskProgress
+import com.joelkanyi.samples.sampleTasks
 
-@RootNavGraph(start = true) // sets this as the start destination of the default nav graph
-@Destination
+// import com.joelkanyi.samples.sampleTasks
+
 @Composable
-fun HomeScreen(
-    navigator: DestinationsNavigator,
-) {
-    /*HomeScreenContent(
+fun HomeScreen() {
+    HomeScreenContent(
         onClickTask = {
-            navigator.navigate(FocusTimeScreenDestination(taskId = it.id))
+            // navigator.navigate(FocusTimeScreenDestination(taskId = it.id))
         },
         onClickSeeAllTasks = {
-            navigator.navigate(AllTasksScreenDestination)
+            // navigator.navigate(AllTasksScreenDestination)
         },
-    )*/
+    )
 }
 
-/*
 @Composable
 private fun HomeScreenContent(
     onClickTask: (task: Task) -> Unit = {},
@@ -84,7 +76,7 @@ private fun HomeScreenContent(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            com.joelkanyi.focusbloom.presentation.component.TaskProgress(
+                            TaskProgress(
                                 mainColor = MaterialTheme.colorScheme.secondary,
                                 percentage = 75f,
                             )
@@ -116,7 +108,7 @@ private fun HomeScreenContent(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "Today's Tasks (${com.joelkanyi.samples.sampleTasks.size})",
+                            text = "Today's Tasks (${sampleTasks.size})",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                             ),
@@ -132,8 +124,8 @@ private fun HomeScreenContent(
                         }
                     }
                 }
-                items(com.joelkanyi.samples.sampleTasks.take(4)) {
-                    com.joelkanyi.focusbloom.presentation.component.TaskCard(
+                items(sampleTasks.take(4)) {
+                    TaskCard(
                         task = it,
                         onClick = onClickTask,
                     )
@@ -142,12 +134,3 @@ private fun HomeScreenContent(
         }
     }
 }
-*/
-
-/*@Preview
-@Composable
-fun HomeScreenContentPreview() {
-    FocusBloomTheme {
-        HomeScreenContent()
-    }
-}*/

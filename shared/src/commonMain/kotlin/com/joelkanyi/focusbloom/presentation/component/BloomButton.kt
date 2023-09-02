@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.component
+package com.joelkanyi.focusbloom.presentation.component
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults

@@ -178,7 +178,6 @@ fun TaskCard(
     }
 }
 
-
 fun Task.durationInMinutes(): Int {
     /**
      * Difference between start and end time in minutes

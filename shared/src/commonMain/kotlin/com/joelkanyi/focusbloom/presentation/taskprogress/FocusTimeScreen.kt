@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.taskprogress
+package com.joelkanyi.focusbloom.presentation.taskprogress
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,21 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.joelkanyi.focusbloom.android.component.BloomTimerControls
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.presentation.component.TaskProgress
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.joelkanyi.focusbloom.presentation.component.BloomTimerControls
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
 
-@Destination
 @Composable
 fun FocusTimeScreen(
     taskId: Int,
-    navigator: DestinationsNavigator,
 ) {
     FocusTimeScreenContent(
         onClickNavigateBack = {
-            navigator.popBackStack()
+            // navigator.popBackStack()
         },
     )
 }

@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.domain.model
+package com.joelkanyi.focusbloom.domain
 
 data class TextFieldState(
     val text: String = "",

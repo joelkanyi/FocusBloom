@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.statistics
+package com.joelkanyi.focusbloom.presentation.statistics
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,38 +28,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.joelkanyi.focusbloom.android.R
-import com.joelkanyi.focusbloom.android.component.BloomDropDown
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
-import com.joelkanyi.focusbloom.android.ui.screens.calendar.DayFormatter
-import com.joelkanyi.focusbloom.android.ui.screens.calendar.TaskTimeFormatter
-import com.joelkanyi.focusbloom.presentation.component.durationInMinutes
-import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.StatsChart
-import com.joelkanyi.focusbloom.android.ui.screens.statistics.component.statsData
+import com.joelkanyi.focusbloom.domain.TextFieldState
 import com.joelkanyi.focusbloom.domain.model.Task
-import com.joelkanyi.samples.sampleTasks
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.joelkanyi.focusbloom.presentation.component.BloomDropDown
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.presentation.component.durationInMinutes
+import com.joelkanyi.focusbloom.presentation.statistics.component.StatsChart
+import com.joelkanyi.focusbloom.presentation.statistics.component.statsData
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
 @Composable
-fun StatisticsScreen(
-    navigator: DestinationsNavigator,
-) {
+fun StatisticsScreen() {
     var selectedOption by remember { mutableStateOf("This Week") }
     Scaffold(
         topBar = {
             BloomTopAppBar(
                 hasBackNavigation = false,
             ) {
-                Text(text = stringResource(R.string.statistics))
+                Text(text = "Statistics")
             }
         },
     ) { paddingValues ->

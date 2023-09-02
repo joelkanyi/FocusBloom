@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.component
+package com.joelkanyi.focusbloom.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

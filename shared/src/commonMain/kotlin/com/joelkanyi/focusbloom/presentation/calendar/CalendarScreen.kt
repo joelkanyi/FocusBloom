@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.calendar
+package com.joelkanyi.focusbloom.presentation.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -39,39 +38,32 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import com.joelkanyi.focusbloom.android.R
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.domain.model.Task
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
+import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
 import com.joelkanyi.samples.sampleTasks
-import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToInt
 
-@Destination
 @Composable
-fun CalendarScreen(
-    navigator: DestinationsNavigator,
-) {
-    // CalendarScreenContent()
+fun CalendarScreen() {
+    CalendarScreenContent()
 }
 
-/*@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreenContent() {
     Scaffold(
@@ -79,12 +71,12 @@ fun CalendarScreenContent() {
             BloomTopAppBar(
                 hasBackNavigation = false,
             ) {
-                Text(text = stringResource(R.string.schedule))
+                Text(text = "Calendar")
             }
         },
     ) { paddingValues ->
         var selectedDay by remember {
-            mutableStateOf(LocalDate.now())
+            mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
         }
         Column(
             modifier = Modifier
@@ -92,7 +84,7 @@ fun CalendarScreenContent() {
                 .padding(PaddingValues(horizontal = 16.dp)),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            HorizontalCalendarView(
+            /*HorizontalCalendarView(
                 modifier = Modifier.fillMaxWidth(),
                 selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                 unSelectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -102,10 +94,10 @@ fun CalendarScreenContent() {
                     selectedDay = day.fullDate.localDate()
                     // Toast.makeText(context, day.toString(), Toast.LENGTH_SHORT).show()
                 },
-            )
+            )*/
 
-            // val todaysTasks = com.joelkanyi.samples.sampleTasks.filter { it.start.toLocalDate().dayOfMonth == selectedDay.dayOfMonth }
-            val todaysTasks = sampleTasks
+            val todaysTasks =
+                sampleTasks.filter { it.start.date.dayOfMonth == selectedDay.dayOfMonth }
             if (todaysTasks.isNotEmpty()) {
                 Schedule(
                     tasks = todaysTasks.sortedBy { it.start },
@@ -122,7 +114,7 @@ fun CalendarScreenContent() {
             }
         }
     }
-}*/
+}
 
 @Composable
 fun BasicTask(
@@ -144,7 +136,7 @@ fun BasicTask(
             )
             .clipToBounds()
             .background(
-                task.color,
+                color = Color(task.color),
                 shape = RoundedCornerShape(
                     topStart = topRadius,
                     topEnd = topRadius,
@@ -156,11 +148,7 @@ fun BasicTask(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
-            text = "${task.start.format(TaskTimeFormatter)} - ${
-                task.end.format(
-                    TaskTimeFormatter,
-                )
-            }",
+            text = "${task.start.time} - ${task.end.time}",
             style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             overflow = TextOverflow.Clip,
@@ -176,7 +164,7 @@ fun BasicTask(
 
         if (task.description != null) {
             Text(
-                text = task.description,
+                text = task.description!!,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -186,26 +174,12 @@ fun BasicTask(
 }
 
 @Composable
-fun BasicDayHeader(
-    day: LocalDate,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = day.format(DayFormatter),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-    )
-}
-
-@Composable
 fun BasicSidebarLabel(
     time: LocalTime,
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = time.format(HourFormatter),
+        text = "${time.hour}:00",
         modifier = modifier
             .fillMaxHeight()
             .padding(4.dp),
@@ -216,22 +190,24 @@ fun BasicSidebarLabel(
 fun ScheduleSidebar(
     hourHeight: Dp,
     modifier: Modifier = Modifier,
-    minTime: LocalTime = LocalTime.MIN,
-    maxTime: LocalTime = LocalTime.MAX,
+    minTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
+    maxTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
     label: @Composable (time: LocalTime) -> Unit = { BasicSidebarLabel(time = it) },
 ) {
-    val numMinutes = ChronoUnit.MINUTES.between(minTime, maxTime).toInt() + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
     val numHours = numMinutes / 60
-    val firstHour = minTime.truncatedTo(ChronoUnit.HOURS)
+    val firstHour = minTime.truncatedTo()
     val firstHourOffsetMinutes =
-        if (firstHour == minTime) 0 else ChronoUnit.MINUTES.between(minTime, firstHour.plusHours(1))
+        if (firstHour == minTime) 0 else differenceBetweenMinutes(minTime, firstHour.plusHours(1))
     val firstHourOffset = hourHeight * (firstHourOffsetMinutes / 60f)
     val startTime = if (firstHour == minTime) firstHour else firstHour.plusHours(1)
     Column(modifier = modifier) {
         Spacer(modifier = Modifier.height(firstHourOffset))
         repeat(numHours) { i ->
             Box(modifier = Modifier.height(hourHeight)) {
-                label(startTime.plusHours(i.toLong()))
+                label(startTime.plusHours(i))
             }
         }
     }
@@ -246,17 +222,20 @@ fun Schedule(
             positionedTask = it,
         )
     },
-    dayHeader: @Composable (day: LocalDate) -> Unit = { BasicDayHeader(day = it) },
     timeLabel: @Composable (time: LocalTime) -> Unit = { BasicSidebarLabel(time = it) },
-    minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.toLocalDate() ?: LocalDate.now(),
-    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.toLocalDate() ?: LocalDate.now(),
-    minTime: LocalTime = LocalTime.MIN,
-    maxTime: LocalTime = LocalTime.MAX,
+    minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    minTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
+    maxTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
     daySize: ScheduleSize = ScheduleSize.FixedSize(300.dp),
     hourSize: ScheduleSize = ScheduleSize.FixedSize(64.dp),
 ) {
     val numDays = 0 + 1
-    val numMinutes = ChronoUnit.MINUTES.between(minTime, maxTime).toInt() + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
     val numHours = numMinutes.toFloat() / 60f
     val verticalScrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
@@ -269,7 +248,7 @@ fun Schedule(
         is ScheduleSize.Adaptive -> {
             val task = tasks.minByOrNull { it.start }
             if (task != null) {
-                val taskStartMinutes = ChronoUnit.MINUTES.between(minTime, task.start)
+                val taskStartMinutes = differenceBetweenMinutes(minTime, task.start.time)
                 val taskStartHours = taskStartMinutes / 60f
                 val taskStartOffset = taskStartHours * hourSize.minSize.dpToPx()
                 LaunchedEffect(key1 = tasks, block = {
@@ -283,7 +262,7 @@ fun Schedule(
         is ScheduleSize.FixedCount -> {
             val task = tasks.minByOrNull { it.start }
             if (task != null) {
-                val taskStartMinutes = ChronoUnit.MINUTES.between(minTime, task.start)
+                val taskStartMinutes = differenceBetweenMinutes(minTime, task.start.time)
                 val taskStartHours = taskStartMinutes / 60f
                 val taskStartOffset = taskStartHours * hourSize.count.dp
                 LaunchedEffect(key1 = tasks, block = {
@@ -293,11 +272,12 @@ fun Schedule(
                 })
             }
         }
+
         is ScheduleSize.FixedSize -> {
             // Scroll to the closest task
             val task = tasks.minByOrNull { it.start }
             if (task != null) {
-                val taskStartMinutes = ChronoUnit.MINUTES.between(minTime, task.start)
+                val taskStartMinutes = differenceBetweenMinutes(minTime, task.start.time)
                 val taskStartHours = taskStartMinutes / 60f
                 val taskStartOffset = taskStartHours * hourSize.size.dpToPx()
                 LaunchedEffect(key1 = tasks, block = {
@@ -377,15 +357,19 @@ fun BasicSchedule(
             positionedTask = it,
         )
     },
-    minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.toLocalDate() ?: LocalDate.now(),
-    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.toLocalDate() ?: LocalDate.now(),
-    minTime: LocalTime = LocalTime.MIN,
-    maxTime: LocalTime = LocalTime.MAX,
+    minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    minTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
+    maxTime: LocalTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
     dayWidth: Dp,
     hourHeight: Dp,
 ) {
-    val numDays = ChronoUnit.DAYS.between(minDate, maxDate).toInt() + 1
-    val numMinutes = ChronoUnit.MINUTES.between(minTime, maxTime).toInt() + 1
+    val numDays = differenceBetweenDays(minDate, maxDate).toInt() + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
     val numHours = numMinutes / 60
     val dividerColor =
         if (androidx.compose.material.MaterialTheme.colors.isLight) Color.LightGray else Color.DarkGray
@@ -417,7 +401,7 @@ fun BasicSchedule(
         val placeablesWithTasks = measureables.map { measurable ->
             val splitTask = measurable.parentData as PositionedTask
             val taskDurationMinutes =
-                ChronoUnit.MINUTES.between(splitTask.start, minOf(splitTask.end, maxTime))
+                differenceBetweenMinutes(splitTask.start, minOf(splitTask.end, maxTime))
             val taskHeight = ((taskDurationMinutes / 60f) * hourHeight.toPx()).roundToInt()
             val taskWidth =
                 ((splitTask.colSpan.toFloat() / splitTask.colTotal.toFloat()) * dayWidth.toPx()).roundToInt()
@@ -434,7 +418,7 @@ fun BasicSchedule(
         layout(width, height) {
             placeablesWithTasks.forEach { (placeable, splitTask) ->
                 val taskOffsetMinutes = if (splitTask.start > minTime) {
-                    ChronoUnit.MINUTES.between(
+                    differenceBetweenMinutes(
                         minTime,
                         splitTask.start,
                     )
@@ -449,25 +433,6 @@ fun BasicSchedule(
         }
     }
 }
-
-@Preview
-@Composable
-fun CalendarTimeBandPreview() {
-    FocusBloomTheme {
-        Column(
-            modifier = Modifier.background(MaterialTheme.colorScheme.onPrimary),
-        ) {
-        }
-    }
-}
-
-/*@Preview
-@Composable
-fun CalendarScreenContentPreview() {
-    FocusBloomTheme {
-        CalendarScreenContent()
-    }
-}*/
 
 inline class SplitType private constructor(val value: Int) {
     companion object {
@@ -489,8 +454,8 @@ data class PositionedTask(
     val colTotal: Int = 1,
 )
 
-val TaskTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
-val DayFormatter = DateTimeFormatter.ofPattern("EE, MMM d")
+// val TaskTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+// val DayFormatter = DateTimeFormatter.ofPattern("EE, MMM d")
 
 sealed class ScheduleSize {
     class FixedSize(val size: Dp) : ScheduleSize()
@@ -513,20 +478,20 @@ private fun Modifier.taskData(positionedTask: PositionedTask) =
 private fun splitTasks(tasks: List<Task>): List<PositionedTask> {
     return tasks
         .map { task ->
-            val startDate = task.start.toLocalDate()
-            val endDate = task.end.toLocalDate()
+            val startDate = task.start.date
+            val endDate = task.end.date
             if (startDate == endDate) {
                 listOf(
                     PositionedTask(
                         task,
                         SplitType.None,
-                        task.start.toLocalDate(),
-                        task.start.toLocalTime(),
-                        task.end.toLocalTime(),
+                        task.start.date,
+                        task.start.time,
+                        task.end.time,
                     ),
                 )
             } else {
-                val days = ChronoUnit.DAYS.between(startDate, endDate)
+                val days = differenceBetweenDays(startDate, endDate)
                 val splitTasks = mutableListOf<PositionedTask>()
                 for (i in 0..days) {
                     val date = startDate.plusDays(i)
@@ -534,8 +499,18 @@ private fun splitTasks(tasks: List<Task>): List<PositionedTask> {
                         task,
                         splitType = if (date == startDate) SplitType.End else if (date == endDate) SplitType.Start else SplitType.Both,
                         date = date,
-                        start = if (date == startDate) task.start.toLocalTime() else LocalTime.MIN,
-                        end = if (date == endDate) task.end.toLocalTime() else LocalTime.MAX,
+                        start = if (date == startDate) {
+                            task.start.time
+                        } else {
+                            Clock.System.now()
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN()
+                        },
+                        end = if (date == endDate) {
+                            task.end.time
+                        } else {
+                            Clock.System.now()
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX()
+                        },
                     )
                 }
                 splitTasks
@@ -606,15 +581,55 @@ private fun arrangeTasks(tasks: List<PositionedTask>): List<PositionedTask> {
     return positionedTasks
 }
 
-private val HourFormatter = DateTimeFormatter.ofPattern("h a")
+// private val HourFormatter = DateTimeFormatter.ofPattern("h a")
 
-fun String.localDate(): LocalDate {
+/*fun String.localDate(): LocalDate {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     return LocalDate.parse(this, formatter)
-}
+}*/
 
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+fun differenceBetweenMinutes(
+    minTime: LocalTime,
+    maxTime: LocalTime,
+): Int {
+    return (maxTime.hour - minTime.hour) * 60
+}
+
+fun differenceBetweenDays(
+    minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+): Int {
+    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+    return (maxDate.dayOfMonth - minDate.dayOfMonth)
+}
+
+fun LocalDate.plusDays(
+    days: Int,
+): LocalDate {
+    return this.plus(days, DateTimeUnit.DAY)
+}
+
+fun LocalTime.plusHours(
+    hours: Int,
+): LocalTime {
+    val addedHours = this.hour + hours
+    return LocalTime(addedHours, this.minute)
+}
+
+fun LocalTime.truncatedTo(): LocalTime {
+    return LocalTime(this.hour, this.minute)
+}
+
+fun LocalTime.MIN(): LocalTime {
+    return LocalTime(0, 0)
+}
+
+fun LocalTime.MAX(): LocalTime {
+    return LocalTime(23, 59, 59, 999999999)
+}

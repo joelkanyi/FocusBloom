@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.settings
+package com.joelkanyi.focusbloom.presentation.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -53,33 +53,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.android.component.BloomDropDown
-import com.joelkanyi.focusbloom.android.component.BloomInputTextField
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.android.ui.theme.LongBreakColor
-import com.joelkanyi.focusbloom.android.ui.theme.SessionColor
-import com.joelkanyi.focusbloom.android.ui.theme.ShortBreakColor
-import com.joelkanyi.focusbloom.presentation.CalendarViewModel
-import com.joelkanyi.focusbloom.presentation.HomeViewModel
-import com.joelkanyi.focusbloom.presentation.SettingsViewModel
-import com.joelkanyi.focusbloom.presentation.StatisticsViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import org.koin.compose.koinInject
+import com.joelkanyi.focusbloom.domain.TextFieldState
+import com.joelkanyi.focusbloom.presentation.component.BloomDropDown
+import com.joelkanyi.focusbloom.presentation.component.BloomInputTextField
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
 
-@Destination
 @Composable
-fun SettingsScreen(
-    navigator: DestinationsNavigator,
-    homeViewModel: HomeViewModel = koinInject(),
-    calendarViewModel: CalendarViewModel = koinInject(),
-    settingsViewModel: SettingsViewModel = koinInject(),
-    statisticsViewModel: StatisticsViewModel = koinInject(),
-) {
+fun SettingsScreen() {
     SettingsScreenContent()
 }
 
@@ -294,9 +275,12 @@ val settingsOption = listOf(
                         showColorDialog = true
                         selectedColorCard = "Long Break"
                     },
-                    currentSessionColor = SessionColor,
+                    /*currentSessionColor = SessionColor,
                     currentShortBreakColor = ShortBreakColor,
-                    currentLongBreakColor = LongBreakColor,
+                    currentLongBreakColor = LongBreakColor,*/
+                    currentSessionColor = Color.Magenta,
+                    currentShortBreakColor = Color.Cyan,
+                    currentLongBreakColor = Color.Yellow,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -571,17 +555,17 @@ fun ColorsDialog(
 }
 
 private val sessionColors = listOf(
-    SessionColor,
-    ShortBreakColor,
-    LongBreakColor,
-    SessionColor,
-    ShortBreakColor,
-    LongBreakColor,
-    SessionColor,
-    ShortBreakColor,
-    LongBreakColor, SessionColor,
-    ShortBreakColor,
-    LongBreakColor,
+    Color.Magenta,
+    Color.Cyan,
+    Color.Yellow,
+    Color.Red,
+    Color.Green,
+    Color.Blue,
+    Color.Gray,
+    Color.LightGray,
+    Color.DarkGray,
+    Color.Black,
+    Color.White,
 )
 
 /**
@@ -601,11 +585,3 @@ private val sessionColors = listOf(
  *  - alarm name
  *  - add new one
  */
-
-@Preview
-@Composable
-fun SettingsContentPreview() {
-    FocusBloomTheme {
-        SettingsScreenContent()
-    }
-}

@@ -32,13 +32,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.joelkanyi.focusbloom.android.R
-import com.joelkanyi.focusbloom.android.ui.screens.NavGraphs
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.AddTaskScreenDestination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.CalendarScreenDestination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.Destination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.HomeScreenDestination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.SettingsScreenDestination
-import com.joelkanyi.focusbloom.android.ui.screens.destinations.StatisticsScreenDestination
 import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
 import com.joelkanyi.focusbloom.android.ui.theme.Theme
 import com.joelkanyi.focusbloom.presentation.App
@@ -73,14 +66,8 @@ class MainActivity : ComponentActivity() {
 
             FocusBloomTheme(theme = Theme.LIGHT_THEME.themeValue) {
                 Scaffold(
-                    bottomBar = {
-                        if (route in listOf(
-                                HomeScreenDestination.route,
-                                CalendarScreenDestination.route,
-                                StatisticsScreenDestination.route,
-                                SettingsScreenDestination.route,
-                            )
-                        ) {
+                   /* bottomBar = {
+                        if (route == "home") {
                             BottomNavigation(
                                 backgroundColor = MaterialTheme.colorScheme.background,
                             ) {
@@ -117,7 +104,7 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             )
                                         },
-                                        /*
+                                        *//*
                                                                                 label = {
                                                                                     Text(
                                                                                         text = item.label,
@@ -137,7 +124,7 @@ class MainActivity : ComponentActivity() {
                                                                                         ),
                                                                                     )
                                                                                 },
-                                        */
+                                        *//*
                                         selected = isSelected,
                                         onClick = {
                                             navController.navigate(item.destination.route) {
@@ -175,7 +162,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.size(24.dp),
                             )
                         }
-                    },
+                    },*/
                 ) { paddingValues ->
                     Box(modifier = Modifier.padding(paddingValues)) {
                         /*DestinationsNavHost(
@@ -191,7 +178,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class NavigationItem(
+/*data class NavigationItem(
     val label: String,
     val iconFilled: Int,
     val iconOutlined: Int,
@@ -223,7 +210,7 @@ val navigationItems = listOf(
         iconOutlined = R.drawable.settings_outlined,
         destination = SettingsScreenDestination,
     ),
-)
+)*/
 
 data class DrawerItem(
     val icon: ImageVector,

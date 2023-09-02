@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.task
+package com.joelkanyi.focusbloom.presentation.task
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,27 +24,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.android.R
-import com.joelkanyi.focusbloom.android.component.BloomButton
-import com.joelkanyi.focusbloom.android.component.BloomDropDown
-import com.joelkanyi.focusbloom.android.component.BloomIncrementer
-import com.joelkanyi.focusbloom.android.component.BloomInputTextField
-import com.joelkanyi.focusbloom.android.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.android.domain.model.TextFieldState
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.joelkanyi.focusbloom.domain.TextFieldState
+import com.joelkanyi.focusbloom.presentation.component.BloomButton
+import com.joelkanyi.focusbloom.presentation.component.BloomDropDown
+import com.joelkanyi.focusbloom.presentation.component.BloomIncrementer
+import com.joelkanyi.focusbloom.presentation.component.BloomInputTextField
+import com.joelkanyi.focusbloom.presentation.component.BloomTopAppBar
 
-@Destination
 @Composable
-fun AddTaskScreen(
-    navigator: DestinationsNavigator,
-) {
+fun AddTaskScreen() {
     var taskName by remember { mutableStateOf("") }
     var taskDescription by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
@@ -60,7 +51,7 @@ fun AddTaskScreen(
         date = date,
         focusSessions = focusSessions,
         onClickNavigateBack = {
-            navigator.popBackStack()
+            // navigator.popBackStack()
         },
         onDateChange = {
             date = it
@@ -112,7 +103,7 @@ private fun AddTaskScreenContent(
                     }
                 },
             ) {
-                Text(text = stringResource(R.string.add_task))
+                Text(text = "Add Task")
             }
         },
     ) { paddingValues ->
@@ -125,12 +116,12 @@ private fun AddTaskScreenContent(
                 BloomInputTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text(text = stringResource(R.string.task))
+                        Text(text = "Task Name")
                     },
                     value = TextFieldState(text = taskName),
                     onValueChange = onTaskNameChange,
                     placeholder = {
-                        Text(text = stringResource(R.string.enter_task_name))
+                        Text(text = "Enter Task Name")
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Words,
@@ -141,12 +132,12 @@ private fun AddTaskScreenContent(
                 BloomInputTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text(text = stringResource(R.string.description))
+                        Text(text = "Description")
                     },
                     value = TextFieldState(text = taskDescription),
                     onValueChange = onTaskDescriptionChange,
                     placeholder = {
-                        Text(text = stringResource(R.string.enter_description))
+                        Text(text = "Enter Description")
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,
@@ -157,12 +148,12 @@ private fun AddTaskScreenContent(
                 BloomInputTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text(text = stringResource(R.string.date))
+                        Text(text = "Date")
                     },
                     value = TextFieldState(text = date),
                     onValueChange = onDateChange,
                     placeholder = {
-                        Text(text = stringResource(R.string.enter_date))
+                        Text(text = "Enter Date")
                     },
                     trailingIcon = {
                         IconButton(onClick = {}) {
@@ -178,7 +169,7 @@ private fun AddTaskScreenContent(
             item {
                 BloomDropDown(
                     label = {
-                        Text(text = stringResource(R.string.task_type))
+                        Text(text = "Task Type")
                     },
                     modifier = Modifier.fillMaxWidth(),
                     options = taskOptions,
@@ -190,7 +181,7 @@ private fun AddTaskScreenContent(
             item {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.focus_sessions),
+                    text = "Focus Sessions",
                     style = MaterialTheme.typography.titleMedium.copy(
                         textAlign = TextAlign.Center,
                     ),
@@ -223,32 +214,10 @@ private fun AddTaskScreenContent(
                         .height(56.dp),
                     onClick = onClickAddTask,
                     content = {
-                        Text(text = stringResource(R.string.add_task))
+                        Text(text = "Add Task")
                     },
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun AddTaskScreenContentPreview() {
-    FocusBloomTheme {
-        AddTaskScreenContent(
-            taskName = "Task Name",
-            date = "Today",
-            focusSessions = 2,
-            onClickNavigateBack = {},
-            onTaskNameChange = {},
-            onDateChange = {},
-            onIncrementFocusSessions = {},
-            onClickAddTask = {},
-            taskOptions = listOf("Work", "Study", "Personal", "Other"),
-            selectedOption = "Other",
-            onSelectedOptionChange = {},
-            taskDescription = "Task Description",
-            onTaskDescriptionChange = {},
-        )
     }
 }

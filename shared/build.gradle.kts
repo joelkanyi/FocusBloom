@@ -67,6 +67,7 @@ kotlin {
 
                 implementation(compose.material3)
                 implementation(compose.material)
+                implementation(compose.materialIconsExtended)
 
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)

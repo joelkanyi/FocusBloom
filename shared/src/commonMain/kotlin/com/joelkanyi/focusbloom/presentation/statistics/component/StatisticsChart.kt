@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.android.ui.screens.statistics.component
+package com.joelkanyi.focusbloom.presentation.statistics.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
