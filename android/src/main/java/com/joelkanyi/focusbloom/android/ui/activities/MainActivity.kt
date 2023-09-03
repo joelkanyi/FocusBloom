@@ -8,34 +8,19 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.joelkanyi.focusbloom.android.R
-import com.joelkanyi.focusbloom.android.ui.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.android.ui.theme.Theme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.joelkanyi.focusbloom.presentation.App
-import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 
@@ -47,6 +32,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val systemUiController = rememberSystemUiController()
+            SideEffect {
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                )
+            }
+
             val navController = rememberNavController()
             val navHostEngine = rememberAnimatedNavHostEngine(
                 rootDefaultAnimations = RootNavGraphDefaultAnimations(
@@ -64,47 +56,47 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            FocusBloomTheme(theme = Theme.LIGHT_THEME.themeValue) {
-                Scaffold(
-                   /* bottomBar = {
-                        if (route == "home") {
-                            BottomNavigation(
-                                backgroundColor = MaterialTheme.colorScheme.background,
-                            ) {
-                                navigationItems.forEachIndexed { index, item ->
-                                    val isSelected =
-                                        currentDestination?.route?.contains(item.destination.route) == true
-                                    BottomNavigationItem(
-                                        modifier = Modifier.offset(
-                                            x = when (index) {
-                                                0 -> 0.dp
-                                                1 -> (-24).dp
-                                                2 -> 24.dp
-                                                3 -> 0.dp
-                                                else -> 0.dp
-                                            },
-                                        ),
-                                        icon = {
-                                            Icon(
-                                                painter = painterResource(
-                                                    id = if (isSelected) {
-                                                        item.iconFilled
-                                                    } else {
-                                                        item.iconOutlined
-                                                    },
-                                                ),
-                                                contentDescription = item.label,
-                                                modifier = Modifier.size(24.dp),
-                                                tint = if (isSelected) {
-                                                    MaterialTheme.colorScheme.onBackground
-                                                } else {
-                                                    MaterialTheme.colorScheme.onBackground.copy(
-                                                        alpha = 0.8f,
-                                                    )
-                                                },
-                                            )
-                                        },
-                                        *//*
+            // FocusBloomTheme(theme = Theme.LIGHT_THEME.themeValue) {
+            Scaffold(
+                /* bottomBar = {
+                     if (route == "home") {
+                         BottomNavigation(
+                             backgroundColor = MaterialTheme.colorScheme.background,
+                         ) {
+                             navigationItems.forEachIndexed { index, item ->
+                                 val isSelected =
+                                     currentDestination?.route?.contains(item.destination.route) == true
+                                 BottomNavigationItem(
+                                     modifier = Modifier.offset(
+                                         x = when (index) {
+                                             0 -> 0.dp
+                                             1 -> (-24).dp
+                                             2 -> 24.dp
+                                             3 -> 0.dp
+                                             else -> 0.dp
+                                         },
+                                     ),
+                                     icon = {
+                                         Icon(
+                                             painter = painterResource(
+                                                 id = if (isSelected) {
+                                                     item.iconFilled
+                                                 } else {
+                                                     item.iconOutlined
+                                                 },
+                                             ),
+                                             contentDescription = item.label,
+                                             modifier = Modifier.size(24.dp),
+                                             tint = if (isSelected) {
+                                                 MaterialTheme.colorScheme.onBackground
+                                             } else {
+                                                 MaterialTheme.colorScheme.onBackground.copy(
+                                                     alpha = 0.8f,
+                                                 )
+                                             },
+                                         )
+                                     },
+                                     *//*
                                                                                 label = {
                                                                                     Text(
                                                                                         text = item.label,
@@ -163,19 +155,19 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     },*/
-                ) { paddingValues ->
-                    Box(modifier = Modifier.padding(paddingValues)) {
-                        /*DestinationsNavHost(
-                            navGraph = NavGraphs.root,
-                            navController = navController,
-                            engine = navHostEngine,
-                        )*/
-                        App()
-                    }
+            ) { paddingValues ->
+                Box(modifier = Modifier.padding(paddingValues)) {
+                    /*DestinationsNavHost(
+                        navGraph = NavGraphs.root,
+                        navController = navController,
+                        engine = navHostEngine,
+                    )*/
+                    App()
                 }
             }
         }
     }
+    //  }
 }
 
 /*data class NavigationItem(

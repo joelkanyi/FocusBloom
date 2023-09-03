@@ -47,90 +47,78 @@ import com.joelkanyi.focusbloom.presentation.calendar.CalendarScreen
 import com.joelkanyi.focusbloom.presentation.home.HomeScreen
 import com.joelkanyi.focusbloom.presentation.settings.SettingsScreen
 import com.joelkanyi.focusbloom.presentation.statistics.StatisticsScreen
+import com.joelkanyi.focusbloom.presentation.theme.FocusBloomTheme
 
 @OptIn(ExperimentalVoyagerApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun App() {
-    // A surface container using the 'background' color from the theme
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
-    ) {
-        /*Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize(),
+    FocusBloomTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
         ) {
-            HomeScreenContent(
-                onClickTask = {
-                    // navigator.navigate(FocusTimeScreenDestination(taskId = it.id))
-                },
-                onClickSeeAllTasks = {
-                    // navigator.navigate(AllTasksScreenDestination)
-                },
-            )
-        }*/
-        /**
-         * How to know if the app is running on desktop or mobile?
-         * use windowManager.defaultDisplay.rotation
-         */
-        val windowSizeClass = calculateWindowSizeClass()
-        val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
-        TabNavigator(
-            HomeTab,
-            tabDisposable = {
-                TabDisposable(
-                    navigator = it,
-                    tabs = listOf(HomeTab, StatisticsTab, SettingsTab, CalendarTab),
-                )
-            },
-        ) {
-            if (useNavRail) {
-                Row {
-                    NavigationRailBar(
-                        tabNavigator = it,
-                        navRailItems = listOf(HomeTab, StatisticsTab, SettingsTab, CalendarTab),
+            /**
+             * How to know if the app is running on desktop or mobile?
+             * use windowManager.defaultDisplay.rotation
+             */
+            val windowSizeClass = calculateWindowSizeClass()
+            val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
+            TabNavigator(
+                HomeTab,
+                tabDisposable = {
+                    TabDisposable(
+                        navigator = it,
+                        tabs = listOf(HomeTab, StatisticsTab, SettingsTab, CalendarTab),
                     )
+                },
+            ) {
+                if (useNavRail) {
+                    Row {
+                        NavigationRailBar(
+                            tabNavigator = it,
+                            navRailItems = listOf(HomeTab, StatisticsTab, SettingsTab, CalendarTab),
+                        )
 
-                    CurrentScreen()
+                        CurrentScreen()
+                    }
+                } else {
+                    Scaffold(
+                        content = {
+                            CurrentTab()
+                        },
+                        floatingActionButtonPosition = FabPosition.Center,
+                        floatingActionButton = {
+                            FloatingActionButton(
+                                modifier = Modifier
+                                    .offset(y = 60.dp)
+                                    .size(42.dp),
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                onClick = {
+                                    // navController.navigate(AddTaskScreenDestination.route)
+                                },
+                                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+                                shape = CircleShape,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        },
+                        bottomBar = {
+                            BottomNavigation(
+                                backgroundColor = MaterialTheme.colorScheme.background,
+                            ) {
+                                TabNavigationItem(HomeTab)
+                                TabNavigationItem(CalendarTab)
+                                TabNavigationItem(StatisticsTab)
+                                TabNavigationItem(SettingsTab)
+                            }
+                        },
+                    )
                 }
-            } else {
-                Scaffold(
-                    content = {
-                        CurrentTab()
-                    },
-                    floatingActionButtonPosition = FabPosition.Center,
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            modifier = Modifier
-                                .offset(y = 60.dp)
-                                .size(42.dp),
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            onClick = {
-                                // navController.navigate(AddTaskScreenDestination.route)
-                            },
-                            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
-                            shape = CircleShape,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
-                    },
-                    bottomBar = {
-                        BottomNavigation(
-                            backgroundColor = MaterialTheme.colorScheme.background,
-                        ) {
-                            TabNavigationItem(HomeTab)
-                            TabNavigationItem(CalendarTab)
-                            TabNavigationItem(StatisticsTab)
-                            TabNavigationItem(SettingsTab)
-                        }
-                    },
-                )
             }
         }
     }

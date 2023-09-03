@@ -9,6 +9,9 @@ plugins {
 
 android {
     namespace = "com.joelkanyi.focusbloom.shared"
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/commonMain/resources")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     compileSdk = 34
     defaultConfig {
         minSdk = 21
@@ -38,7 +41,9 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "shared"
+            isStatic = true
         }
+        // extraSpecAttributes["resources"] = "['src/commonMain/resources/fonts/**', 'src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
@@ -68,6 +73,9 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
+
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
 
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.bottomSheetNavigator)
@@ -126,6 +134,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 // implementation(libs.sqlDelight.native)
+                implementation(libs.components.resources)
             }
         }
     }

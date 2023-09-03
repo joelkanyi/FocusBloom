@@ -100,7 +100,7 @@ fun FocusBloomTheme(theme: Int = Theme.LIGHT_THEME.themeValue, content: @Composa
 
     MaterialTheme(
         colorScheme = colors,
-        typography = Typography,
+        // typography = Typography,
         shapes = Shapes,
         content = content,
     )

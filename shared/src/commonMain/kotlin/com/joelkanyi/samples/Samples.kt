@@ -178,4 +178,32 @@ val sampleTasks = listOf(
         current = 1,
         description = "Learn about the latest and greatest in ML from Google. We’ll cover what’s available to developers when it comes to creating, understanding, and deploying models for a variety of different applications.",
     ),
+    // Today tasks - 2023-09-03
+    Task(
+        name = "Google I/O Keynote",
+        color = 0xFFAFBBF2,
+        start = LocalDateTime.parse("2023-09-03T00:00:00"),
+        end = LocalDateTime.parse("2023-09-03T01:00:00"),
+        date = LocalDateTime.parse("2023-09-03T00:00:00"),
+        current = 1,
+        description = "Tune in to find out about how we're furthering our mission to organize the world’s information and make it universally accessible and useful.",
+    ),
+    Task(
+        name = "Google I/O Keynote",
+        color = 0xFFAFBBF2,
+        start = LocalDateTime.parse("2023-09-03T02:00:00"),
+        end = LocalDateTime.parse("2023-09-03T04:00:00"),
+        date = LocalDateTime.parse("2023-09-03T00:00:00"),
+        current = 1,
+        description = "Tune in to find out about how we're furthering our mission to organize the world’s information and make it universally accessible and useful.",
+    ),
+    Task(
+        name = "Google I/O Keynote",
+        color = 0xFFAFBBF2,
+        start = LocalDateTime.parse("2023-09-03T06:00:00"),
+        end = LocalDateTime.parse("2023-09-03T07:00:00"),
+        date = LocalDateTime.parse("2023-09-03T00:00:00"),
+        current = 1,
+        description = "Tune in to find out about how we're furthering our mission to organize the world’s information and make it universally accessible and useful.",
+    ),
 )
