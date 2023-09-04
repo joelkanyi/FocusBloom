@@ -17,6 +17,7 @@ compose = "1.5.0"
 core-library-desugaring = "1.1.5"
 voyager = "1.0.0-rc06"
 compose-activity = "1.7.2"
+accompanist = "0.25.1"
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
@@ -54,3 +55,4 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
+accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.17.0" }

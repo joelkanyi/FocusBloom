@@ -96,6 +96,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.android)
+                implementation(libs.accompanist.systemUIController)
             }
         }
 

@@ -34,6 +34,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomNavigationRailB
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.theme.FocusBloomTheme
 import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 
 @OptIn(
     ExperimentalVoyagerApi::class,
@@ -42,6 +43,10 @@ import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
 @Composable
 fun FocusBloomApp() {
     FocusBloomTheme {
+        StatusBarColors(
+            statusBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background,
+        )
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
