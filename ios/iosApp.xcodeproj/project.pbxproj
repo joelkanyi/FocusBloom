@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,13 +12,7 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		9D0E6590DD49358989E6F6F0 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAA11DE911B146666A5276C1 /* Pods_iosApp.framework */; };
-		C2AC526961440E9A2125D642 /* AddTaskScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC5E2C0BEC1B1C62B47B1D /* AddTaskScreen.swift */; };
 		C2AC55269150858509B88E54 /* DiModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC5B8D77B96206CA2FF5C2 /* DiModule.swift */; };
-		C2AC57ECBFBE9DC5227A5CF0 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC56544BE52BD37B43E973 /* MainScreen.swift */; };
-		C2AC5C979FDD43CF45DEDCD8 /* StatisticsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC5DC31E34223FF90088E5 /* StatisticsScreen.swift */; };
-		C2AC5EAFE7A8EA23E7CD5440 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC52147FA4B4BA092B3E03 /* HomeScreen.swift */; };
-		C2AC5EE0B6D19FB3B55E66C1 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC5BD3EB7796C941333284 /* SettingsScreen.swift */; };
-		C2AC5F35B729BA2A0557FCDD /* CalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC5C560E3C40F74684646F /* CalendarScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,13 +37,7 @@
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FF22C8AB05E798586694D09 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
-		C2AC52147FA4B4BA092B3E03 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
-		C2AC56544BE52BD37B43E973 /* MainScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
 		C2AC5B8D77B96206CA2FF5C2 /* DiModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiModule.swift; sourceTree = "<group>"; };
-		C2AC5BD3EB7796C941333284 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
-		C2AC5C560E3C40F74684646F /* CalendarScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarScreen.swift; sourceTree = "<group>"; };
-		C2AC5DC31E34223FF90088E5 /* StatisticsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsScreen.swift; sourceTree = "<group>"; };
-		C2AC5E2C0BEC1B1C62B47B1D /* AddTaskScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTaskScreen.swift; sourceTree = "<group>"; };
 		CAA11DE911B146666A5276C1 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -79,7 +67,6 @@
 				16B05035680BFCD127CD6C2B /* Pods-iosApp.debug.xcconfig */,
 				8FF22C8AB05E798586694D09 /* Pods-iosApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -110,7 +97,6 @@
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				C2AC50F0BA6C16E8DDD4B360 /* di */,
-				C2AC5CD395A7532EF713089E /* presentation */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -123,81 +109,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C2AC50ADF88D70A291A9673B /* home */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC52147FA4B4BA092B3E03 /* HomeScreen.swift */,
-			);
-			path = home;
-			sourceTree = "<group>";
-		};
-		C2AC50DDE83268870FA8DF59 /* main */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC56544BE52BD37B43E973 /* MainScreen.swift */,
-			);
-			path = main;
-			sourceTree = "<group>";
-		};
 		C2AC50F0BA6C16E8DDD4B360 /* di */ = {
 			isa = PBXGroup;
 			children = (
 				C2AC5B8D77B96206CA2FF5C2 /* DiModule.swift */,
 			);
 			path = di;
-			sourceTree = "<group>";
-		};
-		C2AC53D8CB1D8D0FF1AFD756 /* settings */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC5BD3EB7796C941333284 /* SettingsScreen.swift */,
-			);
-			path = settings;
-			sourceTree = "<group>";
-		};
-		C2AC5A937354682859A2D72B /* onboarding */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = onboarding;
-			sourceTree = "<group>";
-		};
-		C2AC5C6E35B9AC860DBAC6FF /* calendar */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC5C560E3C40F74684646F /* CalendarScreen.swift */,
-			);
-			path = calendar;
-			sourceTree = "<group>";
-		};
-		C2AC5C7B567AFD898E64DB9C /* tasks */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC5E2C0BEC1B1C62B47B1D /* AddTaskScreen.swift */,
-			);
-			path = tasks;
-			sourceTree = "<group>";
-		};
-		C2AC5CD395A7532EF713089E /* presentation */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC50ADF88D70A291A9673B /* home */,
-				C2AC53D8CB1D8D0FF1AFD756 /* settings */,
-				C2AC5C6E35B9AC860DBAC6FF /* calendar */,
-				C2AC5FC2124FEF2C3173954A /* statistics */,
-				C2AC5C7B567AFD898E64DB9C /* tasks */,
-				C2AC5A937354682859A2D72B /* onboarding */,
-				C2AC50DDE83268870FA8DF59 /* main */,
-			);
-			path = presentation;
-			sourceTree = "<group>";
-		};
-		C2AC5FC2124FEF2C3173954A /* statistics */ = {
-			isa = PBXGroup;
-			children = (
-				C2AC5DC31E34223FF90088E5 /* StatisticsScreen.swift */,
-			);
-			path = statistics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,12 +253,6 @@
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				C2AC55269150858509B88E54 /* DiModule.swift in Sources */,
-				C2AC57ECBFBE9DC5227A5CF0 /* MainScreen.swift in Sources */,
-				C2AC5EAFE7A8EA23E7CD5440 /* HomeScreen.swift in Sources */,
-				C2AC5F35B729BA2A0557FCDD /* CalendarScreen.swift in Sources */,
-				C2AC5EE0B6D19FB3B55E66C1 /* SettingsScreen.swift in Sources */,
-				C2AC5C979FDD43CF45DEDCD8 /* StatisticsScreen.swift in Sources */,
-				C2AC526961440E9A2125D642 /* AddTaskScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

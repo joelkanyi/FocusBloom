@@ -43,7 +43,6 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        // extraSpecAttributes["resources"] = "['src/commonMain/resources/fonts/**', 'src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
@@ -52,22 +51,12 @@ kotlin {
             compilations.all {
                 kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
             }
-            export(project(":feature:settings"))
-            export(project(":feature:statistics"))
-            export(project(":feature:calendar"))
-            export(project(":feature:home"))
-            export(project(":core:common"))
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core:common"))
-                api(project(":feature:settings"))
-                api(project(":feature:statistics"))
-                api(project(":feature:calendar"))
-                api(project(":feature:home"))
                 api(libs.koin.core)
 
                 implementation(compose.material3)
@@ -81,17 +70,10 @@ kotlin {
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.transitions)
                 implementation(libs.voyager.tabNavigator)
-                // implementation(libs.voyager.koin)
-
-                // api(libs.ktor.core)
-                // api(libs.ktor.cio)
-                // implementation(libs.ktor.contentNegotiation)
-                // implementation(libs.ktor.json)
-                // implementation(libs.ktor.logging)
 
                 implementation(libs.kotlinX.serializationJson)
 
-                implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.3.1")
+                implementation(libs.material3.window.size.multiplatform)
 
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
@@ -108,7 +90,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 dependsOn(commonMain)
-                implementation(libs.kotlin.test)
             }
         }
 
@@ -133,7 +114,7 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
-                // implementation(libs.sqlDelight.native)
+                implementation(libs.sqlDelight.native)
                 implementation(libs.components.resources)
             }
         }

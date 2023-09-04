@@ -9,10 +9,6 @@ class InitKoin {
             modules(
                 listOf(
                     commonModule(true),
-                    homeModule,
-                    settingsModule,
-                    calendarModule,
-                    statisticsModule,
                 ),
             )
         }.koin
