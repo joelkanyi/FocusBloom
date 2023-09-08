@@ -6,4 +6,8 @@ interface SettingsRepository {
     suspend fun saveAppTheme(theme: Int)
     fun getAppTheme(): Flow<Int?>
     fun clearAll()
+    fun getSessionTime(): Flow<Int?>
+    fun getShortBreakTime(): Flow<Int?>
+    fun getLongBreakTime(): Flow<Int?>
+    fun getTimeFormat(): Flow<Int?>
 }

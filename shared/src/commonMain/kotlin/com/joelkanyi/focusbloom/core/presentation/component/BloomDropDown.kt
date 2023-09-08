@@ -1,6 +1,7 @@
 package com.joelkanyi.focusbloom.core.presentation.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +10,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-/*import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults*/
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.domain.model.TextFieldState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> BloomDropDown(
     modifier: Modifier = Modifier,
@@ -46,14 +50,6 @@ fun <T> BloomDropDown(
             label()
             Spacer(modifier = Modifier.height(4.dp))
         }
-        /*ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                if (enabled) {
-                    expanded = !expanded
-                }
-            },
-        ) {*/
         Box(
             modifier = modifier
                 .height(56.dp)
@@ -67,7 +63,12 @@ fun <T> BloomDropDown(
                     },
                     shape = shape,
                 )
-                .clip(shape),
+                .clip(shape)
+                .clickable {
+                    if (enabled) {
+                        expanded = !expanded
+                    }
+                },
             contentAlignment = Alignment.CenterStart,
         ) {
             Row(
@@ -84,12 +85,21 @@ fun <T> BloomDropDown(
                     text = selectedOption.text,
                     style = textStyle,
                 )
-                /*if (enabled) {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                }*/
-                // }
+                if (enabled) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .size(24.dp),
+                        imageVector = if (expanded) {
+                            Icons.Filled.ArrowDropUp
+                        } else {
+                            Icons.Filled.ArrowDropDown
+                        },
+                        contentDescription = null,
+                    )
+                }
             }
-            /*ExposedDropdownMenu(
+            DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
             ) {
@@ -105,10 +115,9 @@ fun <T> BloomDropDown(
                             onOptionSelected(selectionOption)
                             expanded = false
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
-            }*/
+            }
         }
         if (!selectedOption.error.isNullOrEmpty()) {
             Text(

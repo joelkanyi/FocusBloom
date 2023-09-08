@@ -18,4 +18,20 @@ class SettingsRepositoryImpl constructor(
     override fun clearAll() {
         return preferenceManager.clearPreferences()
     }
+
+    override fun getSessionTime(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.FOCUS_TIME)
+    }
+
+    override fun getShortBreakTime(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.SHORT_BREAK_TIME)
+    }
+
+    override fun getLongBreakTime(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.LONG_BREAK_TIME)
+    }
+
+    override fun getTimeFormat(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.TIME_FORMAT)
+    }
 }
