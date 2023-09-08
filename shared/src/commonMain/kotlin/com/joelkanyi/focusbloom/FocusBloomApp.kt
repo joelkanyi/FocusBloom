@@ -42,7 +42,10 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 )
 @Composable
 fun FocusBloomApp() {
-    FocusBloomTheme {
+    val useDarkTheme = false
+    FocusBloomTheme(
+        useDarkTheme = useDarkTheme,
+    ) {
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,

@@ -40,6 +40,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,10 +62,16 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class SettingsScreen : Screen {
+class SettingsScreen : Screen, KoinComponent {
     @Composable
     override fun Content() {
+        val screenModel: SettingsScreenModel by inject()
+        val state = screenModel.appTheme.collectAsState(
+            initial = 2,
+        )
         val navigator = LocalNavigator.currentOrThrow
         SettingsScreenContent()
     }

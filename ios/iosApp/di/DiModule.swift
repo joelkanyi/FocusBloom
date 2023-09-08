@@ -10,5 +10,11 @@ import Foundation
 import shared
 
 class DiModule {
-    static var koin = { InitKoin().invoke() }()
+    static var koin = {
+        KoinInit().doInit(
+                appDeclaration: { _ in
+                    // Do nothing
+                }
+        )
+    }()
 }
