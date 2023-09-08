@@ -78,8 +78,8 @@ kotlin {
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
 
-                implementation(libs.multiplatformSettings.noArg)
-                implementation(libs.multiplatformSettings.coroutines)
+                api(libs.multiplatformSettings.noArg)
+                api(libs.multiplatformSettings.coroutines)
 
                 api(libs.napier)
 

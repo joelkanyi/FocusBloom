@@ -3,6 +3,9 @@ import shared
 
 @main
 struct iOSApp: App {
+    init() {
+        DiModule.koin
+    }
 	var body: some Scene {
 		WindowGroup {
 			ComposeView()
@@ -16,7 +19,5 @@ struct ComposeView: UIViewControllerRepresentable {
         return MainKt.MainViewController()
     }
     
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
-    }
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }

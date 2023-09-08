@@ -8,13 +8,13 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.joelkanyi.focusbloom.FocusBloomApp
-import com.joelkanyi.focusbloom.di.initKoin
+import com.joelkanyi.focusbloom.di.KoinInit
 import org.koin.core.Koin
 
 lateinit var koin: Koin
 
 fun main() {
-    koin = initKoin().koin
+    koin = KoinInit().init()
     koin.loadModules(
         listOf(),
     )
