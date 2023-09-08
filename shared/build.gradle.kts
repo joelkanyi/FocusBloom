@@ -124,7 +124,7 @@ kotlin {
 
 sqldelight {
     database(name = "AppDatabase") {
-        packageName = "com.joelkanyi.focusbloom.data.cache.sqldelight"
+        packageName = "com.joelkanyi.focusbloom.data.local.sqldelight"
         sourceFolders = listOf("kotlin")
     }
 }
