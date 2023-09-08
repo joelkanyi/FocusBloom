@@ -29,8 +29,8 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,28 +47,38 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomIncrementer
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
+import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.domain.model.TextFieldState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class AddTaskScreen : Screen {
+class AddTaskScreen : Screen, KoinComponent {
+    val screenModel: AddTaskScreenModel by inject()
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        val sessionTime = screenModel.sessionTime.collectAsState()
+        val shortBreakTime = screenModel.shortBreakTime.collectAsState()
+        val longBreakTime = screenModel.longBreakTime.collectAsState()
+        val timeFormat = screenModel.timeFormat.collectAsState()
         var taskName by remember { mutableStateOf("") }
         var taskDescription by remember { mutableStateOf("") }
-        var date by remember { mutableStateOf("") }
-        var focusSessions by remember { mutableIntStateOf(0) }
+        var focusSessions = screenModel.focusSessions.collectAsState().value
         val taskTypes = listOf("Work", "Study", "Personal", "Other")
         var selectedOption by remember { mutableStateOf(taskTypes.last()) }
         val startTimeState = rememberTimePickerState(
-            initialHour = 10,
-            initialMinute = 30,
+            initialHour = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
+                .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
+            initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
+                .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
             is24Hour = false,
         )
         val endTimeState = rememberTimePickerState(
@@ -113,6 +123,10 @@ class AddTaskScreen : Screen {
         }
 
         AddTaskScreenContent(
+            sessionTime = sessionTime.value,
+            shortBreakTime = shortBreakTime.value,
+            longBreakTime = longBreakTime.value,
+            timeFormat = timeFormat.value,
             taskOptions = taskTypes,
             selectedOption = selectedOption,
             taskName = taskName,
@@ -121,14 +135,14 @@ class AddTaskScreen : Screen {
             focusSessions = focusSessions,
             startTimePickerState = startTimeState,
             endTimePickerState = endTimeState,
-            onDateChange = {
-                date = it
-            },
             onTaskNameChange = {
                 taskName = it
             },
             onIncrementFocusSessions = {
-                focusSessions = it
+                screenModel.incrementFocusSessions()
+            },
+            onDecrementIncrementFocusSessions = {
+                screenModel.decrementFocusSessions()
             },
             onClickAddTask = {
             },
@@ -154,6 +168,10 @@ class AddTaskScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 private fun AddTaskScreenContent(
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+    timeFormat: Int,
     taskOptions: List<String>,
     selectedOption: String,
     onSelectedOptionChange: (String) -> Unit,
@@ -162,8 +180,8 @@ private fun AddTaskScreenContent(
     onTaskDescriptionChange: (String) -> Unit,
     focusSessions: Int,
     onTaskNameChange: (String) -> Unit,
-    onDateChange: (String) -> Unit,
-    onIncrementFocusSessions: (Int) -> Unit,
+    onIncrementFocusSessions: () -> Unit,
+    onDecrementIncrementFocusSessions: () -> Unit,
     onClickAddTask: () -> Unit,
     onClickPickStartTime: () -> Unit,
     onClickPickEndTime: () -> Unit,
@@ -303,16 +321,22 @@ private fun AddTaskScreenContent(
                             style = MaterialTheme.typography.titleSmall,
                         )
                         Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onClickPickEndTime()
-                                },
+                            modifier = Modifier,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = CenterVertically,
                         ) {
-                            Text(text = "${endTimePickerState.hour}:${endTimePickerState.minute}")
+                            Text(
+                                text = "${
+                                    calculateFromFocusSessions(
+                                        focusSessions = focusSessions,
+                                        sessionTime = sessionTime,
+                                        shortBreakTime = shortBreakTime,
+                                        longBreakTime = longBreakTime,
+                                    )
+                                }",
+                            )
                             IconButton(
-                                onClick = onClickPickEndTime,
+                                onClick = { },
                             ) {
                                 Icon(
                                     painter = painterResource("ic_time.xml"),
@@ -338,12 +362,10 @@ private fun AddTaskScreenContent(
                 BloomIncrementer(
                     modifier = Modifier.fillMaxWidth(),
                     onClickRemove = {
-                        if (focusSessions > 0) {
-                            onIncrementFocusSessions(focusSessions - 1)
-                        }
+                        onDecrementIncrementFocusSessions()
                     },
                     onClickAdd = {
-                        onIncrementFocusSessions(focusSessions + 1)
+                        onIncrementFocusSessions()
                     },
                     currentValue = focusSessions,
                 )
@@ -438,9 +460,4 @@ fun TaskDatePicker(
     ) {
         DatePicker(state = datePickerState)
     }
-}
-
-fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
-    return Instant.fromEpochMilliseconds(this ?: 0)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
 }

@@ -4,6 +4,7 @@ import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.settings.SettingsScreenModel
+import com.joelkanyi.focusbloom.task.AddTaskScreenModel
 import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -31,6 +32,11 @@ fun commonModule(isDebug: Boolean) = module {
      */
     single<SettingsScreenModel> {
         SettingsScreenModel(
+            settingsRepository = get(),
+        )
+    }
+    single<AddTaskScreenModel> {
+        AddTaskScreenModel(
             settingsRepository = get(),
         )
     }

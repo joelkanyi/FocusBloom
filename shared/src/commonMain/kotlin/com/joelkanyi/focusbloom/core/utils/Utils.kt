@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 import com.joelkanyi.focusbloom.domain.model.Task
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -237,4 +238,38 @@ fun arrangeTasks(tasks: List<PositionedTask>): List<PositionedTask> {
     resetGroup()
     return positionedTasks
 }
+
+fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
+    return Instant.fromEpochMilliseconds(this ?: 0)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+}
+
+fun calculateFromFocusSessions(
+    focusSessions: Int,
+    sessionTime: Int = 25,
+    shortBreakTime: Int = 5,
+    longBreakTime: Int = 15,
+): LocalTime {
+    return if (focusSessions <= 0) {
+        Clock.System.now().toEpochMilliseconds()
+            .selectedDateMillisToLocalDateTime()
+            .time
+    } else {
+        val totalSessionTimeMinutes = sessionTime * focusSessions
+        val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)
+        val totalLongBreakTimeMinutes = longBreakTime * (focusSessions / 4)
+        val totalBreakTimeMinutes = totalShortBreakTimeMinutes + totalLongBreakTimeMinutes
+        val totalTaskTimeMinutes = totalSessionTimeMinutes + totalBreakTimeMinutes
+        val totalTaskTimeMillis = totalTaskTimeMinutes.toEpochMilliseconds()
+        val totalTaskTimeLocalDateTime = Instant.fromEpochMilliseconds(
+            Clock.System.now().toEpochMilliseconds() + totalTaskTimeMillis,
+        ).toLocalDateTime(TimeZone.currentSystemDefault())
+        totalTaskTimeLocalDateTime.time
+    }
+}
+
+fun Int.toEpochMilliseconds(): Long {
+    return this * 60 * 1000L
+}
+
 
