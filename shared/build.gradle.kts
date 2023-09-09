@@ -84,6 +84,7 @@ kotlin {
                 api(libs.napier)
 
                 implementation(libs.kotlinX.dateTime)
+                implementation("io.github.koalaplot:koalaplot-core:0.4.0-dev1")
             }
         }
 
