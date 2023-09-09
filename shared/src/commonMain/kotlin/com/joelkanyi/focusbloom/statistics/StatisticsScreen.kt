@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,13 +38,16 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.durationInMinutes
 import com.joelkanyi.focusbloom.core.samples.sampleTasks
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.domain.model.Task
-import com.joelkanyi.focusbloom.statistics.component.StatsChart
-import com.joelkanyi.focusbloom.statistics.component.statsData
+import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.statistics.component.BarSamplePlot
+import com.joelkanyi.focusbloom.statistics.component.TickPositionState
+import io.github.koalaplot.core.ChartLayout
+import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.xychart.TickPosition
 
 class StatisticsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalKoalaPlotApi::class)
     @Composable
     override fun Content() {
         var selectedOption by remember { mutableStateOf("This Week") }
@@ -75,9 +79,7 @@ class StatisticsScreen : Screen {
                             ),
                         )
                         BloomDropDown(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(32.dp),
+                            modifier = Modifier.fillMaxWidth().height(32.dp),
                             options = listOf(
                                 "This Week",
                                 "This Month",
@@ -93,11 +95,22 @@ class StatisticsScreen : Screen {
                 }
 
                 item {
-                    StatsChart(
+                    val tickPositionState by remember {
+                        mutableStateOf(
+                            TickPositionState(
+                                TickPosition.Outside,
+                                TickPosition.Outside,
+                            ),
+                        )
+                    }
+
+                    ChartLayout(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        data = statsData,
-                    )
+                            .fillMaxWidth()
+                            .sizeIn(maxHeight = 320.dp),
+                    ) {
+                        BarSamplePlot(false, tickPositionState, "Your Weekly Statistics")
+                    }
                 }
 
                 item {
@@ -125,11 +138,10 @@ class StatisticsScreen : Screen {
                     }
                 }
 
-                items(sampleTasks) { history ->
+                items(sampleTasks.take(2)) { history ->
                     HistoryCard(
                         task = history,
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -197,7 +209,9 @@ fun HistoryCard(
                     ),
                 )
                 Text(
-                    "",
+                    "${
+                        task.date.date
+                    }",
                     /*text = "${task.start.format(TaskTimeFormatter)} - ${
                         task.end.format(
                             TaskTimeFormatter,
