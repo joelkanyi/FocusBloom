@@ -102,10 +102,10 @@ class AddTaskScreen : Screen, KoinComponent {
                 }
             }
         }
-        val sessionTime = screenModel.sessionTime.collectAsState()
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState()
-        val longBreakTime = screenModel.longBreakTime.collectAsState()
-        val timeFormat = screenModel.timeFormat.collectAsState()
+        val sessionTime = screenModel.sessionTime.collectAsState().value
+        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
+        val longBreakTime = screenModel.longBreakTime.collectAsState().value
+        val timeFormat = screenModel.timeFormat.collectAsState().value
         var taskName by remember { mutableStateOf("") }
         var taskDescription by remember { mutableStateOf("") }
         var focusSessions = screenModel.focusSessions.collectAsState().value
@@ -116,11 +116,6 @@ class AddTaskScreen : Screen, KoinComponent {
                 .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
             initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
                 .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
-            is24Hour = false,
-        )
-        val endTimeState = rememberTimePickerState(
-            initialHour = 5,
-            initialMinute = 30,
             is24Hour = false,
         )
         val datePickerState = rememberDatePickerState(
@@ -140,16 +135,6 @@ class AddTaskScreen : Screen, KoinComponent {
             )
         }
 
-        if (showEndTimeInputDialog) {
-            TimerInputDialog(
-                title = "End Time",
-                state = endTimeState,
-                onDismiss = {
-                    showEndTimeInputDialog = false
-                },
-            )
-        }
-
         if (showTaskDatePickerDialog) {
             TaskDatePicker(
                 datePickerState = datePickerState,
@@ -161,10 +146,10 @@ class AddTaskScreen : Screen, KoinComponent {
 
         AddTaskScreenContent(
             snackbarHostState = snackbarHostState,
-            sessionTime = sessionTime.value,
-            shortBreakTime = shortBreakTime.value,
-            longBreakTime = longBreakTime.value,
-            timeFormat = timeFormat.value,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
+            timeFormat = timeFormat,
             taskOptions = taskTypes,
             selectedOption = selectedOption,
             taskName = taskName,
@@ -172,7 +157,6 @@ class AddTaskScreen : Screen, KoinComponent {
             datePickerState = datePickerState,
             focusSessions = focusSessions,
             startTimePickerState = startTimeState,
-            endTimePickerState = endTimeState,
             onTaskNameChange = {
                 taskName = it
             },
@@ -191,9 +175,6 @@ class AddTaskScreen : Screen, KoinComponent {
             onClickPickStartTime = {
                 showStartTimeInputDialog = showStartTimeInputDialog.not()
             },
-            onClickPickEndTime = {
-                showEndTimeInputDialog = showEndTimeInputDialog.not()
-            },
             onClickPickDate = {
                 showTaskDatePickerDialog = showTaskDatePickerDialog.not()
             },
@@ -210,17 +191,27 @@ class AddTaskScreen : Screen, KoinComponent {
                         ),
                         end = toLocalDateTime(
                             date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                            hour = endTimeState.hour,
-                            minute = endTimeState.minute,
+                            hour = calculateFromFocusSessions(
+                                focusSessions = focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
+                            ).hour,
+                            minute = calculateFromFocusSessions(
+                                focusSessions = focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
+                            ).minute,
                         ),
                         color = 0xFFAFBBF2,
                         current = 1,
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
                         focusSessions = focusSessions,
                         completed = false,
-                        focusTime = sessionTime.value,
-                        shortBreakTime = shortBreakTime.value,
-                        longBreakTime = longBreakTime.value,
+                        focusTime = sessionTime,
+                        shortBreakTime = shortBreakTime,
+                        longBreakTime = longBreakTime,
                         type = selectedOption,
                     ),
                 )
@@ -249,10 +240,8 @@ private fun AddTaskScreenContent(
     onDecrementIncrementFocusSessions: () -> Unit,
     onClickAddTask: () -> Unit,
     onClickPickStartTime: () -> Unit,
-    onClickPickEndTime: () -> Unit,
     onClickPickDate: () -> Unit,
     startTimePickerState: TimePickerState,
-    endTimePickerState: TimePickerState,
     datePickerState: DatePickerState,
 ) {
     Scaffold(

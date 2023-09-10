@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +49,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import cafe.adriel.voyager.core.screen.Screen
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.core.samples.sampleTasks
 import com.joelkanyi.focusbloom.core.utils.MAX
 import com.joelkanyi.focusbloom.core.utils.MIN
 import com.joelkanyi.focusbloom.core.utils.PositionedTask
@@ -63,25 +64,33 @@ import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.splitTasks
 import com.joelkanyi.focusbloom.core.utils.taskData
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
-import com.joelkanyi.focusbloom.core.domain.model.Task
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.math.roundToInt
 
-class CalendarScreen : Screen {
+class CalendarScreen : Screen, KoinComponent {
+    val screenModel: CalendarScreenModel by inject()
+
     @Composable
     override fun Content() {
-        CalendarScreenContent()
+        val tasks = screenModel.tasks.collectAsState().value
+        CalendarScreenContent(
+            tasks = tasks,
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreenContent() {
+fun CalendarScreenContent(
+    tasks: List<Task>,
+) {
     Scaffold(
         topBar = {
             BloomTopAppBar(
@@ -113,7 +122,7 @@ fun CalendarScreenContent() {
             )*/
 
             val todaysTasks =
-                sampleTasks.filter { it.start.date.dayOfMonth == selectedDay.dayOfMonth }
+                tasks.filter { it.start.date.dayOfMonth == selectedDay.dayOfMonth }
             if (todaysTasks.isNotEmpty()) {
                 Schedule(
                     tasks = todaysTasks.sortedBy { it.start },

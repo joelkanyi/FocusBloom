@@ -1,5 +1,6 @@
 package com.joelkanyi.focusbloom.di
 
+import com.joelkanyi.focusbloom.calendar.CalendarScreenModel
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
@@ -68,6 +69,11 @@ fun commonModule(isDebug: Boolean) = module {
     }
     single<StatisticsScreenModel> {
         StatisticsScreenModel(
+            tasksRepository = get(),
+        )
+    }
+    single<CalendarScreenModel> {
+        CalendarScreenModel(
             tasksRepository = get(),
         )
     }
