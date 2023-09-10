@@ -6,7 +6,7 @@ import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -64,9 +64,9 @@ fun LocalDateTime.plusWeeks(
     weeks: Int,
 ): LocalDateTime {
     return this.date.plusDays(weeks * 7).atStartOfDayIn(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ).toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     )
 }
 
@@ -74,9 +74,9 @@ fun LocalDateTime.minusDays(
     days: Int,
 ): LocalDateTime {
     return this.date.minus(1, DateTimeUnit.DAY).atStartOfDayIn(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ).toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     )
 }
 
@@ -272,4 +272,17 @@ fun Int.toEpochMilliseconds(): Long {
     return this * 60 * 1000L
 }
 
+fun LocalDateTime.dateTimeToString(): String {
+    return this.toString()
+}
 
+fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
+    return LocalDateTime(
+        date,
+        LocalTime(hour, minute),
+    )
+}
+
+fun String.isDigitsOnly(): Boolean {
+    return all { it.isDigit() }
+}

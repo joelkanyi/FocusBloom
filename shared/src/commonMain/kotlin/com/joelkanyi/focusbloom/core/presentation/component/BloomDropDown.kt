@@ -31,7 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 
 @Composable
 fun <T> BloomDropDown(

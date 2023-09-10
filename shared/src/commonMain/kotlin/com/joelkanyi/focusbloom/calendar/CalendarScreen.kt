@@ -63,7 +63,7 @@ import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.splitTasks
 import com.joelkanyi.focusbloom.core.utils.taskData
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
-import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate

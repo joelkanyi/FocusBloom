@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,22 +35,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.durationInMinutes
-import com.joelkanyi.focusbloom.core.samples.sampleTasks
-import com.joelkanyi.focusbloom.domain.model.Task
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.statistics.component.BarSamplePlot
 import com.joelkanyi.focusbloom.statistics.component.TickPositionState
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class StatisticsScreen : Screen {
+class StatisticsScreen : Screen, KoinComponent {
+    val screenModel: StatisticsScreenModel by inject()
+
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalKoalaPlotApi::class)
     @Composable
     override fun Content() {
+        val tasksHistory = screenModel.tasks.collectAsState().value
         var selectedOption by remember { mutableStateOf("This Week") }
         Scaffold(
             topBar = {
@@ -138,7 +143,7 @@ class StatisticsScreen : Screen {
                     }
                 }
 
-                items(sampleTasks.take(2)) { history ->
+                items(tasksHistory.take(2)) { history ->
                     HistoryCard(
                         task = history,
                         modifier = Modifier.fillMaxWidth(),
@@ -167,7 +172,7 @@ fun HistoryCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "task.date.format(DayFormatter),",
+                    text = task.date.date.toString(),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,

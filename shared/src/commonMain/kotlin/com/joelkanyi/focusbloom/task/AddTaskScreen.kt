@@ -2,10 +2,12 @@ package com.joelkanyi.focusbloom.task
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
@@ -29,27 +33,38 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomButton
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDateBoxField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomIncrementer
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
+import com.joelkanyi.focusbloom.home.HomeScreen
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -62,9 +77,31 @@ import org.koin.core.component.inject
 class AddTaskScreen : Screen, KoinComponent {
     val screenModel: AddTaskScreenModel by inject()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
+        val snackbarHostState = remember { SnackbarHostState() }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val navigator = LocalNavigator.currentOrThrow
+        LaunchedEffect(key1 = true) {
+            screenModel.eventsFlow.collectLatest { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                        )
+                    }
+
+                    UiEvents.NavigateBack -> {
+                        navigator.popUntil {
+                            it is HomeScreen
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
         val sessionTime = screenModel.sessionTime.collectAsState()
         val shortBreakTime = screenModel.shortBreakTime.collectAsState()
         val longBreakTime = screenModel.longBreakTime.collectAsState()
@@ -123,6 +160,7 @@ class AddTaskScreen : Screen, KoinComponent {
         }
 
         AddTaskScreenContent(
+            snackbarHostState = snackbarHostState,
             sessionTime = sessionTime.value,
             shortBreakTime = shortBreakTime.value,
             longBreakTime = longBreakTime.value,
@@ -144,8 +182,6 @@ class AddTaskScreen : Screen, KoinComponent {
             onDecrementIncrementFocusSessions = {
                 screenModel.decrementFocusSessions()
             },
-            onClickAddTask = {
-            },
             onSelectedOptionChange = {
                 selectedOption = it
             },
@@ -161,6 +197,34 @@ class AddTaskScreen : Screen, KoinComponent {
             onClickPickDate = {
                 showTaskDatePickerDialog = showTaskDatePickerDialog.not()
             },
+            onClickAddTask = {
+                keyboardController?.hide()
+                screenModel.addTask(
+                    task = Task(
+                        name = taskName,
+                        description = taskDescription,
+                        start = toLocalDateTime(
+                            date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
+                            hour = startTimeState.hour,
+                            minute = startTimeState.minute,
+                        ),
+                        end = toLocalDateTime(
+                            date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
+                            hour = endTimeState.hour,
+                            minute = endTimeState.minute,
+                        ),
+                        color = 0xFFAFBBF2,
+                        current = 1,
+                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
+                        focusSessions = focusSessions,
+                        completed = false,
+                        focusTime = sessionTime.value,
+                        shortBreakTime = shortBreakTime.value,
+                        longBreakTime = longBreakTime.value,
+                        type = selectedOption,
+                    ),
+                )
+            },
         )
     }
 }
@@ -168,6 +232,7 @@ class AddTaskScreen : Screen, KoinComponent {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 private fun AddTaskScreenContent(
+    snackbarHostState: SnackbarHostState,
     sessionTime: Int,
     shortBreakTime: Int,
     longBreakTime: Int,
@@ -191,6 +256,14 @@ private fun AddTaskScreenContent(
     datePickerState: DatePickerState,
 ) {
     Scaffold(
+        snackbarHost = {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter, // Change to your desired position
+            ) {
+                SnackbarHost(hostState = snackbarHostState)
+            }
+        },
         topBar = {
             BloomTopAppBar {
                 Text(text = "Add Task")
