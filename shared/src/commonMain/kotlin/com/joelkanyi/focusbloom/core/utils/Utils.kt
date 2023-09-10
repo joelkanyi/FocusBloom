@@ -272,4 +272,7 @@ fun Int.toEpochMilliseconds(): Long {
     return this * 60 * 1000L
 }
 
+fun String.isDigitsOnly(): Boolean {
+    return all { it.isDigit() }
+}
 
