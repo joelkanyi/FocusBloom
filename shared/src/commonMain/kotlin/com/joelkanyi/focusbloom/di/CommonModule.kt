@@ -5,7 +5,11 @@ import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
+import com.joelkanyi.focusbloom.database.BloomDatabase
+import com.joelkanyi.focusbloom.home.HomeScreenModel
+import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
 import com.joelkanyi.focusbloom.settings.SettingsScreenModel
+import com.joelkanyi.focusbloom.statistics.StatisticsScreenModel
 import com.joelkanyi.focusbloom.task.AddTaskScreenModel
 import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.Module
@@ -13,6 +17,14 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalSettingsApi::class)
 fun commonModule(isDebug: Boolean) = module {
+    /**
+     * Database
+     */
+    single<BloomDatabase> {
+        BloomDatabase(
+            driver = get<DatabaseDriverFactory>().createDriver(),
+        )
+    }
     /**
      * Multiplatform-Settings
      */
@@ -31,7 +43,7 @@ fun commonModule(isDebug: Boolean) = module {
 
     single<TasksRepository> {
         TasksRepositoryImpl(
-            databaseDriverFactory = get(),
+            bloomDatabase = get(),
         )
     }
 
@@ -46,6 +58,16 @@ fun commonModule(isDebug: Boolean) = module {
     single<AddTaskScreenModel> {
         AddTaskScreenModel(
             settingsRepository = get(),
+            tasksRepository = get(),
+        )
+    }
+    single<HomeScreenModel> {
+        HomeScreenModel(
+            tasksRepository = get(),
+        )
+    }
+    single<StatisticsScreenModel> {
+        StatisticsScreenModel(
             tasksRepository = get(),
         )
     }

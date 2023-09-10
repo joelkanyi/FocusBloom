@@ -1,12 +1,19 @@
+
 CREATE TABLE taskEntity (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
+    type TEXT NOT NULL,
     start TEXT NOT NULL,
     end TEXT NOT NULL,
-    color INTEGER NOT NULL,
-    current INTEGER NOT NULL,
-    date TEXT NOT NULL
+    color INTEGER AS Long NOT NULL,
+    current INTEGER AS Int NOT NULL,
+    date TEXT NOT NULL,
+    focusSessions INTEGER AS Int NOT NULL,
+    completed INTEGER AS Boolean NOT NULL,
+    focusTime INTEGER AS Int NOT NULL,
+    shortBreakTime INTEGER AS Int NOT NULL,
+    longBreakTime INTEGER AS Int NOT NULL
 );
 
 getAllTasks:
@@ -17,11 +24,11 @@ SELECT * FROM taskEntity WHERE id = ?;
 
 insertTask:
 INSERT OR REPLACE
-INTO taskEntity (id, name, description, start, end, color, current, date)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INTO taskEntity (name, description, type, start, end, color, current, date, focusSessions, completed, focusTime, shortBreakTime, longBreakTime)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 updateTask:
-UPDATE taskEntity SET name = ?, description = ?, start = ?, end = ?, color = ?, current = ?, date = ? WHERE id = ?;
+UPDATE taskEntity SET name = ?, description = ?, start = ?, end = ?, color = ?, current = ?, date = ?, focusSessions = ?, completed = ?, focusTime = ?, shortBreakTime = ?, longBreakTime = ? WHERE id = ?;
 
 deleteTaskById:
 DELETE FROM taskEntity WHERE id = ?;

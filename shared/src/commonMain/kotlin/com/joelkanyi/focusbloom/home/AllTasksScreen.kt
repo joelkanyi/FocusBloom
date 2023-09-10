@@ -15,20 +15,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
-import com.joelkanyi.focusbloom.core.samples.sampleTasks
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class AllTasksScreen : Screen {
+class AllTasksScreen : Screen, KoinComponent {
+    private val screenModel: HomeScreenModel by inject()
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val allTasks = screenModel.tasks.collectAsState().value
         AllTasksScreenContent(
+            tasks = allTasks,
             onClickNavigateBack = {
                 navigator.pop()
             },
@@ -39,6 +46,7 @@ class AllTasksScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllTasksScreenContent(
+    tasks: List<Task>,
     onClickNavigateBack: () -> Unit = {},
 ) {
     Scaffold(
@@ -54,7 +62,7 @@ fun AllTasksScreenContent(
                     }
                 },
             ) {
-                Text(text = "Today's Tasks (${sampleTasks.size})")
+                Text(text = "Today's Tasks (${tasks.size})")
             }
         },
     ) { paddingValues ->
@@ -67,7 +75,7 @@ fun AllTasksScreenContent(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(sampleTasks) {
+                items(tasks) {
                     TaskCard(
                         task = it,
                         onClick = { },

@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -32,17 +33,22 @@ import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import com.joelkanyi.focusbloom.core.samples.sampleTasks
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 // import com.joelkanyi.samples.sampleTasks
 
-class HomeScreen : Screen {
+class HomeScreen : Screen, KoinComponent {
+    private val screenModel: HomeScreenModel by inject()
+
     @Composable
     override fun Content() {
+        val tasks = screenModel.tasks.collectAsState(emptyList()).value
         val navigator = LocalNavigator.currentOrThrow
         HomeScreenContent(
+            tasks = tasks,
             onClickTask = {
                 navigator.push(FocusTimeScreen(taskId = it.id))
-                // navigator.navigate(FocusTimeScreenDestination(taskId = it.id))
             },
             onClickSeeAllTasks = {
                 navigator.push(AllTasksScreen())
@@ -53,6 +59,7 @@ class HomeScreen : Screen {
 
 @Composable
 private fun HomeScreenContent(
+    tasks: List<Task>,
     onClickTask: (task: Task) -> Unit = {},
     onClickSeeAllTasks: () -> Unit = {},
 ) {
@@ -129,7 +136,7 @@ private fun HomeScreenContent(
                         }
                     }
                 }
-                items(sampleTasks.take(4)) {
+                items(tasks.take(4)) {
                     TaskCard(
                         task = it,
                         onClick = onClickTask,

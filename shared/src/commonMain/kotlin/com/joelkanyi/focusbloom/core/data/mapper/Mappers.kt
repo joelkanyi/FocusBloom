@@ -6,23 +6,35 @@ import database.TaskEntity
 import kotlinx.datetime.toLocalDateTime
 
 fun TaskEntity.toTask() = Task(
-    id = id.toInt(),
+    id = id,
     name = name,
     description = description,
+    type = type,
     start = start.toLocalDateTime(),
     end = end.toLocalDateTime(),
     color = color,
-    current = current.toInt(),
+    current = current,
     date = date.toLocalDateTime(),
+    focusSessions = focusSessions,
+    completed = completed,
+    focusTime = focusTime,
+    shortBreakTime = shortBreakTime,
+    longBreakTime = longBreakTime,
 )
 
 fun Task.toTaskEntity() = TaskEntity(
-    id = id.toLong(),
+    id = id,
     name = name,
     description = description,
+    type = type,
     start = start.dateTimeToString(),
     end = end.dateTimeToString(),
     color = color,
-    current = current.toLong(),
+    current = current,
     date = date.dateTimeToString(),
+    focusSessions = focusSessions,
+    completed = completed,
+    focusTime = focusTime,
+    shortBreakTime = shortBreakTime,
+    longBreakTime = longBreakTime,
 )

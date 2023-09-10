@@ -1,3 +1,6 @@
+import org.gradle.internal.impldep.org.testng.internal.annotations.AnnotationHelper.findTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
@@ -41,7 +44,7 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
         }
     }
 
@@ -77,6 +80,7 @@ kotlin {
 
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
+                implementation("app.cash.sqldelight:primitive-adapters:2.0.0")
 
                 api(libs.multiplatformSettings.noArg)
                 api(libs.multiplatformSettings.coroutines)

@@ -64,9 +64,9 @@ fun LocalDateTime.plusWeeks(
     weeks: Int,
 ): LocalDateTime {
     return this.date.plusDays(weeks * 7).atStartOfDayIn(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ).toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     )
 }
 
@@ -74,9 +74,9 @@ fun LocalDateTime.minusDays(
     days: Int,
 ): LocalDateTime {
     return this.date.minus(1, DateTimeUnit.DAY).atStartOfDayIn(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ).toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     )
 }
 
@@ -276,7 +276,13 @@ fun LocalDateTime.dateTimeToString(): String {
     return this.toString()
 }
 
+fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
+    return LocalDateTime(
+        date,
+        LocalTime(hour, minute),
+    )
+}
+
 fun String.isDigitsOnly(): Boolean {
     return all { it.isDigit() }
 }
-
