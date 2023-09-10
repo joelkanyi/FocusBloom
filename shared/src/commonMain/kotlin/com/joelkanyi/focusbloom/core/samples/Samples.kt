@@ -1,6 +1,6 @@
 package com.joelkanyi.focusbloom.core.samples
 
-import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import kotlinx.datetime.LocalDateTime
 
 val sampleTasks = listOf(

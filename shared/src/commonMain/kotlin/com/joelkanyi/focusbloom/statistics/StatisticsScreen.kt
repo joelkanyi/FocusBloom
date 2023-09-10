@@ -38,8 +38,8 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.durationInMinutes
 import com.joelkanyi.focusbloom.core.samples.sampleTasks
-import com.joelkanyi.focusbloom.domain.model.Task
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.statistics.component.BarSamplePlot
 import com.joelkanyi.focusbloom.statistics.component.TickPositionState
 import io.github.koalaplot.core.ChartLayout

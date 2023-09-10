@@ -2,7 +2,9 @@ package com.joelkanyi.focusbloom.di
 
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
+import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
+import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.settings.SettingsScreenModel
 import com.joelkanyi.focusbloom.task.AddTaskScreenModel
 import com.russhwolf.settings.ExperimentalSettingsApi
@@ -27,6 +29,12 @@ fun commonModule(isDebug: Boolean) = module {
         )
     }
 
+    single<TasksRepository> {
+        TasksRepositoryImpl(
+            databaseDriverFactory = get(),
+        )
+    }
+
     /**
      * ViewModels
      */
@@ -38,6 +46,7 @@ fun commonModule(isDebug: Boolean) = module {
     single<AddTaskScreenModel> {
         AddTaskScreenModel(
             settingsRepository = get(),
+            tasksRepository = get(),
         )
     }
 }

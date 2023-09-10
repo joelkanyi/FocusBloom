@@ -49,7 +49,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone

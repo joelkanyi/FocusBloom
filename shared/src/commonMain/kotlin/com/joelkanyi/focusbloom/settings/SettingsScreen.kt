@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.HourglassEmpty
@@ -62,7 +61,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

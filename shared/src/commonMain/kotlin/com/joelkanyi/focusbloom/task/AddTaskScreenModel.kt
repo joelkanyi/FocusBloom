@@ -3,6 +3,7 @@ package com.joelkanyi.focusbloom.task
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
+import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,13 +12,8 @@ import kotlinx.coroutines.flow.stateIn
 
 class AddTaskScreenModel(
     private val settingsRepository: SettingsRepository,
+    private val tasksRepository: TasksRepository,
 ) : ScreenModel {
-    /**
-     * Session time in minutes
-     * Short break time in minutes
-     * Long break time in minutes if it 4th session
-     * Time format
-     */
     val sessionTime = settingsRepository.getSessionTime()
         .map {
             it ?: 25

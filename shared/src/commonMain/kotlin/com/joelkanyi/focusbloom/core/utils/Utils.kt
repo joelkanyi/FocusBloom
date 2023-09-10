@@ -6,7 +6,7 @@ import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import com.joelkanyi.focusbloom.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.Task
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -270,6 +270,10 @@ fun calculateFromFocusSessions(
 
 fun Int.toEpochMilliseconds(): Long {
     return this * 60 * 1000L
+}
+
+fun LocalDateTime.dateTimeToString(): String {
+    return this.toString()
 }
 
 fun String.isDigitsOnly(): Boolean {
