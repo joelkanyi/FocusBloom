@@ -3,6 +3,8 @@ package com.joelkanyi.focusbloom.task
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.TaskType
+import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
@@ -45,12 +47,12 @@ class AddTaskScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 15,
         )
-    val timeFormat = settingsRepository.getTimeFormat()
-        .map { it ?: 0 }
+    val hourFormat = settingsRepository.getHourFormat()
+        .map { it ?: 24 }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 0,
+            initialValue = 24,
         )
 
     private val _focusSessions = MutableStateFlow(0)
@@ -109,32 +111,3 @@ class AddTaskScreenModel(
         _focusSessions.value = 0
     }
 }
-
-data class TaskType(
-    val name: String,
-    val icon: String,
-    val color: Long,
-)
-
-val taskTypes = listOf(
-    TaskType(
-        name = "Work",
-        icon = "work.xml",
-        color = 0xFF3375fd,
-    ),
-    TaskType(
-        name = "Study",
-        icon = "study.xml",
-        color = 0xFFff686d,
-    ),
-    TaskType(
-        name = "Personal",
-        icon = "personal.xml",
-        color = 0xFF24c469,
-    ),
-    TaskType(
-        name = "Other",
-        icon = "other.xml",
-        color = 0xFF734efe,
-    ),
-)

@@ -9,9 +9,9 @@ interface SettingsRepository {
     fun getSessionTime(): Flow<Int?>
     fun getShortBreakTime(): Flow<Int?>
     fun getLongBreakTime(): Flow<Int?>
-    fun getTimeFormat(): Flow<Int?>
+    fun getHourFormat(): Flow<Int?>
     fun saveSessionTime(sessionTime: Int)
     fun saveLongBreakTime(longBreakTime: Int)
-    fun saveTimeFormat(timeFormat: Int)
+    fun saveHourFormat(timeFormat: Int)
     fun saveShortBreakTime(shortBreakTime: Int)
 }

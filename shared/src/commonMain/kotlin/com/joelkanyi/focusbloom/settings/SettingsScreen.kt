@@ -57,11 +57,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
-import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.utils.timeFormat
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -116,6 +117,11 @@ class SettingsScreen : Screen, KoinComponent {
                 }
                 screenModel.setLongBreakTime(time.toInt())
             },
+            hourFormats = screenModel.hourFormats,
+            selectedHourFormat = timeFormat.value,
+            onHourFormatChange = {
+                screenModel.setHourFormat(it)
+            },
         )
     }
 }
@@ -131,6 +137,9 @@ fun SettingsScreenContent(
     onShortBreakMinutesChange: (String) -> Unit,
     longBreakMinutes: Int,
     onLongBreakMinutesChange: (String) -> Unit,
+    hourFormats: List<String>,
+    selectedHourFormat: Int,
+    onHourFormatChange: (Int) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -172,6 +181,9 @@ fun SettingsScreenContent(
                     onExpand = { title ->
                         openOptions(title)
                     },
+                    hourFormats = hourFormats,
+                    selectedHourFormat = selectedHourFormat,
+                    onHourFormatChange = onHourFormatChange,
                 )
             }
             item {
@@ -282,6 +294,9 @@ fun FocusSessionsSetting(
 fun TimeSetting(
     onExpand: (String) -> Unit,
     expanded: (String) -> Boolean,
+    hourFormats: List<String>,
+    selectedHourFormat: Int,
+    onHourFormatChange: (Int) -> Unit,
 ) {
     SettingCard(
         onExpand = {
@@ -291,15 +306,12 @@ fun TimeSetting(
         title = "Time",
         icon = Icons.Outlined.Timer,
         content = {
-            var selectedHourFormat by remember {
-                mutableStateOf("24-hour")
-            }
             SoundSelection(
                 title = "Hour Format",
-                options = listOf("24-hour", "12-hour"),
-                selectedOption = selectedHourFormat,
+                options = hourFormats,
+                selectedOption = selectedHourFormat.timeFormat(),
                 onSelectOption = {
-                    selectedHourFormat = it
+                    onHourFormatChange(it.timeFormat())
                 },
             )
         },
@@ -517,7 +529,7 @@ private fun SoundSelection(
             options = options,
             selectedOption = TextFieldState(text = selectedOption),
             onOptionSelected = {
-                onSelectOption.toString()
+                onSelectOption(it)
             },
         )
     }

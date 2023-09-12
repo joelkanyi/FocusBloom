@@ -31,8 +31,8 @@ class SettingsRepositoryImpl constructor(
         return preferenceManager.getInt(key = PreferenceManager.LONG_BREAK_TIME)
     }
 
-    override fun getTimeFormat(): Flow<Int?> {
-        return preferenceManager.getInt(key = PreferenceManager.TIME_FORMAT)
+    override fun getHourFormat(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.HOUR_FORMAT)
     }
 
     override fun saveSessionTime(sessionTime: Int) {
@@ -43,8 +43,8 @@ class SettingsRepositoryImpl constructor(
         preferenceManager.setInt(key = PreferenceManager.LONG_BREAK_TIME, value = longBreakTime)
     }
 
-    override fun saveTimeFormat(timeFormat: Int) {
-        preferenceManager.setInt(key = PreferenceManager.TIME_FORMAT, value = timeFormat)
+    override fun saveHourFormat(timeFormat: Int) {
+        preferenceManager.setInt(key = PreferenceManager.HOUR_FORMAT, value = timeFormat)
     }
 
     override fun saveShortBreakTime(shortBreakTime: Int) {

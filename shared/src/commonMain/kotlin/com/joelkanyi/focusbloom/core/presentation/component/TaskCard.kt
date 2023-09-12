@@ -38,6 +38,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +118,7 @@ fun TaskCard(
                             ) {
                                 append("${task.current}")
                             }
-                            append("/${task.taskCycles()}")
+                            append("/${task.focusSessions}")
                         },
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -200,23 +201,4 @@ fun TaskCard(
             }
         }
     }
-}
-
-fun Task.durationInMinutes(): Int {
-    /**
-     * Difference between start and end time in minutes
-     * They are in LocalDateTime format
-     */
-    // return ChronoUnit.MINUTES.between(this.start, this.end).toInt()
-    return 25
-}
-
-fun Task.taskCycles(): Int {
-    /**
-     * A Focus Session Task 25 minutes
-     * A Short Break 5 minutes
-     * A Long Break 15 minutes
-     * A Task Cycle is a Focus Session Task + Short Break + Long Break
-     */
-    return this.durationInMinutes() / 25
 }

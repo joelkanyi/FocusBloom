@@ -49,7 +49,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.domain.model.TaskType
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import com.joelkanyi.focusbloom.core.presentation.component.BloomButton
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDateBoxField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
@@ -102,7 +104,7 @@ class AddTaskScreen : Screen, KoinComponent {
         val sessionTime = screenModel.sessionTime.collectAsState().value
         val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
         val longBreakTime = screenModel.longBreakTime.collectAsState().value
-        val timeFormat = screenModel.timeFormat.collectAsState().value
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         val focusSessions = screenModel.focusSessions.collectAsState().value
         val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
         val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
@@ -145,7 +147,7 @@ class AddTaskScreen : Screen, KoinComponent {
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
             longBreakTime = longBreakTime,
-            timeFormat = timeFormat,
+            hourFormat = hourFormat,
             taskOptions = taskTypes,
             selectedTaskType = selectedTaskType,
             taskName = taskName,
@@ -223,7 +225,7 @@ private fun AddTaskScreenContent(
     sessionTime: Int,
     shortBreakTime: Int,
     longBreakTime: Int,
-    timeFormat: Int,
+    hourFormat: Int,
     taskOptions: List<TaskType>,
     selectedTaskType: TaskType,
     onSelectedTaskTypeChange: (TaskType) -> Unit,

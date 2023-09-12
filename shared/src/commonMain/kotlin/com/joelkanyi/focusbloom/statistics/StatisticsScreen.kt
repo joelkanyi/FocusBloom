@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,11 +51,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.core.presentation.component.durationInMinutes
-import com.joelkanyi.focusbloom.core.utils.getLast12Weeks
+import com.joelkanyi.focusbloom.core.utils.completedTasks
+import com.joelkanyi.focusbloom.core.utils.durationInMinutes
+import com.joelkanyi.focusbloom.core.utils.getLast52Weeks
+import com.joelkanyi.focusbloom.core.utils.prettyFormat
+import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskIcon
-import com.joelkanyi.focusbloom.statistics.component.BarSamplePlot
+import com.joelkanyi.focusbloom.statistics.component.BarChart
 import com.joelkanyi.focusbloom.statistics.component.TickPositionState
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
@@ -73,28 +75,35 @@ class StatisticsScreen : Screen, KoinComponent {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
-        val lastTwelveWeeks = getLast12Weeks().asReversed()
+        val navigator = LocalNavigator.currentOrThrow
         val tasksHistory = screenModel.tasks.collectAsState().value
+        val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         val coroutineScope = rememberCoroutineScope()
         val pagerState = rememberPagerState(
-            initialPage = lastTwelveWeeks.size - 1,
+            initialPage = lastFiftyTwoWeeks.size - 1,
             initialPageOffsetFraction = 0f,
             pageCount = {
-                lastTwelveWeeks.size
+                lastFiftyTwoWeeks.size
             },
         )
+        val selectedWeek = lastFiftyTwoWeeks[pagerState.currentPage].first
+        val selectedWeekTasks = tasksHistory.completedTasks(
+            lastFiftyTwoWeeks[pagerState.currentPage].second,
+        ).map { it.toFloat() }
 
-        val navigator = LocalNavigator.currentOrThrow
         StatisticsScreenContent(
+            hourFormat = hourFormat,
             pagerState = pagerState,
-            selectedWeek = lastTwelveWeeks[pagerState.currentPage].first,
+            selectedWeek = selectedWeek,
+            selectedWeekTasks = selectedWeekTasks,
             tasksHistory = tasksHistory,
             onClickSeeAllTasks = {
                 navigator.push(AllStatisticsScreen())
             },
             onClickThisWeek = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(lastTwelveWeeks.size - 1)
+                    pagerState.animateScrollToPage(lastFiftyTwoWeeks.size - 1)
                 }
             },
             onClickNextWeek = {
@@ -120,6 +129,8 @@ class StatisticsScreen : Screen, KoinComponent {
 @Composable
 fun StatisticsScreenContent(
     selectedWeek: String,
+    hourFormat: Int,
+    selectedWeekTasks: List<Float>,
     tasksHistory: List<Task>,
     onClickSeeAllTasks: () -> Unit,
     pagerState: PagerState,
@@ -201,7 +212,10 @@ fun StatisticsScreenContent(
                             .fillMaxWidth()
                             .sizeIn(maxHeight = 300.dp),
                     ) {
-                        BarSamplePlot(false, tickPositionState, "Your Weekly Statistics")
+                        BarChart(
+                            tickPositionState = tickPositionState,
+                            entries = selectedWeekTasks,
+                        )
                     }
                 }
             }
@@ -232,14 +246,30 @@ fun StatisticsScreenContent(
                     }
                 }
             }
+            val groupedTasksHistory = tasksHistory.take(3).groupBy { it.date.date }
 
-            items(tasksHistory.take(3)) { history ->
-                HistoryCard(
-                    task = history,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp),
-                )
+            groupedTasksHistory.forEach { (date, tasks) ->
+                item {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp, bottom = 6.dp),
+                        text = date.prettyFormat(),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                        ),
+                    )
+                }
+                items(tasks) {
+                    HistoryCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 6.dp),
+                        task = it,
+                        hourFormat = hourFormat,
+                    )
+                }
             }
         }
     }
@@ -274,11 +304,20 @@ private fun WeeksController(
         )
         IconButton(
             modifier = Modifier.size(24.dp),
-            onClick = onClickNextWeek,
+            onClick = {
+                if (selectedWeek != "This Week") {
+                    onClickNextWeek()
+                }
+            },
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardDoubleArrowRight,
                 contentDescription = "Next Week",
+                tint = if (selectedWeek != "This Week") {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                },
             )
         }
     }
@@ -289,6 +328,7 @@ private fun WeeksController(
 fun HistoryCard(
     task: Task,
     modifier: Modifier = Modifier,
+    hourFormat: Int,
 ) {
     Card(
         modifier = modifier,
@@ -327,12 +367,13 @@ fun HistoryCard(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
+                        modifier = Modifier.fillMaxWidth(.8f),
                         text = task.name,
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                         ),
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Icon(
@@ -345,7 +386,7 @@ fun HistoryCard(
                     Text(
                         text = task.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -362,14 +403,11 @@ fun HistoryCard(
                         ),
                     )
                     Text(
-                        "${
-                            task.date.date
-                        }",
-                        /*text = "${task.start.format(TaskTimeFormatter)} - ${
-                            task.end.format(
-                                TaskTimeFormatter,
-                            )
-                        }",*/
+                        prettyTimeDifference(
+                            start = task.start,
+                            end = task.end,
+                            timeFormat = hourFormat,
+                        ),
                         style = MaterialTheme.typography.displaySmall.copy(
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,

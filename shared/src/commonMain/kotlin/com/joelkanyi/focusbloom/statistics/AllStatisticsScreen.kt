@@ -1,6 +1,7 @@
 package com.joelkanyi.focusbloom.statistics
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,17 +13,21 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -32,8 +37,11 @@ class AllStatisticsScreen : Screen, KoinComponent {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         val tasksHistory = screenModel.tasks.collectAsState().value
+
         AllStatisticsScreenContent(
+            timeFormat = hourFormat,
             tasks = tasksHistory,
             onClickNavigateBack = {
                 navigator.pop()
@@ -42,9 +50,10 @@ class AllStatisticsScreen : Screen, KoinComponent {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AllStatisticsScreenContent(
+    timeFormat: Int,
     tasks: List<Task>,
     onClickNavigateBack: () -> Unit,
 ) {
@@ -69,16 +78,33 @@ fun AllStatisticsScreenContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            items(tasks) {
-                HistoryCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp),
-                    task = it,
-                )
+            val groupedTasksHistory = tasks.groupBy { it.date.date }
+
+            groupedTasksHistory.forEach { (date, tasks) ->
+                stickyHeader {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(bottom = 4.dp),
+                        text = date.prettyFormat(),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                        ),
+                    )
+                }
+                items(tasks) {
+                    HistoryCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        task = it,
+                        hourFormat = timeFormat,
+                    )
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ class SettingsScreenModel(
     private val settingsRepository: SettingsRepository,
 ) : ScreenModel {
 
+    val hourFormats: List<String> = listOf("12-hour", "24-hour")
     val appTheme = settingsRepository.getAppTheme()
 
     val optionsOpened = mutableStateListOf("")
@@ -74,17 +75,17 @@ class SettingsScreenModel(
         }
     }
 
-    val timeFormat = settingsRepository.getTimeFormat()
-        .map { it ?: 0 }
+    val timeFormat = settingsRepository.getHourFormat()
+        .map { it ?: 24 }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 0,
+            initialValue = 24,
         )
 
-    fun setTimeFormat(timeFormat: Int) {
+    fun setHourFormat(timeFormat: Int) {
         coroutineScope.launch {
-            settingsRepository.saveTimeFormat(timeFormat)
+            settingsRepository.saveHourFormat(timeFormat)
         }
     }
 }

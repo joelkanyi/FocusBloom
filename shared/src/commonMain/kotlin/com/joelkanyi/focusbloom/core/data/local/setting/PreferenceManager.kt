@@ -42,7 +42,7 @@ class PreferenceManager constructor(private val observableSettings: ObservableSe
         const val FOCUS_TIME = "focus_time_key"
         const val SHORT_BREAK_TIME = "short_break_time_key"
         const val LONG_BREAK_TIME = "long_break_time_key"
-        const val TIME_FORMAT = "time_format_key"
+        const val HOUR_FORMAT = "hour_format_key"
     }
 
     @OptIn(ExperimentalSettingsApi::class)

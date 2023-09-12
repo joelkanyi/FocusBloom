@@ -4,10 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import com.joelkanyi.focusbloom.core.domain.model.Task
-import com.joelkanyi.focusbloom.task.taskTypes
+import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -374,25 +376,96 @@ fun getPreviousWeek(
  * For the other weeks -> <Aug 1 - Aug 7, List<LocalDate>>
  * If a week is outside of this year then it should be <Dec 25, 2020 - Dec 31, 2020, List<LocalDate>>
  */
-fun getLast12Weeks(): List<Pair<String, List<LocalDate>>> {
+fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
+    val thisYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
     val thisWeek = getThisWeek()
     val previousWeek = getPreviousWeek(thisWeek.first())
     val weeks = mutableListOf<Pair<String, List<LocalDate>>>()
     weeks += "This Week" to thisWeek
     weeks += "Last Week" to previousWeek
     for (i in 0..51) {
-        val week = getPreviousWeek(weeks.last().second.first())
+        val week = getPreviousWeek(firstDateOfNextWeek = weeks.last().second.first())
         weeks += "${
-            week.first().month.name.substring(
+            week.first().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
                 3,
             )
-        } ${week.first().dayOfMonth} - ${
-            week.last().month.name.substring(
-                0,
-                3,
-            )
-        } ${week.last().dayOfMonth}" to week
+        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
+            " - ${
+                week.last().month.name.lowercase().capitalize(Locale.current).substring(
+                    0,
+                    3,
+                )
+            } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
     return weeks
+}
+
+fun List<Task>.completedTasks(
+    dates: List<LocalDate>,
+): List<Int> {
+    return dates.map { date ->
+        filter { task ->
+            task.date.date == date
+        }.size
+    }
+}
+
+fun List<Float>.aAllEntriesAreZero(): Boolean {
+    return all { it.toDouble() == 0.0 }
+}
+
+fun LocalDate.prettyFormat(): String {
+    return "${this.dayOfMonth}${
+        when (this.dayOfMonth) {
+            1, 21, 31 -> "st"
+            2, 22 -> "nd"
+            3, 23 -> "rd"
+            else -> "th"
+        }
+    }, ${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
+}
+
+fun prettyTimeDifference(
+    start: LocalDateTime,
+    end: LocalDateTime,
+    timeFormat: Int,
+): String {
+    return if (timeFormat == 12) {
+        val startHourTo12HourSystem = if (start.hour > 12) {
+            start.hour - 12
+        } else {
+            start.hour
+        }
+        val endHourTo12HourSystem = if (end.hour > 12) {
+            end.hour - 12
+        } else {
+            end.hour
+        }
+        "$startHourTo12HourSystem:${start.minute} ${if (start.hour > 12) "PM" else "AM"} - ${
+            endHourTo12HourSystem
+        }:${end.minute} ${if (end.hour > 12) "PM" else "AM"}"
+    } else {
+        "${start.hour}:${start.minute} - ${end.hour}:${end.minute}"
+    }
+}
+
+fun String.timeFormat(): Int {
+    return if (this == "12-hour") {
+        12
+    } else {
+        24
+    }
+}
+
+fun Int.timeFormat(): String {
+    return if (this == 12) {
+        "12-hour"
+    } else {
+        "24-hour"
+    }
+}
+
+fun Task.durationInMinutes(): Int {
+    return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }
