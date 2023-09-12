@@ -286,3 +286,33 @@ fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
 fun String.isDigitsOnly(): Boolean {
     return all { it.isDigit() }
 }
+
+fun taskCompleteMessage(tasks: List<Task>): String {
+    val completedTasks = tasks.filter { it.completed }.size
+    return if (completedTasks == tasks.size) {
+        "Congrats! You've completed all your tasks for today"
+    } else if (completedTasks == 0) {
+        "You've not completed any tasks for today"
+    } else if (taskCompletionPercentage(tasks) >= 90) {
+        "Keep it up! You're almost done with your daily tasks"
+    } else if (taskCompletionPercentage(tasks) >= 75) {
+        "Wow!, Your daily tasks are almost done"
+    } else if (taskCompletionPercentage(tasks) >= 50) {
+        "You're halfway through your daily tasks"
+    } else if (taskCompletionPercentage(tasks) >= 25) {
+        "You're almost halfway through your daily tasks"
+    } else if (taskCompletionPercentage(tasks) >= 10) {
+        "You've completed a few tasks for today"
+    } else {
+        "You've completed $completedTasks tasks for today"
+    }
+}
+
+fun taskCompletionPercentage(tasks: List<Task>): Int {
+    val completedTasks = tasks.filter { it.completed }.size
+    return if (completedTasks == 0) {
+        0
+    } else {
+        (completedTasks.toFloat() / tasks.size.toFloat() * 100).toInt()
+    }
+}

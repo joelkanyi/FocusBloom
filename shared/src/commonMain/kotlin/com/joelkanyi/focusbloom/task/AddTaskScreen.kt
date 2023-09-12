@@ -36,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -106,11 +105,14 @@ class AddTaskScreen : Screen, KoinComponent {
         val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
         val longBreakTime = screenModel.longBreakTime.collectAsState().value
         val timeFormat = screenModel.timeFormat.collectAsState().value
-        var taskName by remember { mutableStateOf("") }
-        var taskDescription by remember { mutableStateOf("") }
-        var focusSessions = screenModel.focusSessions.collectAsState().value
-        val taskTypes = listOf("Work", "Study", "Personal", "Other")
-        var selectedOption by remember { mutableStateOf(taskTypes.last()) }
+        val focusSessions = screenModel.focusSessions.collectAsState().value
+        val taskTypes = screenModel.taskTypes
+        val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
+        val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
+        val selectedOption = screenModel.selectedOption.collectAsState().value
+        val taskName = screenModel.taskName.collectAsState().value
+        val taskDescription = screenModel.taskDescription.collectAsState().value
+
         val startTimeState = rememberTimePickerState(
             initialHour = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
                 .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
@@ -121,16 +123,13 @@ class AddTaskScreen : Screen, KoinComponent {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
         )
-        var showStartTimeInputDialog by remember { mutableStateOf(false) }
-        var showEndTimeInputDialog by remember { mutableStateOf(false) }
-        var showTaskDatePickerDialog by remember { mutableStateOf(false) }
 
         if (showStartTimeInputDialog) {
             TimerInputDialog(
                 title = "Start Time",
                 state = startTimeState,
                 onDismiss = {
-                    showStartTimeInputDialog = false
+                    screenModel.setShowStartTimeInputDialog(false)
                 },
             )
         }
@@ -139,7 +138,7 @@ class AddTaskScreen : Screen, KoinComponent {
             TaskDatePicker(
                 datePickerState = datePickerState,
                 dismiss = {
-                    showTaskDatePickerDialog = false
+                    screenModel.setShowTaskDatePickerDialog(false)
                 },
             )
         }
@@ -158,7 +157,7 @@ class AddTaskScreen : Screen, KoinComponent {
             focusSessions = focusSessions,
             startTimePickerState = startTimeState,
             onTaskNameChange = {
-                taskName = it
+                screenModel.setTaskName(it)
             },
             onIncrementFocusSessions = {
                 screenModel.incrementFocusSessions()
@@ -167,16 +166,16 @@ class AddTaskScreen : Screen, KoinComponent {
                 screenModel.decrementFocusSessions()
             },
             onSelectedOptionChange = {
-                selectedOption = it
+                screenModel.setSelectedOption(it)
             },
             onTaskDescriptionChange = {
-                taskDescription = it
+                screenModel.setTaskDescription(it)
             },
             onClickPickStartTime = {
-                showStartTimeInputDialog = showStartTimeInputDialog.not()
+                screenModel.setShowStartTimeInputDialog(true)
             },
             onClickPickDate = {
-                showTaskDatePickerDialog = showTaskDatePickerDialog.not()
+                screenModel.setShowTaskDatePickerDialog(true)
             },
             onClickAddTask = {
                 keyboardController?.hide()
@@ -208,7 +207,7 @@ class AddTaskScreen : Screen, KoinComponent {
                         current = 1,
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
                         focusSessions = focusSessions,
-                        completed = false,
+                        completed = true,
                         focusTime = sessionTime,
                         shortBreakTime = shortBreakTime,
                         longBreakTime = longBreakTime,

@@ -16,11 +16,11 @@ class HomeScreenModel(
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
             tasks
+                .sortedBy { it.start }
                 .filter {
                     it.date.date == Clock.System.now()
                         .toLocalDateTime(TimeZone.currentSystemDefault()).date
                 }
-                .sortedByDescending { it.date }
         }
         .stateIn(
             scope = coroutineScope,

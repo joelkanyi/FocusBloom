@@ -1,5 +1,7 @@
 package com.joelkanyi.focusbloom.task
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
@@ -14,6 +16,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class AddTaskScreenModel(
     private val settingsRepository: SettingsRepository,
@@ -65,12 +71,48 @@ class AddTaskScreenModel(
         }
     }
 
+    private val _taskName = MutableStateFlow("")
+    val taskName = _taskName.asStateFlow()
+    fun setTaskName(name: String) {
+        _taskName.value = name
+    }
+
+    private val _taskDescription = MutableStateFlow("")
+    val taskDescription = _taskDescription.asStateFlow()
+    fun setTaskDescription(description: String) {
+        _taskDescription.value = description
+    }
+
+    val taskTypes = listOf("Work", "Study", "Personal", "Other")
+    private val _selectedOption = MutableStateFlow(taskTypes.last())
+    val selectedOption = _selectedOption.asStateFlow()
+    fun setSelectedOption(option: String) {
+        _selectedOption.value = option
+    }
+
+    private val _showStartTimeInputDialog = MutableStateFlow(false)
+    val showStartTimeInputDialog = _showStartTimeInputDialog.asStateFlow()
+    fun setShowStartTimeInputDialog(show: Boolean) {
+        _showStartTimeInputDialog.value = show
+    }
+
+    private val _showTaskDatePickerDialog = MutableStateFlow(false)
+    val showTaskDatePickerDialog = _showTaskDatePickerDialog.asStateFlow()
+    fun setShowTaskDatePickerDialog(show: Boolean) {
+        _showTaskDatePickerDialog.value = show
+    }
+
     fun addTask(
         task: Task,
     ) {
         coroutineScope.launch {
             tasksRepository.addTask(task)
+            resetUi()
             _eventsFlow.emit(UiEvents.ShowSnackbar("Task added!"))
         }
+    }
+
+    private fun resetUi() {
+        _focusSessions.value = 0
     }
 }

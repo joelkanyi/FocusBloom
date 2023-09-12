@@ -26,13 +26,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-// import com.joelkanyi.focusbloom.presentation.component.TaskCard
-// import com.joelkanyi.focusbloom.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
-import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import com.joelkanyi.focusbloom.core.samples.sampleTasks
+import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
+import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
+import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -90,20 +90,20 @@ private fun HomeScreenContent(
                         ) {
                             TaskProgress(
                                 mainColor = MaterialTheme.colorScheme.secondary,
-                                percentage = 75f,
+                                percentage = taskCompletionPercentage(tasks).toFloat(),
                             )
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 Text(
-                                    text = "Wow!, Your daily tasks are almost done",
+                                    text = taskCompleteMessage(tasks),
                                     style = MaterialTheme.typography.headlineSmall.copy(
                                         fontWeight = FontWeight.SemiBold,
                                     ),
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = "12 of 16 tasks completed",
+                                    text = "${tasks.filter { it.completed }.size} of ${tasks.size} tasks completed",
                                     style = MaterialTheme.typography.labelMedium.copy(
                                         color = MaterialTheme.colorScheme.onSurface,
                                     ),
