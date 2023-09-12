@@ -325,3 +325,74 @@ fun String.taskColor(): Long {
 fun String.taskIcon(): String {
     return taskTypes.find { it.name == this }?.icon ?: "other.xml"
 }
+
+fun getThisWeek(): List<LocalDate> {
+    /**
+     * From Monday to Sunday
+     */
+    val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val dayOfWeek = today.dayOfWeek.ordinal
+    val startOfWeek = today.minus(dayOfWeek, DateTimeUnit.DAY)
+
+    /**
+     * Dates Between startOfWeek and endOfWeek inclusive
+     */
+    val dates = mutableListOf<LocalDate>()
+    for (i in 0..6) {
+        dates += startOfWeek.plus(i, DateTimeUnit.DAY)
+    }
+    return dates
+}
+
+fun getPreviousWeek(
+    firstDateOfNextWeek: LocalDate = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+): List<LocalDate> {
+    /**
+     * From Monday to Sunday
+     */
+    val startOfWeek = firstDateOfNextWeek.minus(7, DateTimeUnit.DAY)
+
+    /**
+     * Dates Between startOfWeek and endOfWeek inclusive
+     */
+    val dates = mutableListOf<LocalDate>()
+    for (i in 0..6) {
+        dates += startOfWeek.plus(i, DateTimeUnit.DAY)
+    }
+    return dates
+}
+
+/**
+ * A function that will return the last 12 weeks
+ * The list should be in descending order
+ * The first item should be the current week - This week
+ * The second item should be the previous week - Last week
+ *
+ * The format of the result should be like <String, List<LocalDate>>
+ * For this week  -> <This Week, List<LocalDate>>
+ * For the other weeks -> <Aug 1 - Aug 7, List<LocalDate>>
+ * If a week is outside of this year then it should be <Dec 25, 2020 - Dec 31, 2020, List<LocalDate>>
+ */
+fun getLast12Weeks(): List<Pair<String, List<LocalDate>>> {
+    val thisWeek = getThisWeek()
+    val previousWeek = getPreviousWeek(thisWeek.first())
+    val weeks = mutableListOf<Pair<String, List<LocalDate>>>()
+    weeks += "This Week" to thisWeek
+    weeks += "Last Week" to previousWeek
+    for (i in 0..51) {
+        val week = getPreviousWeek(weeks.last().second.first())
+        weeks += "${
+            week.first().month.name.substring(
+                0,
+                3,
+            )
+        } ${week.first().dayOfMonth} - ${
+            week.last().month.name.substring(
+                0,
+                3,
+            )
+        } ${week.last().dayOfMonth}" to week
+    }
+    return weeks
+}
