@@ -36,8 +36,6 @@ import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-// import com.joelkanyi.samples.sampleTasks
-
 class HomeScreen : Screen, KoinComponent {
     private val screenModel: HomeScreenModel by inject()
 
@@ -50,6 +48,21 @@ class HomeScreen : Screen, KoinComponent {
             onClickTask = {
                 navigator.push(FocusTimeScreen(taskId = it.id))
             },
+            onClickCancel = {
+                screenModel.openTaskOptions(it)
+            },
+            onClickSave = {
+                screenModel.updateTask(it)
+            },
+            onClickDelete = {
+                screenModel.deleteTask(it)
+            },
+            showTaskOption = {
+                screenModel.openedTasks.contains(it)
+            },
+            onShowTaskOption = {
+                screenModel.openTaskOptions(it)
+            },
             onClickSeeAllTasks = {
                 navigator.push(AllTasksScreen())
             },
@@ -60,8 +73,13 @@ class HomeScreen : Screen, KoinComponent {
 @Composable
 private fun HomeScreenContent(
     tasks: List<Task>,
-    onClickTask: (task: Task) -> Unit = {},
-    onClickSeeAllTasks: () -> Unit = {},
+    onClickTask: (task: Task) -> Unit,
+    onClickSeeAllTasks: () -> Unit,
+    onClickCancel: (task: Task) -> Unit,
+    onClickSave: (task: Task) -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -140,6 +158,11 @@ private fun HomeScreenContent(
                     TaskCard(
                         task = it,
                         onClick = onClickTask,
+                        onClickDelete = onClickDelete,
+                        onClickCancel = onClickCancel,
+                        onClickSave = onClickSave,
+                        showTaskOption = showTaskOption,
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }

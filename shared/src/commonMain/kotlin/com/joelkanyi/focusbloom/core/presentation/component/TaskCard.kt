@@ -16,12 +16,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,10 +44,12 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 fun TaskCard(
     task: Task,
     onClick: (task: Task) -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    onClickCancel: (task: Task) -> Unit,
+    onClickSave: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
-    var showTaskOption by remember {
-        mutableStateOf(false)
-    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -81,7 +83,7 @@ fun TaskCard(
                     )
                     if (task.description != null) {
                         Text(
-                            text = task.description!!,
+                            text = task.description,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
@@ -91,7 +93,7 @@ fun TaskCard(
                 Icon(
                     modifier = Modifier
                         .clickable {
-                            showTaskOption = !showTaskOption
+                            onShowTaskOption(task)
                         },
                     imageVector = Icons.Filled.MoreVert,
                     contentDescription = "Task Options",
@@ -139,37 +141,59 @@ fun TaskCard(
                 }
             }
 
-            AnimatedVisibility(visible = showTaskOption) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "Delete",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                    )
+            AnimatedVisibility(visible = showTaskOption(task)) {
+                Column {
+                    Spacer(modifier = Modifier.height(24.dp))
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        Text(
-                            text = "Cancel",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
-                        )
-                        Button(
-                            shape = MaterialTheme.shapes.medium,
-                            onClick = { /*TODO*/ },
-                        ) {
+                        TextButton(onClick = {
+                            onClickDelete(task)
+                        }) {
                             Text(
-                                text = "Save",
+                                text = "Delete",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.ExtraBold,
+                                ),
                             )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            TextButton(onClick = {
+                                onClickCancel(task)
+                            }) {
+                                Text(
+                                    text = "Cancel",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                    ),
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .clickable {
+                                        onClickSave(task)
+                                    },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    text = "Save",
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    ),
+                                )
+                            }
                         }
                     }
                 }

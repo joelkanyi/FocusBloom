@@ -39,6 +39,21 @@ class AllTasksScreen : Screen, KoinComponent {
             onClickNavigateBack = {
                 navigator.pop()
             },
+            onClickCancel = {
+                screenModel.openTaskOptions(it)
+            },
+            onClickSave = {
+                screenModel.updateTask(it)
+            },
+            onClickDelete = {
+                screenModel.deleteTask(it)
+            },
+            showTaskOption = {
+                screenModel.openedTasks.contains(it)
+            },
+            onShowTaskOption = {
+                screenModel.openTaskOptions(it)
+            },
         )
     }
 }
@@ -47,7 +62,12 @@ class AllTasksScreen : Screen, KoinComponent {
 @Composable
 fun AllTasksScreenContent(
     tasks: List<Task>,
-    onClickNavigateBack: () -> Unit = {},
+    onClickNavigateBack: () -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    onClickCancel: (task: Task) -> Unit,
+    onClickSave: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -79,6 +99,11 @@ fun AllTasksScreenContent(
                     TaskCard(
                         task = it,
                         onClick = { },
+                        onClickDelete = onClickDelete,
+                        onClickCancel = onClickCancel,
+                        onClickSave = onClickSave,
+                        showTaskOption = showTaskOption,
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }
