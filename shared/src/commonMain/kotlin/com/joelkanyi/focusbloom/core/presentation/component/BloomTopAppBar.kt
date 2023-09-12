@@ -15,7 +15,7 @@ fun BloomTopAppBar(
     hasBackNavigation: Boolean = false,
     actions: @Composable () -> Unit = {},
     navigationIcon: @Composable () -> Unit = {},
-    colors: TopAppBarColors = TopAppBarDefaults.smallTopAppBarColors(
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.background,
     ),
     title: @Composable () -> Unit = {},

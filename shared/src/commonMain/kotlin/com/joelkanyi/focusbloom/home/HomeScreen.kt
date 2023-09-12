@@ -143,18 +143,20 @@ private fun HomeScreenContent(
                                 fontWeight = FontWeight.Bold,
                             ),
                         )
-                        TextButton(onClick = onClickSeeAllTasks) {
-                            Text(
-                                text = "See All",
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                ),
-                            )
+                        if (tasks.size > 3) {
+                            TextButton(onClick = onClickSeeAllTasks) {
+                                Text(
+                                    text = "See All",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    ),
+                                )
+                            }
                         }
                     }
                 }
-                items(tasks.take(4)) {
+                items(tasks.take(3)) {
                     TaskCard(
                         task = it,
                         onClick = onClickTask,

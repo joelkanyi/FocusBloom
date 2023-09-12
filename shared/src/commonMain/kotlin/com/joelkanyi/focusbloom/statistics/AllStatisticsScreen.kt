@@ -1,8 +1,9 @@
-package com.joelkanyi.focusbloom.home
+package com.joelkanyi.focusbloom.statistics
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,36 +23,20 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class AllTasksScreen : Screen, KoinComponent {
-    private val screenModel: HomeScreenModel by inject()
+class AllStatisticsScreen : Screen, KoinComponent {
+    private val screenModel: StatisticsScreenModel by inject()
 
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val allTasks = screenModel.tasks.collectAsState().value
-        AllTasksScreenContent(
-            tasks = allTasks,
+        val tasksHistory = screenModel.tasks.collectAsState().value
+        AllStatisticsScreenContent(
+            tasks = tasksHistory,
             onClickNavigateBack = {
                 navigator.pop()
-            },
-            onClickCancel = {
-                screenModel.openTaskOptions(it)
-            },
-            onClickSave = {
-                screenModel.updateTask(it)
-            },
-            onClickDelete = {
-                screenModel.deleteTask(it)
-            },
-            showTaskOption = {
-                screenModel.openedTasks.contains(it)
-            },
-            onShowTaskOption = {
-                screenModel.openTaskOptions(it)
             },
         )
     }
@@ -59,14 +44,9 @@ class AllTasksScreen : Screen, KoinComponent {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllTasksScreenContent(
+fun AllStatisticsScreenContent(
     tasks: List<Task>,
     onClickNavigateBack: () -> Unit,
-    onClickDelete: (task: Task) -> Unit,
-    onClickCancel: (task: Task) -> Unit,
-    onClickSave: (task: Task) -> Unit,
-    showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -81,7 +61,7 @@ fun AllTasksScreenContent(
                     }
                 },
             ) {
-                Text(text = "Today's Tasks (${tasks.size})")
+                Text(text = "Tasks History")
             }
         },
     ) { paddingValues ->
@@ -93,14 +73,11 @@ fun AllTasksScreenContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(tasks) {
-                TaskCard(
+                HistoryCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 6.dp),
                     task = it,
-                    onClick = { },
-                    onClickDelete = onClickDelete,
-                    onClickCancel = onClickCancel,
-                    onClickSave = onClickSave,
-                    showTaskOption = showTaskOption,
-                    onShowTaskOption = onShowTaskOption,
                 )
             }
         }

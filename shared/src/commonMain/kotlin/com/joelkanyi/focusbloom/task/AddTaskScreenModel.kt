@@ -1,7 +1,5 @@
 package com.joelkanyi.focusbloom.task
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
@@ -16,13 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class AddTaskScreenModel(
-    private val settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
@@ -83,10 +77,9 @@ class AddTaskScreenModel(
         _taskDescription.value = description
     }
 
-    val taskTypes = listOf("Work", "Study", "Personal", "Other")
     private val _selectedOption = MutableStateFlow(taskTypes.last())
     val selectedOption = _selectedOption.asStateFlow()
-    fun setSelectedOption(option: String) {
+    fun setSelectedOption(option: TaskType) {
         _selectedOption.value = option
     }
 
@@ -116,3 +109,32 @@ class AddTaskScreenModel(
         _focusSessions.value = 0
     }
 }
+
+data class TaskType(
+    val name: String,
+    val icon: String,
+    val color: Long,
+)
+
+val taskTypes = listOf(
+    TaskType(
+        name = "Work",
+        icon = "work.xml",
+        color = 0xFF3375fd,
+    ),
+    TaskType(
+        name = "Study",
+        icon = "study.xml",
+        color = 0xFFff686d,
+    ),
+    TaskType(
+        name = "Personal",
+        icon = "personal.xml",
+        color = 0xFF24c469,
+    ),
+    TaskType(
+        name = "Other",
+        icon = "other.xml",
+        color = 0xFF734efe,
+    ),
+)

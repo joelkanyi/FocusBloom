@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.task.taskTypes
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -315,4 +316,12 @@ fun taskCompletionPercentage(tasks: List<Task>): Int {
     } else {
         (completedTasks.toFloat() / tasks.size.toFloat() * 100).toInt()
     }
+}
+
+fun String.taskColor(): Long {
+    return taskTypes.find { it.name == this }?.color ?: 0xFFAFBBF2
+}
+
+fun String.taskIcon(): String {
+    return taskTypes.find { it.name == this }?.icon ?: "other.xml"
 }

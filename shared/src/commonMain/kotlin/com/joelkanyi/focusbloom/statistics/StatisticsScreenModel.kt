@@ -13,7 +13,7 @@ class StatisticsScreenModel(
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
             tasks
-                .sortedByDescending { it.date }
+                .sortedBy { it.date }
         }
         .stateIn(
             scope = coroutineScope,

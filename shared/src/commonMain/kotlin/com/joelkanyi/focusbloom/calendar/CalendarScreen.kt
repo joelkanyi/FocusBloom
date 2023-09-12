@@ -62,6 +62,7 @@ import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
 import com.joelkanyi.focusbloom.core.utils.dpToPx
 import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.splitTasks
+import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskData
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
 import kotlinx.coroutines.launch
@@ -161,7 +162,7 @@ fun BasicTask(
             )
             .clipToBounds()
             .background(
-                color = Color(task.color),
+                color = Color(task.type.taskColor()),
                 shape = RoundedCornerShape(
                     topStart = topRadius,
                     topEnd = topRadius,
@@ -174,14 +175,18 @@ fun BasicTask(
     ) {
         Text(
             text = "${task.start.time} - ${task.end.time}",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.onPrimary,
+            ),
             maxLines = 1,
             overflow = TextOverflow.Clip,
         )
 
         Text(
             text = task.name,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelMedium.copy(
+                color = MaterialTheme.colorScheme.onPrimary,
+            ),
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -190,7 +195,9 @@ fun BasicTask(
         if (task.description != null) {
             Text(
                 text = task.description!!,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

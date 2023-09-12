@@ -35,9 +35,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -106,10 +104,9 @@ class AddTaskScreen : Screen, KoinComponent {
         val longBreakTime = screenModel.longBreakTime.collectAsState().value
         val timeFormat = screenModel.timeFormat.collectAsState().value
         val focusSessions = screenModel.focusSessions.collectAsState().value
-        val taskTypes = screenModel.taskTypes
         val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
         val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
-        val selectedOption = screenModel.selectedOption.collectAsState().value
+        val selectedTaskType = screenModel.selectedOption.collectAsState().value
         val taskName = screenModel.taskName.collectAsState().value
         val taskDescription = screenModel.taskDescription.collectAsState().value
 
@@ -150,7 +147,7 @@ class AddTaskScreen : Screen, KoinComponent {
             longBreakTime = longBreakTime,
             timeFormat = timeFormat,
             taskOptions = taskTypes,
-            selectedOption = selectedOption,
+            selectedTaskType = selectedTaskType,
             taskName = taskName,
             taskDescription = taskDescription,
             datePickerState = datePickerState,
@@ -165,7 +162,7 @@ class AddTaskScreen : Screen, KoinComponent {
             onDecrementIncrementFocusSessions = {
                 screenModel.decrementFocusSessions()
             },
-            onSelectedOptionChange = {
+            onSelectedTaskTypeChange = {
                 screenModel.setSelectedOption(it)
             },
             onTaskDescriptionChange = {
@@ -203,15 +200,15 @@ class AddTaskScreen : Screen, KoinComponent {
                                 longBreakTime = longBreakTime,
                             ).minute,
                         ),
-                        color = 0xFFAFBBF2,
+                        color = selectedTaskType.color,
                         current = 1,
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
                         focusSessions = focusSessions,
-                        completed = true,
+                        completed = false,
                         focusTime = sessionTime,
                         shortBreakTime = shortBreakTime,
                         longBreakTime = longBreakTime,
-                        type = selectedOption,
+                        type = selectedTaskType.name,
                     ),
                 )
             },
@@ -227,9 +224,9 @@ private fun AddTaskScreenContent(
     shortBreakTime: Int,
     longBreakTime: Int,
     timeFormat: Int,
-    taskOptions: List<String>,
-    selectedOption: String,
-    onSelectedOptionChange: (String) -> Unit,
+    taskOptions: List<TaskType>,
+    selectedTaskType: TaskType,
+    onSelectedTaskTypeChange: (TaskType) -> Unit,
     taskName: String,
     taskDescription: String,
     onTaskDescriptionChange: (String) -> Unit,
@@ -329,8 +326,8 @@ private fun AddTaskScreenContent(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     options = taskOptions,
-                    selectedOption = TextFieldState(selectedOption),
-                    onOptionSelected = onSelectedOptionChange,
+                    selectedOption = TextFieldState(selectedTaskType.name),
+                    onOptionSelected = onSelectedTaskTypeChange,
                 )
             }
 
