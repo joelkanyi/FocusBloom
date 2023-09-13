@@ -46,6 +46,18 @@ class AllStatisticsScreen : Screen, KoinComponent {
             onClickNavigateBack = {
                 navigator.pop()
             },
+            onClickDelete = {
+                screenModel.deleteTask(it)
+            },
+            showTaskOption = {
+                screenModel.openedTasks.contains(it)
+            },
+            onShowTaskOption = {
+                screenModel.openTaskOptions(it)
+            },
+            onClickCancel = {
+                screenModel.openTaskOptions(it)
+            },
         )
     }
 }
@@ -56,6 +68,10 @@ fun AllStatisticsScreenContent(
     timeFormat: Int,
     tasks: List<Task>,
     onClickNavigateBack: () -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    onClickCancel: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -103,6 +119,10 @@ fun AllStatisticsScreenContent(
                             .padding(bottom = 16.dp),
                         task = it,
                         hourFormat = timeFormat,
+                        onClickDelete = onClickDelete,
+                        onClickCancel = onClickCancel,
+                        showTaskOption = showTaskOption,
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }

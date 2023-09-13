@@ -1,10 +1,9 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.joelkanyi.focusbloom.calendar
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -14,17 +13,27 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,9 +53,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import cafe.adriel.voyager.core.screen.Screen
 import com.joelkanyi.focusbloom.core.domain.model.Task
@@ -57,14 +68,18 @@ import com.joelkanyi.focusbloom.core.utils.PositionedTask
 import com.joelkanyi.focusbloom.core.utils.ScheduleSize
 import com.joelkanyi.focusbloom.core.utils.SplitType
 import com.joelkanyi.focusbloom.core.utils.arrangeTasks
+import com.joelkanyi.focusbloom.core.utils.calendarLocalDates
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenDays
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
 import com.joelkanyi.focusbloom.core.utils.dpToPx
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
+import com.joelkanyi.focusbloom.core.utils.insideThisWeek
 import com.joelkanyi.focusbloom.core.utils.plusHours
+import com.joelkanyi.focusbloom.core.utils.prettyPrintedMonthAndYear
 import com.joelkanyi.focusbloom.core.utils.splitTasks
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskData
+import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -72,75 +87,185 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.math.roundToInt
+
+private val HOUR_SIZE = 92.dp
 
 class CalendarScreen : Screen, KoinComponent {
     private val screenModel: CalendarScreenModel by inject()
 
     @Composable
     override fun Content() {
+        val coroutineScope = rememberCoroutineScope()
         val tasks = screenModel.tasks.collectAsState().value
+        val selectedDay = screenModel.selectedDay.collectAsState().value
         val hourFormat = screenModel.hourFormat.collectAsState().value
+        val calendarPagerState = rememberLazyListState()
+        val verticalScrollState = rememberScrollState()
+        LaunchedEffect(key1 = tasks, block = {
+            calendarPagerState.animateScrollToItem(
+                index = calendarLocalDates().indexOf(selectedDay),
+                scrollOffset = 0,
+            )
+        })
         CalendarScreenContent(
+            selectedDay = selectedDay,
             hourFormat = hourFormat,
-            tasks = tasks,
+            selectedDayTasks = tasks.filter {
+                it.date.date == selectedDay
+            },
+            verticalScrollState = verticalScrollState,
+            calendarPagerState = calendarPagerState,
+            onClickThisWeek = {
+                coroutineScope.launch {
+                    calendarPagerState.animateScrollToItem(
+                        index = calendarLocalDates().indexOf(
+                            Clock.System.now()
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                        ),
+                        scrollOffset = 0,
+                    )
+                    screenModel.setSelectedDay(
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                    )
+                }
+            },
+            onSelectDay = {
+                screenModel.setSelectedDay(it)
+            },
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun CalendarScreenContent(
+    verticalScrollState: ScrollState,
+    calendarPagerState: LazyListState,
     hourFormat: Int,
-    tasks: List<Task>,
+    selectedDayTasks: List<Task>,
+    selectedDay: LocalDate,
+    onClickThisWeek: () -> Unit,
+    onSelectDay: (LocalDate) -> Unit,
 ) {
     Scaffold(
         topBar = {
             BloomTopAppBar(
                 hasBackNavigation = false,
-            ) {
-                Text(text = "Calendar")
-            }
+                title = {
+                    Text(text = "Calendar")
+                },
+                actions = {
+                    AnimatedVisibility(selectedDay.insideThisWeek().not()) {
+                        TextButton(
+                            onClick = onClickThisWeek,
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(18.dp),
+                                    painter = painterResource("redo.xml"),
+                                    contentDescription = "Today",
+                                )
+                                Text(
+                                    text = "TODAY",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textDecoration = TextDecoration.Underline,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                },
+            )
         },
     ) { paddingValues ->
-        var selectedDay by remember {
-            mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
-        }
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(PaddingValues(horizontal = 16.dp)),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            /*HorizontalCalendarView(
+            Text(
                 modifier = Modifier.fillMaxWidth(),
-                selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unSelectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                selectedCardColor = MaterialTheme.colorScheme.primary,
-                unSelectedCardColor = MaterialTheme.colorScheme.surfaceVariant,
-                onDayClick = { day ->
-                    selectedDay = day.fullDate.localDate()
-                    // Toast.makeText(context, day.toString(), Toast.LENGTH_SHORT).show()
-                },
-            )*/
-
-            val todaysTasks =
-                tasks.filter { it.start.date.dayOfMonth == selectedDay.dayOfMonth }
-            if (todaysTasks.isNotEmpty()) {
-                Schedule(
-                    hourFormat = hourFormat,
-                    tasks = todaysTasks.sortedBy { it.start },
-                )
-            } else {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = "No tasks for today",
-                        style = MaterialTheme.typography.labelLarge,
-                        textAlign = TextAlign.Center,
+                text = selectedDay.prettyPrintedMonthAndYear(),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.End,
+                ),
+            )
+            LazyRow(
+                state = calendarPagerState,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(calendarLocalDates()) { date ->
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clipToBounds()
+                            .background(
+                                color = if (date == selectedDay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                                shape = RoundedCornerShape(4.dp),
+                            )
+                            .clickable {
+                                onSelectDay(date)
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column {
+                            Text(
+                                text = date.dayOfWeek.name.substring(0, 3),
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                                ),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                            )
+                            Text(
+                                text = date.dayOfMonth.toString(),
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                                ),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                            )
+                        }
+                    }
+                }
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (calendarPagerState.isScrollInProgress) {
+                    CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                     )
+                } else {
+                    if (selectedDayTasks.isNotEmpty()) {
+                        Schedule(
+                            verticalScrollState = verticalScrollState,
+                            hourFormat = hourFormat,
+                            tasks = selectedDayTasks.sortedBy { it.start },
+                        )
+                    } else {
+                        Text(
+                            text = "No tasks for ${
+                                if (selectedDay == today().date) {
+                                    "today"
+                                } else {
+                                    "this day"
+                                }
+                            }",
+                            style = MaterialTheme.typography.labelLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
                 }
             }
         }
@@ -155,10 +280,10 @@ fun BasicTask(
 ) {
     val task = positionedTask.task
     val topRadius =
-        if (positionedTask.splitType == SplitType.Start || positionedTask.splitType == SplitType.Both) 0.dp else 4.dp
+        if (positionedTask.splitType == SplitType.Start || positionedTask.splitType == SplitType.Both) 0.dp else 2.dp
     val bottomRadius =
-        if (positionedTask.splitType == SplitType.End || positionedTask.splitType == SplitType.Both) 0.dp else 4.dp
-    Column(
+        if (positionedTask.splitType == SplitType.End || positionedTask.splitType == SplitType.Both) 0.dp else 2.dp
+    Card(
         modifier = modifier
             .fillMaxSize()
             .padding(
@@ -167,45 +292,60 @@ fun BasicTask(
                 bottom = if (positionedTask.splitType == SplitType.End) 0.dp else 2.dp,
             )
             .clipToBounds()
-            .background(
-                color = Color(task.type.taskColor()),
-                shape = RoundedCornerShape(
-                    topStart = topRadius,
-                    topEnd = topRadius,
-                    bottomEnd = bottomRadius,
-                    bottomStart = bottomRadius,
-                ),
-            )
             .padding(4.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        shape = RoundedCornerShape(
+            topStart = topRadius,
+            topEnd = topRadius,
+            bottomEnd = bottomRadius,
+            bottomStart = bottomRadius,
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(task.type.taskColor()),
+        ),
     ) {
-        Text(
-            text = "${task.start.time.formattedTimeBasedOnTimeFormat(hourFormat)} - ${task.end.time.formattedTimeBasedOnTimeFormat(hourFormat)}",
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Clip,
-        )
-
-        Text(
-            text = task.name,
-            style = MaterialTheme.typography.labelMedium.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-
-        if (task.description != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             Text(
-                text = task.description!!,
-                style = MaterialTheme.typography.bodyMedium.copy(
+                text = task.name,
+                style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 14.sp,
                 ),
+                fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+            )
+            if (task.description != null) {
+                Text(
+                    text = task.description,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 12.sp,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "${task.start.time.formattedTimeBasedOnTimeFormat(hourFormat)} - ${
+                    task.end.time.formattedTimeBasedOnTimeFormat(
+                        hourFormat,
+                    )
+                }",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 10.sp,
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Clip,
+                textAlign = TextAlign.End,
             )
         }
     }
@@ -213,28 +353,38 @@ fun BasicTask(
 
 @Composable
 fun BasicSidebarLabel(
+    hourFormat: Int,
     time: LocalTime,
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = "${time.hour}:00",
+        text = time.formattedTimeBasedOnTimeFormat(hourFormat),
         modifier = modifier
             .fillMaxHeight()
             .padding(4.dp),
+        style = MaterialTheme.typography.labelMedium.copy(
+            fontSize = 12.sp,
+        ),
     )
 }
 
 @Composable
 fun ScheduleSidebar(
+    hourFormat: Int,
     hourHeight: Dp,
     modifier: Modifier = Modifier,
     minTime: LocalTime = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
     maxTime: LocalTime = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
-    label: @Composable (time: LocalTime) -> Unit = { BasicSidebarLabel(time = it) },
+    label: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { _, time ->
+        BasicSidebarLabel(
+            hourFormat = hourFormat,
+            time = time,
+        )
+    },
 ) {
-    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
     val numHours = numMinutes / 60
     val firstHour = minTime.truncatedTo()
     val firstHourOffsetMinutes =
@@ -245,7 +395,10 @@ fun ScheduleSidebar(
         Spacer(modifier = Modifier.height(firstHourOffset))
         repeat(numHours) { i ->
             Box(modifier = Modifier.height(hourHeight)) {
-                label(startTime.plusHours(i))
+                label(
+                    hourFormat,
+                    startTime.plusHours(i),
+                )
             }
         }
     }
@@ -255,6 +408,7 @@ fun ScheduleSidebar(
 fun Schedule(
     hourFormat: Int,
     tasks: List<Task>,
+    verticalScrollState: ScrollState,
     modifier: Modifier = Modifier,
     taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
         BasicTask(
@@ -262,7 +416,12 @@ fun Schedule(
             positionedTask = it,
         )
     },
-    timeLabel: @Composable (time: LocalTime) -> Unit = { BasicSidebarLabel(time = it) },
+    timeLabel: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { hrFormat, time ->
+        BasicSidebarLabel(
+            hourFormat = hrFormat,
+            time = time,
+        )
+    },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
     maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
@@ -272,12 +431,11 @@ fun Schedule(
     maxTime: LocalTime = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
     daySize: ScheduleSize = ScheduleSize.FixedSize(300.dp),
-    hourSize: ScheduleSize = ScheduleSize.FixedSize(64.dp),
+    hourSize: ScheduleSize = ScheduleSize.FixedSize(HOUR_SIZE),
 ) {
     val numDays = 0 + 1
-    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
     val numHours = numMinutes.toFloat() / 60f
-    val verticalScrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
 
     /**
@@ -330,9 +488,7 @@ fun Schedule(
     }
     // })
 
-    val horizontalScrollState = rememberScrollState()
     var sidebarWidth by remember { mutableStateOf(0) }
-    // var headerHeight by remember { mutableStateOf(0) }
     BoxWithConstraints(modifier = modifier) {
         val dayWidth: Dp = when (daySize) {
             is ScheduleSize.FixedSize -> daySize.size
@@ -361,6 +517,7 @@ fun Schedule(
                     .align(Alignment.Start),
             ) {
                 ScheduleSidebar(
+                    hourFormat = hourFormat,
                     hourHeight = hourHeight,
                     minTime = minTime,
                     maxTime = maxTime,
@@ -381,8 +538,7 @@ fun Schedule(
                     hourHeight = hourHeight,
                     modifier = Modifier
                         .weight(1f)
-                        .verticalScroll(verticalScrollState)
-                        .horizontalScroll(horizontalScrollState),
+                        .verticalScroll(verticalScrollState),
                 )
             }
         }
@@ -411,9 +567,8 @@ fun BasicSchedule(
     dayWidth: Dp,
     hourHeight: Dp,
 ) {
-    val numDays = differenceBetweenDays(minDate, maxDate).toInt() + 1
-    val numMinutes = differenceBetweenMinutes(minTime, maxTime).toInt() + 1
-    val numHours = numMinutes / 60
+    val numDays = differenceBetweenDays(minDate, maxDate) + 1
+    val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
     val dividerColor =
         if (androidx.compose.material.MaterialTheme.colors.isLight) Color.LightGray else Color.DarkGray
     val positionedTasks =
@@ -475,13 +630,4 @@ fun BasicSchedule(
             }
         }
     }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ScheduleWeek(
-    tasks: List<Task>,
-    setTitle: (String) -> Unit,
-    pagerState: PagerState,
-) {
 }

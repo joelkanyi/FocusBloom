@@ -74,7 +74,7 @@ fun TaskCard(
                     Text(
                         text = task.name,
                         style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp,
                         ),
                         maxLines = 2,

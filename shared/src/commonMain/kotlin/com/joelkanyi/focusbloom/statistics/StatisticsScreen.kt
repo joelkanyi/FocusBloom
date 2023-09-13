@@ -3,6 +3,7 @@ package com.joelkanyi.focusbloom.statistics
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -116,6 +118,18 @@ class StatisticsScreen : Screen, KoinComponent {
                     pagerState.animateScrollToPage(pagerState.currentPage - 1)
                 }
             },
+            onClickDelete = {
+                screenModel.deleteTask(it)
+            },
+            showTaskOption = {
+                screenModel.openedTasks.contains(it)
+            },
+            onShowTaskOption = {
+                screenModel.openTaskOptions(it)
+            },
+            onClickCancel = {
+                screenModel.openTaskOptions(it)
+            },
         )
     }
 }
@@ -137,6 +151,10 @@ fun StatisticsScreenContent(
     onClickNextWeek: () -> Unit,
     onClickPreviousWeek: () -> Unit,
     onClickThisWeek: () -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    onClickCancel: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -268,6 +286,10 @@ fun StatisticsScreenContent(
                             .padding(bottom = 6.dp),
                         task = it,
                         hourFormat = hourFormat,
+                        onClickDelete = onClickDelete,
+                        onClickCancel = onClickCancel,
+                        showTaskOption = showTaskOption,
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }
@@ -329,90 +351,134 @@ fun HistoryCard(
     task: Task,
     modifier: Modifier = Modifier,
     hourFormat: Int,
+    onClickCancel: (task: Task) -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    showTaskOption: (task: Task) -> Boolean,
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
-    Card(
-        modifier = modifier,
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    Column {
+        Card(
+            modifier = modifier,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .background(
-                        color = Color(task.type.taskColor()),
-                        shape = MaterialTheme.shapes.medium,
-                    ),
-                contentAlignment = Alignment.Center,
+            Row(
+                modifier = Modifier.padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
+                Box(
                     modifier = Modifier
-                        .padding(12.dp)
-                        .size(24.dp),
-                    painter = painterResource(task.type.taskIcon()),
-                    contentDescription = "Task Icon",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                )
-            }
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(.8f),
-                        text = task.name,
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
+                        .size(48.dp)
+                        .clip(MaterialTheme.shapes.large)
+                        .background(
+                            color = Color(task.type.taskColor()),
+                            shape = MaterialTheme.shapes.medium,
                         ),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    contentAlignment = Alignment.Center,
+                ) {
                     Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "More Options",
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .size(24.dp),
+                        painter = painterResource(task.type.taskIcon()),
+                        contentDescription = "Task Icon",
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
-                if (task.description != null) {
-                    Text(
-                        text = task.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    Text(
-                        text = "${task.durationInMinutes()} minutes",
-                        style = MaterialTheme.typography.displaySmall.copy(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                    )
-                    Text(
-                        prettyTimeDifference(
-                            start = task.start,
-                            end = task.end,
-                            timeFormat = hourFormat,
-                        ),
-                        style = MaterialTheme.typography.displaySmall.copy(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(.8f),
+                            text = task.name,
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp,
+                            ),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Icon(
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable {
+                                    onShowTaskOption(task)
+                                },
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "More Options",
+                        )
+                    }
+                    if (task.description != null) {
+                        Text(
+                            text = task.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = "${task.durationInMinutes()} minutes",
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        )
+                        Text(
+                            prettyTimeDifference(
+                                start = task.start,
+                                end = task.end,
+                                timeFormat = hourFormat,
+                            ),
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        )
+                    }
+                }
+            }
+            AnimatedVisibility(visible = showTaskOption(task)) {
+                Column {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TextButton(onClick = {
+                            onClickCancel(task)
+                        }) {
+                            Text(
+                                text = "Cancel",
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                ),
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        TextButton(onClick = {
+                            onClickDelete(task)
+                        }) {
+                            Text(
+                                text = "Delete",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.ExtraBold,
+                                ),
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -194,9 +194,9 @@ fun arrangeTasks(tasks: List<PositionedTask>): List<PositionedTask> {
     val groupTasks: MutableList<MutableList<PositionedTask>> = mutableListOf()
 
     fun resetGroup() {
-        groupTasks.forEachIndexed { colIndex, col ->
-            col.forEach { e ->
-                positionedTasks.add(e.copy(col = colIndex, colTotal = groupTasks.size))
+        groupTasks.forEachIndexed { columnIndex, column ->
+            column.forEach { e ->
+                positionedTasks.add(e.copy(col = columnIndex, colTotal = groupTasks.size))
             }
         }
         groupTasks.clear()
@@ -241,6 +241,7 @@ fun arrangeTasks(tasks: List<PositionedTask>): List<PositionedTask> {
     }
     resetGroup()
     return positionedTasks
+    // return tasks
 }
 
 fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
@@ -426,6 +427,10 @@ fun LocalDate.prettyFormat(): String {
     }, ${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
 }
 
+fun LocalDate.prettyPrintedMonthAndYear(): String {
+    return "${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
+}
+
 fun prettyTimeDifference(
     start: LocalDateTime,
     end: LocalDateTime,
@@ -497,4 +502,36 @@ fun Int.hourTo24HourSystem(): Int {
 
 fun Task.durationInMinutes(): Int {
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
+}
+
+/**
+ * LocalDates for List<LocalDate>
+ * The last 1 year
+ * The next 1 year
+ */
+fun calendarLocalDates(): List<LocalDate> {
+    val thisYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+    val lastYear = thisYear - 1
+    val nextYear = thisYear + 1
+    val dates = mutableListOf<LocalDate>()
+    for (i in 0..365) {
+        dates += LocalDate(thisYear, 1, 1).plus(i, DateTimeUnit.DAY)
+    }
+    for (i in 0..365) {
+        dates += LocalDate(lastYear, 1, 1).plus(i, DateTimeUnit.DAY)
+    }
+    for (i in 0..365) {
+        dates += LocalDate(nextYear, 1, 1).plus(i, DateTimeUnit.DAY)
+    }
+    return dates
+}
+
+fun LocalDate.insideThisWeek(): Boolean {
+    val thisWeek = getThisWeek()
+    return this in thisWeek
+}
+
+fun today(): LocalDateTime {
+    return Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault())
 }
