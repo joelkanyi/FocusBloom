@@ -65,6 +65,7 @@ fun commonModule(isDebug: Boolean) = module {
     single<HomeScreenModel> {
         HomeScreenModel(
             tasksRepository = get(),
+            settingsRepository = get(),
         )
     }
     single<StatisticsScreenModel> {
@@ -76,6 +77,7 @@ fun commonModule(isDebug: Boolean) = module {
     single<CalendarScreenModel> {
         CalendarScreenModel(
             tasksRepository = get(),
+            settingsRepository = get(),
         )
     }
 }

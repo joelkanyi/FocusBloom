@@ -33,8 +33,10 @@ class AllTasksScreen : Screen, KoinComponent {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val allTasks = screenModel.tasks.collectAsState().value
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         AllTasksScreenContent(
             tasks = allTasks,
+            timeFormat = hourFormat,
             onClickNavigateBack = {
                 navigator.pop()
             },
@@ -61,6 +63,7 @@ class AllTasksScreen : Screen, KoinComponent {
 @Composable
 fun AllTasksScreenContent(
     tasks: List<Task>,
+    timeFormat: Int,
     onClickNavigateBack: () -> Unit,
     onClickDelete: (task: Task) -> Unit,
     onClickCancel: (task: Task) -> Unit,
@@ -95,6 +98,7 @@ fun AllTasksScreenContent(
             items(tasks) {
                 TaskCard(
                     task = it,
+                    hourFormat = timeFormat,
                     onClick = { },
                     onClickDelete = onClickDelete,
                     onClickCancel = onClickCancel,

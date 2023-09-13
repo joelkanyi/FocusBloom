@@ -60,12 +60,15 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
+import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.home.HomeScreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -74,7 +77,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class AddTaskScreen : Screen, KoinComponent {
-    val screenModel: AddTaskScreenModel by inject()
+    private val screenModel: AddTaskScreenModel by inject()
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
@@ -117,10 +120,23 @@ class AddTaskScreen : Screen, KoinComponent {
                 .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
             initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
                 .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
-            is24Hour = false,
+            is24Hour = hourFormat == 24,
         )
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
+        )
+        val calculatedFocusTime = calculateFromFocusSessions(
+            focusSessions = focusSessions,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
+            currentLocalDateTime = LocalDateTime(
+                year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
+                month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
+                dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
+                hour = startTimeState.hour,
+                minute = startTimeState.minute,
+            ),
         )
 
         if (showStartTimeInputDialog) {
@@ -148,6 +164,7 @@ class AddTaskScreen : Screen, KoinComponent {
             shortBreakTime = shortBreakTime,
             longBreakTime = longBreakTime,
             hourFormat = hourFormat,
+            calculatedFocusTime = calculatedFocusTime,
             taskOptions = taskTypes,
             selectedTaskType = selectedTaskType,
             taskName = taskName,
@@ -189,18 +206,8 @@ class AddTaskScreen : Screen, KoinComponent {
                         ),
                         end = toLocalDateTime(
                             date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                            hour = calculateFromFocusSessions(
-                                focusSessions = focusSessions,
-                                sessionTime = sessionTime,
-                                shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime,
-                            ).hour,
-                            minute = calculateFromFocusSessions(
-                                focusSessions = focusSessions,
-                                sessionTime = sessionTime,
-                                shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime,
-                            ).minute,
+                            hour = calculatedFocusTime.hour,
+                            minute = calculatedFocusTime.minute,
                         ),
                         color = selectedTaskType.color,
                         current = 1,
@@ -225,6 +232,7 @@ private fun AddTaskScreenContent(
     sessionTime: Int,
     shortBreakTime: Int,
     longBreakTime: Int,
+    calculatedFocusTime: LocalTime,
     hourFormat: Int,
     taskOptions: List<TaskType>,
     selectedTaskType: TaskType,
@@ -355,7 +363,12 @@ private fun AddTaskScreenContent(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = CenterVertically,
                         ) {
-                            Text(text = "${startTimePickerState.hour}:${startTimePickerState.minute}")
+                            Text(
+                                text = LocalTime(
+                                    startTimePickerState.hour,
+                                    startTimePickerState.minute,
+                                ).formattedTimeBasedOnTimeFormat(hourFormat),
+                            )
                             IconButton(
                                 onClick = onClickPickStartTime,
                             ) {
@@ -386,14 +399,7 @@ private fun AddTaskScreenContent(
                             verticalAlignment = CenterVertically,
                         ) {
                             Text(
-                                text = "${
-                                    calculateFromFocusSessions(
-                                        focusSessions = focusSessions,
-                                        sessionTime = sessionTime,
-                                        shortBreakTime = shortBreakTime,
-                                        longBreakTime = longBreakTime,
-                                    )
-                                }",
+                                text = calculatedFocusTime.formattedTimeBasedOnTimeFormat(hourFormat),
                             )
                             IconButton(
                                 onClick = { },

@@ -42,9 +42,11 @@ class HomeScreen : Screen, KoinComponent {
     @Composable
     override fun Content() {
         val tasks = screenModel.tasks.collectAsState(emptyList()).value
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
         HomeScreenContent(
             tasks = tasks,
+            hourFormat = hourFormat,
             onClickTask = {
                 navigator.push(FocusTimeScreen(taskId = it.id))
             },
@@ -73,6 +75,7 @@ class HomeScreen : Screen, KoinComponent {
 @Composable
 private fun HomeScreenContent(
     tasks: List<Task>,
+    hourFormat: Int,
     onClickTask: (task: Task) -> Unit,
     onClickSeeAllTasks: () -> Unit,
     onClickCancel: (task: Task) -> Unit,
@@ -165,6 +168,7 @@ private fun HomeScreenContent(
                         onClickSave = onClickSave,
                         showTaskOption = showTaskOption,
                         onShowTaskOption = onShowTaskOption,
+                        hourFormat = hourFormat,
                     )
                 }
             }

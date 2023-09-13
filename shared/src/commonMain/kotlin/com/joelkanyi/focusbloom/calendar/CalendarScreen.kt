@@ -60,6 +60,7 @@ import com.joelkanyi.focusbloom.core.utils.arrangeTasks
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenDays
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
 import com.joelkanyi.focusbloom.core.utils.dpToPx
+import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.splitTasks
 import com.joelkanyi.focusbloom.core.utils.taskColor
@@ -76,12 +77,14 @@ import org.koin.core.component.inject
 import kotlin.math.roundToInt
 
 class CalendarScreen : Screen, KoinComponent {
-    val screenModel: CalendarScreenModel by inject()
+    private val screenModel: CalendarScreenModel by inject()
 
     @Composable
     override fun Content() {
         val tasks = screenModel.tasks.collectAsState().value
+        val hourFormat = screenModel.hourFormat.collectAsState().value
         CalendarScreenContent(
+            hourFormat = hourFormat,
             tasks = tasks,
         )
     }
@@ -90,6 +93,7 @@ class CalendarScreen : Screen, KoinComponent {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreenContent(
+    hourFormat: Int,
     tasks: List<Task>,
 ) {
     Scaffold(
@@ -126,6 +130,7 @@ fun CalendarScreenContent(
                 tasks.filter { it.start.date.dayOfMonth == selectedDay.dayOfMonth }
             if (todaysTasks.isNotEmpty()) {
                 Schedule(
+                    hourFormat = hourFormat,
                     tasks = todaysTasks.sortedBy { it.start },
                 )
             } else {
@@ -144,6 +149,7 @@ fun CalendarScreenContent(
 
 @Composable
 fun BasicTask(
+    hourFormat: Int,
     positionedTask: PositionedTask,
     modifier: Modifier = Modifier,
 ) {
@@ -174,7 +180,7 @@ fun BasicTask(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
-            text = "${task.start.time} - ${task.end.time}",
+            text = "${task.start.time.formattedTimeBasedOnTimeFormat(hourFormat)} - ${task.end.time.formattedTimeBasedOnTimeFormat(hourFormat)}",
             style = MaterialTheme.typography.bodySmall.copy(
                 color = MaterialTheme.colorScheme.onPrimary,
             ),
@@ -247,10 +253,12 @@ fun ScheduleSidebar(
 
 @Composable
 fun Schedule(
+    hourFormat: Int,
     tasks: List<Task>,
     modifier: Modifier = Modifier,
     taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
         BasicTask(
+            hourFormat = hourFormat,
             positionedTask = it,
         )
     },
@@ -362,6 +370,7 @@ fun Schedule(
                         .onGloballyPositioned { sidebarWidth = it.size.width },
                 )
                 BasicSchedule(
+                    hourFormat = hourFormat,
                     tasks = tasks,
                     taskContent = taskContent,
                     minDate = minDate,
@@ -382,10 +391,12 @@ fun Schedule(
 
 @Composable
 fun BasicSchedule(
+    hourFormat: Int,
     tasks: List<Task>,
     modifier: Modifier = Modifier,
     taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
         BasicTask(
+            hourFormat = hourFormat,
             positionedTask = it,
         )
     },

@@ -20,6 +20,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
@@ -252,11 +253,10 @@ fun calculateFromFocusSessions(
     sessionTime: Int = 25,
     shortBreakTime: Int = 5,
     longBreakTime: Int = 15,
+    currentLocalDateTime: LocalDateTime,
 ): LocalTime {
     return if (focusSessions <= 0) {
-        Clock.System.now().toEpochMilliseconds()
-            .selectedDateMillisToLocalDateTime()
-            .time
+        currentLocalDateTime.time
     } else {
         val totalSessionTimeMinutes = sessionTime * focusSessions
         val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)
@@ -264,9 +264,9 @@ fun calculateFromFocusSessions(
         val totalBreakTimeMinutes = totalShortBreakTimeMinutes + totalLongBreakTimeMinutes
         val totalTaskTimeMinutes = totalSessionTimeMinutes + totalBreakTimeMinutes
         val totalTaskTimeMillis = totalTaskTimeMinutes.toEpochMilliseconds()
-        val totalTaskTimeLocalDateTime = Instant.fromEpochMilliseconds(
-            Clock.System.now().toEpochMilliseconds() + totalTaskTimeMillis,
-        ).toLocalDateTime(TimeZone.currentSystemDefault())
+        val totalTaskTimeLocalDateTime =
+            currentLocalDateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+                .plus(totalTaskTimeMillis).selectedDateMillisToLocalDateTime()
         totalTaskTimeLocalDateTime.time
     }
 }
@@ -442,11 +442,36 @@ fun prettyTimeDifference(
         } else {
             end.hour
         }
-        "$startHourTo12HourSystem:${start.minute} ${if (start.hour > 12) "PM" else "AM"} - ${
+        "$startHourTo12HourSystem:${start.minute.formattedZeroMinutes()} ${if (start.hour > 12) "PM" else "AM"} - ${
             endHourTo12HourSystem
-        }:${end.minute} ${if (end.hour > 12) "PM" else "AM"}"
+        }:${end.minute.formattedZeroMinutes()} ${if (end.hour > 12) "PM" else "AM"}"
     } else {
-        "${start.hour}:${start.minute} - ${end.hour}:${end.minute}"
+        "${start.hour}:${start.minute.formattedZeroMinutes()} - ${end.hour}:${end.minute.formattedZeroMinutes()}"
+    }
+}
+
+fun Int.formattedZeroMinutes(): String {
+    return if (this < 10) {
+        "0$this"
+    } else {
+        this.toString()
+    }
+}
+
+fun LocalTime.formattedTimeBasedOnTimeFormat(
+    timeFormat: Int,
+): String {
+    return if (timeFormat == 12) {
+        val hourTo12HourSystem = if (this.hour > 12) {
+            this.hour - 12
+        } else {
+            this.hour
+        }
+        "$hourTo12HourSystem:${
+            this.minute.formattedZeroMinutes()
+        } ${if (this.hour > 12) "PM" else "AM"}"
+    } else {
+        "${this.hour}:${this.minute.formattedZeroMinutes()}"
     }
 }
 
@@ -464,6 +489,10 @@ fun Int.timeFormat(): String {
     } else {
         "24-hour"
     }
+}
+
+fun Int.hourTo24HourSystem(): Int {
+    return this + 12
 }
 
 fun Task.durationInMinutes(): Int {
