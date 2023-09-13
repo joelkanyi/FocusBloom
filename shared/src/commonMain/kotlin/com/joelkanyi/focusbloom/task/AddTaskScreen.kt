@@ -63,6 +63,7 @@ import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
+import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.home.HomeScreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
@@ -85,25 +86,6 @@ class AddTaskScreen : Screen, KoinComponent {
         val snackbarHostState = remember { SnackbarHostState() }
         val keyboardController = LocalSoftwareKeyboardController.current
         val navigator = LocalNavigator.currentOrThrow
-        LaunchedEffect(key1 = true) {
-            screenModel.eventsFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvents.ShowSnackbar -> {
-                        snackbarHostState.showSnackbar(
-                            message = event.message,
-                        )
-                    }
-
-                    UiEvents.NavigateBack -> {
-                        navigator.popUntil {
-                            it is HomeScreen
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }
         val sessionTime = screenModel.sessionTime.collectAsState().value
         val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
         val longBreakTime = screenModel.longBreakTime.collectAsState().value
@@ -138,6 +120,29 @@ class AddTaskScreen : Screen, KoinComponent {
                 minute = startTimeState.minute,
             ),
         )
+
+        LaunchedEffect(key1 = true) {
+            screenModel.eventsFlow.collectLatest { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                        )
+                        datePickerState.setSelection(
+                            Clock.System.now().toEpochMilliseconds(),
+                        )
+                    }
+
+                    UiEvents.NavigateBack -> {
+                        navigator.popUntil {
+                            it is HomeScreen
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
 
         if (showStartTimeInputDialog) {
             TimerInputDialog(
@@ -273,6 +278,7 @@ private fun AddTaskScreenContent(
             item {
                 BloomInputTextField(
                     modifier = Modifier.fillMaxWidth(),
+                    maxLines = 3,
                     label = {
                         Text(
                             text = "Task Name",
@@ -297,6 +303,7 @@ private fun AddTaskScreenContent(
             item {
                 BloomInputTextField(
                     modifier = Modifier.fillMaxWidth(),
+                    maxLines = 5,
                     label = {
                         Text(
                             text = "Description",

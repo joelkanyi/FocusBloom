@@ -80,7 +80,7 @@ kotlin {
 
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
-                implementation("app.cash.sqldelight:primitive-adapters:2.0.0")
+                implementation(libs.primitive.adapters)
 
                 api(libs.multiplatformSettings.noArg)
                 api(libs.multiplatformSettings.coroutines)
@@ -88,7 +88,7 @@ kotlin {
                 api(libs.napier)
 
                 implementation(libs.kotlinX.dateTime)
-                implementation("io.github.koalaplot:koalaplot-core:0.4.0-dev1")
+                implementation(libs.koalaplot.core)
             }
         }
 
@@ -108,6 +108,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.jvm)
+                implementation(libs.kotlinx.coroutines.swing)
             }
         }
 

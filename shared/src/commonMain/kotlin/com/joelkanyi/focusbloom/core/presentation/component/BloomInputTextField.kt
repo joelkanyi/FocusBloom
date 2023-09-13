@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,7 @@ fun BloomInputTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     value: TextFieldState,
+    maxLines: Int = 1,
     editable: Boolean = true,
     onValueChange: (String) -> Unit,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
@@ -51,7 +53,7 @@ fun BloomInputTextField(
         }
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth()
-                .height(56.dp),
+                .defaultMinSize(minWidth = 56.dp),
             value = value.text,
             onValueChange = onValueChange,
             placeholder = placeholder,
@@ -59,6 +61,8 @@ fun BloomInputTextField(
             trailingIcon = trailingIcon,
             textStyle = textStyle,
             shape = shape,
+            maxLines = maxLines,
+            singleLine = maxLines == 1,
             keyboardOptions = keyboardOptions,
             readOnly = !editable,
         )

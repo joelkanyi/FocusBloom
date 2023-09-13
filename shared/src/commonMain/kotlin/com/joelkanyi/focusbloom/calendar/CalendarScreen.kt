@@ -27,13 +27,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -93,11 +95,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.math.roundToInt
 
-private val HOUR_SIZE = 92.dp
-
 class CalendarScreen : Screen, KoinComponent {
     private val screenModel: CalendarScreenModel by inject()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     override fun Content() {
         val coroutineScope = rememberCoroutineScope()
@@ -112,32 +113,41 @@ class CalendarScreen : Screen, KoinComponent {
                 scrollOffset = 0,
             )
         })
-        CalendarScreenContent(
-            selectedDay = selectedDay,
-            hourFormat = hourFormat,
-            selectedDayTasks = tasks.filter {
-                it.date.date == selectedDay
-            },
-            verticalScrollState = verticalScrollState,
-            calendarPagerState = calendarPagerState,
-            onClickThisWeek = {
-                coroutineScope.launch {
-                    calendarPagerState.animateScrollToItem(
-                        index = calendarLocalDates().indexOf(
+        BoxWithConstraints {
+            val windowSizeClass = calculateWindowSizeClass()
+            val useDesktopSize = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
+            val HOUR_SIZE = if (useDesktopSize) 90.dp else 92.dp
+            val DAY_SIZE = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
+            CalendarScreenContent(
+                selectedDay = selectedDay,
+                hourFormat = hourFormat,
+                hourSize = ScheduleSize.FixedSize(HOUR_SIZE),
+                daySize = ScheduleSize.FixedSize(DAY_SIZE),
+                selectedDayTasks = tasks.filter {
+                    it.date.date == selectedDay
+                },
+                verticalScrollState = verticalScrollState,
+                calendarPagerState = calendarPagerState,
+                onClickThisWeek = {
+                    coroutineScope.launch {
+                        calendarPagerState.animateScrollToItem(
+                            index = calendarLocalDates().indexOf(
+                                Clock.System.now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                            ),
+                            scrollOffset = 0,
+                        )
+                        screenModel.setSelectedDay(
                             Clock.System.now()
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                        ),
-                        scrollOffset = 0,
-                    )
-                    screenModel.setSelectedDay(
-                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                    )
-                }
-            },
-            onSelectDay = {
-                screenModel.setSelectedDay(it)
-            },
-        )
+                        )
+                    }
+                },
+                onSelectDay = {
+                    screenModel.setSelectedDay(it)
+                },
+            )
+        }
     }
 }
 
@@ -146,6 +156,8 @@ class CalendarScreen : Screen, KoinComponent {
 fun CalendarScreenContent(
     verticalScrollState: ScrollState,
     calendarPagerState: LazyListState,
+    hourSize: ScheduleSize,
+    daySize: ScheduleSize,
     hourFormat: Int,
     selectedDayTasks: List<Task>,
     selectedDay: LocalDate,
@@ -241,31 +253,27 @@ fun CalendarScreenContent(
                 }
             }
             Box(modifier = Modifier.fillMaxSize()) {
-                if (calendarPagerState.isScrollInProgress) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
+                if (selectedDayTasks.isNotEmpty()) {
+                    Schedule(
+                        verticalScrollState = verticalScrollState,
+                        hourFormat = hourFormat,
+                        tasks = selectedDayTasks.sortedBy { it.start },
+                        hourSize = hourSize,
+                        daySize = daySize,
                     )
                 } else {
-                    if (selectedDayTasks.isNotEmpty()) {
-                        Schedule(
-                            verticalScrollState = verticalScrollState,
-                            hourFormat = hourFormat,
-                            tasks = selectedDayTasks.sortedBy { it.start },
-                        )
-                    } else {
-                        Text(
-                            text = "No tasks for ${
-                                if (selectedDay == today().date) {
-                                    "today"
-                                } else {
-                                    "this day"
-                                }
-                            }",
-                            style = MaterialTheme.typography.labelLarge,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center),
-                        )
-                    }
+                    Text(
+                        text = "No tasks for ${
+                            if (selectedDay == today().date) {
+                                "today"
+                            } else {
+                                "this day"
+                            }
+                        }",
+                        style = MaterialTheme.typography.labelLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
                 }
             }
         }
@@ -430,8 +438,8 @@ fun Schedule(
         .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
     maxTime: LocalTime = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
-    daySize: ScheduleSize = ScheduleSize.FixedSize(300.dp),
-    hourSize: ScheduleSize = ScheduleSize.FixedSize(HOUR_SIZE),
+    daySize: ScheduleSize,
+    hourSize: ScheduleSize,
 ) {
     val numDays = 0 + 1
     val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1

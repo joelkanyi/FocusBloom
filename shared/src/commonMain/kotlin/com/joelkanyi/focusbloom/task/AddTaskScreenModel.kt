@@ -102,12 +102,12 @@ class AddTaskScreenModel(
     ) {
         coroutineScope.launch {
             tasksRepository.addTask(task)
-            resetUi()
+            _focusSessions.value = 0
+            _taskName.value = ""
+            _taskDescription.value = ""
+            _selectedOption.value = taskTypes.last()
+            _showStartTimeInputDialog.value = false
             _eventsFlow.emit(UiEvents.ShowSnackbar("Task added!"))
         }
-    }
-
-    private fun resetUi() {
-        _focusSessions.value = 0
     }
 }
