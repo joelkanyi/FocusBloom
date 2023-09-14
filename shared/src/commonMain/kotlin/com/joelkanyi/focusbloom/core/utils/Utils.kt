@@ -293,7 +293,7 @@ fun String.isDigitsOnly(): Boolean {
 
 fun taskCompleteMessage(tasks: List<Task>): String {
     val completedTasks = tasks.filter { it.completed }.size
-    return if (completedTasks == tasks.size) {
+    return if (completedTasks == tasks.size && completedTasks != 0) {
         "Congrats! You've completed all your tasks for today"
     } else if (completedTasks == 0) {
         "You've not completed any tasks for today"

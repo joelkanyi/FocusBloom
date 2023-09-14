@@ -1,5 +1,6 @@
 package com.joelkanyi.focusbloom
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -43,9 +44,8 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 )
 @Composable
 fun FocusBloomApp() {
-    val useDarkTheme = false
     FocusBloomTheme(
-        useDarkTheme = useDarkTheme,
+        useDarkTheme = isSystemInDarkTheme(),
     ) {
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,

@@ -312,6 +312,7 @@ fun TimeSetting(
                 selectedOption = selectedHourFormat.timeFormat(),
                 onSelectOption = {
                     onHourFormatChange(it.timeFormat())
+                    onExpand("Time")
                 },
             )
         },
