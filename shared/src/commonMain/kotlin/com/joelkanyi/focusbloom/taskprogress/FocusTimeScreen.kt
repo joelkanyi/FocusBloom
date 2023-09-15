@@ -48,6 +48,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.sessionType
+import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import org.koin.core.component.KoinComponent
@@ -177,6 +178,7 @@ fun FocusTimeScreenContent(
                                             style = MaterialTheme.typography.titleSmall,
                                         )
                                         Column(
+                                            modifier = Modifier.fillMaxWidth(),
                                             verticalArrangement = Arrangement.Center,
                                             horizontalAlignment = Alignment.End,
                                         ) {
@@ -195,9 +197,9 @@ fun FocusTimeScreenContent(
                                             )
                                             Text(
                                                 text = when (sessionType) {
-                                                    SessionType.Focus -> "${task.focusTime} minutes"
-                                                    SessionType.ShortBreak -> "${task.shortBreakTime} minutes"
-                                                    SessionType.LongBreak -> "${task.longBreakTime} minutes"
+                                                    SessionType.Focus -> "${task.focusTime.toMinutes()} min"
+                                                    SessionType.ShortBreak -> "${task.shortBreakTime.toMinutes()} min"
+                                                    SessionType.LongBreak -> "${task.longBreakTime.toMinutes()} min"
                                                 },
                                             )
                                         }
