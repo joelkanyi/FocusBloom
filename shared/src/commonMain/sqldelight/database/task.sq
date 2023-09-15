@@ -1,3 +1,5 @@
+import java.lang.String;
+
 
 CREATE TABLE taskEntity (
     id INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -7,13 +9,17 @@ CREATE TABLE taskEntity (
     start TEXT NOT NULL,
     end TEXT NOT NULL,
     color INTEGER AS Long NOT NULL,
-    current INTEGER AS Int NOT NULL,
+    current TEXT AS String NOT NULL,
     date TEXT NOT NULL,
     focusSessions INTEGER AS Int NOT NULL,
     completed INTEGER AS Boolean NOT NULL,
-    focusTime INTEGER AS Int NOT NULL,
-    shortBreakTime INTEGER AS Int NOT NULL,
-    longBreakTime INTEGER AS Int NOT NULL
+    focusTime INTEGER AS Long NOT NULL,
+    consumedFocusTime INTEGER AS Long NOT NULL,
+    shortBreakTime INTEGER AS Long NOT NULL,
+    consumedShortBreakTime INTEGER AS Long NOT NULL,
+    longBreakTime INTEGER AS Long NOT NULL,
+    consumedLongBreakTime INTEGER AS Long NOT NULL,
+    inProgressTask INTEGER AS Boolean NOT NULL
 );
 
 getAllTasks:
@@ -24,11 +30,29 @@ SELECT * FROM taskEntity WHERE id = ?;
 
 insertTask:
 INSERT OR REPLACE
-INTO taskEntity (name, description, type, start, end, color, current, date, focusSessions, completed, focusTime, shortBreakTime, longBreakTime)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
+INTO taskEntity (name, description, type, start, end, color, current, date, focusSessions, completed, focusTime, consumedFocusTime, shortBreakTime, consumedShortBreakTime, longBreakTime, consumedLongBreakTime, inProgressTask)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 updateTask:
 UPDATE taskEntity SET name = ?, description = ?, start = ?, end = ?, color = ?, current = ?, date = ?, focusSessions = ?, completed = ?, focusTime = ?, shortBreakTime = ?, longBreakTime = ? WHERE id = ?;
+
+updateConsuumedFocusTime:
+UPDATE taskEntity SET consumedFocusTime = ? WHERE id = ?;
+
+updateConsumedShortBreakTime:
+UPDATE taskEntity SET consumedShortBreakTime = ? WHERE id = ?;
+
+updateConsumedLongBreakTime:
+UPDATE taskEntity SET consumedLongBreakTime = ? WHERE id = ?;
+
+updateInProgressTask:
+UPDATE taskEntity SET inProgressTask = ? WHERE id = ?;
+
+updateCurrentSession:
+UPDATE taskEntity SET current = ? WHERE id = ?;
+
+updateTaskCompleted:
+UPDATE taskEntity SET completed = ? WHERE id = ?;
 
 deleteTaskById:
 DELETE FROM taskEntity WHERE id = ?;

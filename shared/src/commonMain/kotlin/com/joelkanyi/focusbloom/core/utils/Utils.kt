@@ -8,6 +8,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import kotlinx.datetime.Clock
@@ -463,6 +464,14 @@ fun Int.formattedZeroMinutes(): String {
     }
 }
 
+fun Long.formattedZeroMinutes(): String {
+    return if (this < 10) {
+        "0$this"
+    } else {
+        this.toString()
+    }
+}
+
 fun LocalTime.formattedTimeBasedOnTimeFormat(
     timeFormat: Int,
 ): String {
@@ -534,4 +543,63 @@ fun LocalDate.insideThisWeek(): Boolean {
 fun today(): LocalDateTime {
     return Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
+}
+
+fun Long.toTimer(): String {
+    /**
+     * Input is in miliseconds
+     */
+    val seconds = this / 1000
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    return "${
+        if (hours > 0) {
+            hours.formattedZeroMinutes() + ":"
+        } else {
+            ""
+        }
+    }${(minutes - (hours * 60)).formattedZeroMinutes()}:${(seconds - (minutes * 60)).formattedZeroMinutes()}"
+}
+
+fun Long.toPercentage(total: Long): Float {
+    println("Int.toPercentage($this)")
+    /**
+     * In increase order
+     */
+    return if (total == 0L) {
+        0F
+    } else {
+        val perc = (100 - ((this.toFloat() / total.toFloat()) * 100))
+        println("Percentage($this) -> $perc")
+        perc
+    }
+}
+
+fun Long.toMinutes(): Int {
+    return (this / 1000 / 60).toInt()
+}
+
+fun Int.toMillis(): Long {
+    /**
+     * Input is minutes
+     */
+    return (this * 60 * 1000).toLong()
+}
+
+fun String?.sessionType(): SessionType {
+    return when (this) {
+        "Focus" -> SessionType.Focus
+        "Short Break" -> SessionType.ShortBreak
+        "Long Break" -> SessionType.LongBreak
+        else -> SessionType.Focus
+    }
+}
+
+fun SessionType?.sessionType(): String {
+    return when (this) {
+        SessionType.Focus -> "Focus"
+        SessionType.ShortBreak -> "Short Break"
+        SessionType.LongBreak -> "Long Break"
+        else -> "Focus"
+    }
 }

@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 fun BloomTopAppBar(
     modifier: Modifier = Modifier,
     hasBackNavigation: Boolean = false,
-    actions: @Composable () -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
+    actions: (@Composable () -> Unit)? = null,
+    navigationIcon: (@Composable () -> Unit)? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.background,
     ),
@@ -24,11 +24,15 @@ fun BloomTopAppBar(
         modifier = modifier,
         title = title,
         actions = {
-            actions()
+            if (actions != null) {
+                actions()
+            }
         },
         navigationIcon = {
             if (hasBackNavigation) {
-                navigationIcon()
+                if (navigationIcon != null) {
+                    navigationIcon()
+                }
             }
         },
         colors = colors,

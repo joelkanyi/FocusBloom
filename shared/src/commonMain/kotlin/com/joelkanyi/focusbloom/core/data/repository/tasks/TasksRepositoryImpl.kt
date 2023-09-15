@@ -53,6 +53,10 @@ class TasksRepositoryImpl(
                 shortBreakTime = it.shortBreakTime,
                 longBreakTime = it.longBreakTime,
                 type = it.type,
+                consumedFocusTime = it.consumedFocusTime,
+                consumedShortBreakTime = it.consumedShortBreakTime,
+                consumedLongBreakTime = it.consumedLongBreakTime,
+                inProgressTask = it.inProgressTask,
             )
         }
     }
@@ -83,5 +87,29 @@ class TasksRepositoryImpl(
 
     override suspend fun deleteAllTasks() {
         dbQuery.deleteAllTasks()
+    }
+
+    override suspend fun updateConsumedFocusTime(id: Int, focusTime: Long) {
+        dbQuery.updateConsuumedFocusTime(id = id, consumedFocusTime = focusTime)
+    }
+
+    override suspend fun updateConsumedShortBreakTime(id: Int, shortBreakTime: Long) {
+        dbQuery.updateConsumedShortBreakTime(id = id, consumedShortBreakTime = shortBreakTime)
+    }
+
+    override suspend fun updateConsumedLongBreakTime(id: Int, longBreakTime: Long) {
+        dbQuery.updateConsumedLongBreakTime(id = id, consumedLongBreakTime = longBreakTime)
+    }
+
+    override suspend fun updateTaskInProgress(id: Int, inProgressTask: Boolean) {
+        dbQuery.updateInProgressTask(id = id, inProgressTask = inProgressTask)
+    }
+
+    override suspend fun updateTaskCompleted(id: Int, completed: Boolean) {
+        dbQuery.updateTaskCompleted(id = id, completed = completed)
+    }
+
+    override suspend fun updateCurrentSession(id: Int, current: String) {
+        dbQuery.updateCurrentSession(id = id, current = current)
     }
 }

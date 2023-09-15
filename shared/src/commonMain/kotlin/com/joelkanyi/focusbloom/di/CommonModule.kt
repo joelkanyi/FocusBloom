@@ -12,6 +12,7 @@ import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
 import com.joelkanyi.focusbloom.settings.SettingsScreenModel
 import com.joelkanyi.focusbloom.statistics.StatisticsScreenModel
 import com.joelkanyi.focusbloom.task.AddTaskScreenModel
+import com.joelkanyi.focusbloom.taskprogress.TaskProgressScreenModel
 import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -78,6 +79,13 @@ fun commonModule(isDebug: Boolean) = module {
         CalendarScreenModel(
             tasksRepository = get(),
             settingsRepository = get(),
+        )
+    }
+
+    single<TaskProgressScreenModel> {
+        TaskProgressScreenModel(
+            settingsRepository = get(),
+            tasksRepository = get(),
         )
     }
 }

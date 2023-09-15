@@ -20,6 +20,10 @@ fun TaskEntity.toTask() = Task(
     focusTime = focusTime,
     shortBreakTime = shortBreakTime,
     longBreakTime = longBreakTime,
+    consumedFocusTime = consumedFocusTime,
+    consumedShortBreakTime = consumedShortBreakTime,
+    consumedLongBreakTime = consumedLongBreakTime,
+    inProgressTask = inProgressTask,
 )
 
 fun Task.toTaskEntity() = TaskEntity(
@@ -37,4 +41,8 @@ fun Task.toTaskEntity() = TaskEntity(
     focusTime = focusTime,
     shortBreakTime = shortBreakTime,
     longBreakTime = longBreakTime,
+    consumedFocusTime = consumedFocusTime,
+    consumedShortBreakTime = consumedShortBreakTime,
+    consumedLongBreakTime = consumedLongBreakTime,
+    inProgressTask = inProgressTask,
 )

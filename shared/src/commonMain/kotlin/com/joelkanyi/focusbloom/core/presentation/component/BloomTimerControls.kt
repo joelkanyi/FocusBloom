@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Icon
@@ -14,13 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.joelkanyi.focusbloom.taskprogress.TimerState
 
 @Composable
 fun BloomTimerControls(
     modifier: Modifier = Modifier,
+    state: TimerState,
     onClickReset: () -> Unit,
     onClickNext: () -> Unit,
-    onClickAction: () -> Unit,
+    onClickAction: (state: TimerState) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -40,12 +43,22 @@ fun BloomTimerControls(
             icon = {
                 Icon(
                     modifier = Modifier.size(48.dp),
-                    imageVector = Icons.Filled.Pause,
+                    imageVector = if (state == TimerState.Paused) {
+                        Icons.Filled.PlayArrow
+                    } else if (state == TimerState.Ticking) {
+                        Icons.Filled.Pause
+                    } else if (state == TimerState.Finished) {
+                        Icons.Filled.Replay
+                    } else {
+                        Icons.Filled.PlayArrow
+                    },
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             },
-            onClick = onClickAction,
+            onClick = {
+                onClickAction(state)
+            },
             color = MaterialTheme.colorScheme.primary,
         )
 

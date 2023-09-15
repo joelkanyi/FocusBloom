@@ -10,4 +10,10 @@ interface TasksRepository {
     suspend fun updateTask(task: Task)
     suspend fun deleteTask(id: Int)
     suspend fun deleteAllTasks()
+    suspend fun updateConsumedFocusTime(id: Int, focusTime: Long)
+    suspend fun updateConsumedShortBreakTime(id: Int, shortBreakTime: Long)
+    suspend fun updateConsumedLongBreakTime(id: Int, longBreakTime: Long)
+    suspend fun updateTaskInProgress(id: Int, inProgressTask: Boolean)
+    suspend fun updateTaskCompleted(id: Int, completed: Boolean)
+    suspend fun updateCurrentSession(id: Int, current: String)
 }

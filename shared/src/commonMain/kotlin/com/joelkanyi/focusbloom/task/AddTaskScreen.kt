@@ -63,7 +63,7 @@ import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
-import com.joelkanyi.focusbloom.core.utils.today
+import com.joelkanyi.focusbloom.core.utils.toMillis
 import com.joelkanyi.focusbloom.home.HomeScreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
@@ -215,14 +215,18 @@ class AddTaskScreen : Screen, KoinComponent {
                             minute = calculatedFocusTime.minute,
                         ),
                         color = selectedTaskType.color,
-                        current = 1,
+                        current = "Focus",
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
                         focusSessions = focusSessions,
                         completed = false,
-                        focusTime = sessionTime,
-                        shortBreakTime = shortBreakTime,
-                        longBreakTime = longBreakTime,
+                        focusTime = sessionTime.toMillis(),
+                        shortBreakTime = shortBreakTime.toMillis(),
+                        longBreakTime = longBreakTime.toMillis(),
                         type = selectedTaskType.name,
+                        consumedFocusTime = 0L,
+                        consumedShortBreakTime = 0L,
+                        consumedLongBreakTime = 0L,
+                        inProgressTask = false,
                     ),
                 )
             },
