@@ -1,6 +1,7 @@
 package com.joelkanyi.focusbloom.core.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +37,10 @@ import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun TaskCard(
     task: Task,
@@ -114,7 +117,7 @@ fun TaskCard(
                                     fontSize = 18.sp,
                                 ),
                             ) {
-                                append("${task.current}")
+                                append("${task.currentCycle}")
                             }
                             append("/${task.focusSessions}")
                         },
@@ -134,18 +137,27 @@ fun TaskCard(
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.PlayArrow,
+                if (task.completed) {
+                    Image(
+                        modifier = Modifier
+                            .size(48.dp),
+                        painter = painterResource("ic_complete.xml"),
                         contentDescription = "Task Options",
-                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = "Task Options",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
                 }
             }
 

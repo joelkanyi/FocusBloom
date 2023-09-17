@@ -23,10 +23,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,11 +50,13 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTimerControls
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
+import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -61,21 +67,40 @@ data class FocusTimeScreen(
 
     @Composable
     override fun Content() {
+        val snackbarHostState = remember { SnackbarHostState() }
         val task = screenModel.task.collectAsState().value
         val coroutineScope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val selectedTab = screenModel.selectedTab.collectAsState().value
-        val timer = screenModel.time.collectAsState().value
+        val timer = screenModel.tickingTime.collectAsState().value
         val timerDuration = screenModel.timerDuration.collectAsState().value
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
+            screenModel.eventsFlow.collectLatest { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(event.message)
+                    }
+
+                    is UiEvents.TimerEventFinished -> {
+                        println("Timer Finished")
+                        screenModel.executeTasks()
+                    }
+
+                    is UiEvents.TimerEventStarted -> {
+                        println("Timer Started")
+                    }
+
+                    else -> {}
+                }
+            }
         }
 
         FocusTimeScreenContent(
-            sessionType = task?.current.sessionType(),
             task = task,
             timerValue = timer,
-            timerState = screenModel.state.collectAsState().value,
+            snackbarHostState = snackbarHostState,
+            timerState = screenModel.timerState.collectAsState().value,
             onClickNavigateBack = {
                 navigator.pop()
             },
@@ -84,6 +109,12 @@ data class FocusTimeScreen(
             },
             onClick = { title ->
                 screenModel.selectTab(title)
+            },
+            onClickNext = {
+                screenModel.next()
+            },
+            onClickReset = {
+                screenModel.reset()
             },
             onClickAction = { state ->
                 when (state) {
@@ -101,7 +132,13 @@ data class FocusTimeScreen(
 
                     TimerState.Idle -> {
                         // screenModel.setTime(task?.focusTime ?: 20)
-                        screenModel.start(timerDuration)
+                        screenModel.start(
+                            /*timerDuration = timerDuration,
+                            currentSession = task?.current ?: "",
+                            totalCycles = task?.focusSessions ?: 0,
+                            currentCycle = task?.currentCycle ?: 0,
+                            isTaskInProgress = task?.inProgressTask ?: false,*/
+                        )
                     }
 
                     TimerState.Finished -> {
@@ -116,16 +153,21 @@ data class FocusTimeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FocusTimeScreenContent(
-    sessionType: SessionType,
     timerValue: Long,
     timerState: TimerState,
     task: Task?,
+    snackbarHostState: SnackbarHostState,
     onClickNavigateBack: () -> Unit,
     isSelected: (title: String) -> Boolean,
     onClick: (title: String) -> Unit,
     onClickAction: (state: TimerState) -> Unit,
+    onClickNext: () -> Unit,
+    onClickReset: () -> Unit,
 ) {
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             BloomTopAppBar(
                 hasBackNavigation = true,
@@ -154,11 +196,11 @@ fun FocusTimeScreenContent(
                 Column(
                     modifier = Modifier.padding(PaddingValues(horizontal = 16.dp)),
                 ) {
-                    Tabs(
+                    /*Tabs(
                         isSelected = isSelected,
                         onClick = onClick,
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))*/
                     LazyColumn {
                         item {
                             Card(
@@ -176,6 +218,8 @@ fun FocusTimeScreenContent(
                                             modifier = Modifier.fillMaxWidth(.85f),
                                             text = task.name,
                                             style = MaterialTheme.typography.titleSmall,
+                                            maxLines = 3,
+                                            overflow = TextOverflow.Ellipsis,
                                         )
                                         Column(
                                             modifier = Modifier.fillMaxWidth(),
@@ -190,13 +234,13 @@ fun FocusTimeScreenContent(
                                                             fontSize = 18.sp,
                                                         ),
                                                     ) {
-                                                        append("4")
+                                                        append("${task.currentCycle}")
                                                     }
-                                                    append("/5")
+                                                    append("/${task.focusSessions}")
                                                 },
                                             )
                                             Text(
-                                                text = when (sessionType) {
+                                                text = when (task.current.sessionType()) {
                                                     SessionType.Focus -> "${task.focusTime.toMinutes()} min"
                                                     SessionType.ShortBreak -> "${task.shortBreakTime.toMinutes()} min"
                                                     SessionType.LongBreak -> "${task.longBreakTime.toMinutes()} min"
@@ -232,7 +276,7 @@ fun FocusTimeScreenContent(
                             Spacer(modifier = Modifier.height(48.dp))
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
-                                text = when (sessionType) {
+                                text = when (task.current.sessionType()) {
                                     SessionType.Focus -> "Focus Time"
                                     SessionType.ShortBreak -> "Short Break"
                                     SessionType.LongBreak -> "Long Break"
@@ -247,8 +291,8 @@ fun FocusTimeScreenContent(
                             BloomTimerControls(
                                 modifier = Modifier.fillMaxWidth(),
                                 state = timerState,
-                                onClickReset = { /*TODO*/ },
-                                onClickNext = { /*TODO*/ },
+                                onClickReset = onClickReset,
+                                onClickNext = onClickNext,
                                 onClickAction = onClickAction,
                             )
                         }

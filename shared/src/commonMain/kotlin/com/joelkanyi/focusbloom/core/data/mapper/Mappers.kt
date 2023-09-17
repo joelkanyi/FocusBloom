@@ -24,6 +24,7 @@ fun TaskEntity.toTask() = Task(
     consumedShortBreakTime = consumedShortBreakTime,
     consumedLongBreakTime = consumedLongBreakTime,
     inProgressTask = inProgressTask,
+    currentCycle = currentCycle,
 )
 
 fun Task.toTaskEntity() = TaskEntity(
@@ -45,4 +46,5 @@ fun Task.toTaskEntity() = TaskEntity(
     consumedShortBreakTime = consumedShortBreakTime,
     consumedLongBreakTime = consumedLongBreakTime,
     inProgressTask = inProgressTask,
+    currentCycle = currentCycle,
 )

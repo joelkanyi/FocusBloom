@@ -13,6 +13,7 @@ data class Task(
     val current: String,
     val date: LocalDateTime,
     val focusSessions: Int,
+    val currentCycle: Int,
     val completed: Boolean,
     val focusTime: Long,
     val shortBreakTime: Long,

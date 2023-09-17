@@ -22,5 +22,6 @@ val sampleTasks = listOf(
         consumedShortBreakTime = 0,
         consumedLongBreakTime = 0,
         inProgressTask = false,
+        currentCycle = 0,
     ),
 )

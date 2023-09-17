@@ -26,8 +26,10 @@ class StatisticsScreenModel(
         )
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
-            tasks
-                .sortedByDescending { it.date }
+            tasks.sortedByDescending { it.date }
+                .filter {
+                    it.completed
+                }
         }
         .stateIn(
             scope = coroutineScope,

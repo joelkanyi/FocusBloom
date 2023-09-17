@@ -5,4 +5,7 @@ sealed class UiEvents {
     data class ShowSnackbar(val message: String) : UiEvents()
     data object NavigateBack : UiEvents()
     data object Reset : UiEvents()
+
+    data class TimerEventStarted(val time: Long) : UiEvents()
+    data object TimerEventFinished : UiEvents()
 }

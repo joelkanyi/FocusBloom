@@ -26,26 +26,26 @@ class AddTaskScreenModel(
 
     val sessionTime = settingsRepository.getSessionTime()
         .map {
-            it ?: 25
+            it ?: 2
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 25,
+            initialValue = 1,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
-        .map { it ?: 5 }
+        .map { it ?: 1 }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 5,
+            initialValue = 1,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
-        .map { it ?: 15 }
+        .map { it ?: 1 }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 15,
+            initialValue = 1,
         )
     val hourFormat = settingsRepository.getHourFormat()
         .map { it ?: 24 }

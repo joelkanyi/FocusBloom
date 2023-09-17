@@ -562,7 +562,6 @@ fun Long.toTimer(): String {
 }
 
 fun Long.toPercentage(total: Long): Float {
-    println("Int.toPercentage($this)")
     /**
      * In increase order
      */
@@ -570,7 +569,6 @@ fun Long.toPercentage(total: Long): Float {
         0F
     } else {
         val perc = (100 - ((this.toFloat() / total.toFloat()) * 100))
-        println("Percentage($this) -> $perc")
         perc
     }
 }
@@ -589,8 +587,8 @@ fun Int.toMillis(): Long {
 fun String?.sessionType(): SessionType {
     return when (this) {
         "Focus" -> SessionType.Focus
-        "Short Break" -> SessionType.ShortBreak
-        "Long Break" -> SessionType.LongBreak
+        "ShortBreak" -> SessionType.ShortBreak
+        "LongBreak" -> SessionType.LongBreak
         else -> SessionType.Focus
     }
 }

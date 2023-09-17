@@ -23,6 +23,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
+import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -55,6 +56,9 @@ class AllTasksScreen : Screen, KoinComponent {
             onShowTaskOption = {
                 screenModel.openTaskOptions(it)
             },
+            onClickTask = {
+                navigator.push(FocusTimeScreen(taskId = it.id))
+            },
         )
     }
 }
@@ -70,6 +74,7 @@ fun AllTasksScreenContent(
     onClickSave: (task: Task) -> Unit,
     showTaskOption: (task: Task) -> Boolean,
     onShowTaskOption: (task: Task) -> Unit,
+    onClickTask: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -99,7 +104,7 @@ fun AllTasksScreenContent(
                 TaskCard(
                     task = it,
                     hourFormat = timeFormat,
-                    onClick = { },
+                    onClick = onClickTask,
                     onClickDelete = onClickDelete,
                     onClickCancel = onClickCancel,
                     onClickSave = onClickSave,

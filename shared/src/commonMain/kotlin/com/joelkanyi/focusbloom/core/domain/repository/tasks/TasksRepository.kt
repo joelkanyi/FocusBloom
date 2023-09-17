@@ -15,5 +15,6 @@ interface TasksRepository {
     suspend fun updateConsumedLongBreakTime(id: Int, longBreakTime: Long)
     suspend fun updateTaskInProgress(id: Int, inProgressTask: Boolean)
     suspend fun updateTaskCompleted(id: Int, completed: Boolean)
-    suspend fun updateCurrentSession(id: Int, current: String)
+    suspend fun updateCurrentSessionName(id: Int, current: String)
+    suspend fun updateTaskCycleNumber(id: Int, cycle: Int)
 }
