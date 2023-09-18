@@ -227,7 +227,7 @@ class AddTaskScreen : Screen, KoinComponent {
                         consumedShortBreakTime = 0L,
                         consumedLongBreakTime = 0L,
                         inProgressTask = false,
-                        currentCycle = 1,
+                        currentCycle = 0,
                     ),
                 )
             },

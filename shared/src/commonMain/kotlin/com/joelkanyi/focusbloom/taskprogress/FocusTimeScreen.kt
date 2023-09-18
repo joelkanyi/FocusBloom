@@ -69,11 +69,9 @@ data class FocusTimeScreen(
     override fun Content() {
         val snackbarHostState = remember { SnackbarHostState() }
         val task = screenModel.task.collectAsState().value
-        val coroutineScope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val selectedTab = screenModel.selectedTab.collectAsState().value
         val timer = screenModel.tickingTime.collectAsState().value
-        val timerDuration = screenModel.timerDuration.collectAsState().value
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
             screenModel.eventsFlow.collectLatest { event ->
@@ -131,14 +129,7 @@ data class FocusTimeScreen(
                     }
 
                     TimerState.Idle -> {
-                        // screenModel.setTime(task?.focusTime ?: 20)
-                        screenModel.start(
-                            /*timerDuration = timerDuration,
-                            currentSession = task?.current ?: "",
-                            totalCycles = task?.focusSessions ?: 0,
-                            currentCycle = task?.currentCycle ?: 0,
-                            isTaskInProgress = task?.inProgressTask ?: false,*/
-                        )
+                        screenModel.start()
                     }
 
                     TimerState.Finished -> {
@@ -264,7 +255,13 @@ fun FocusTimeScreenContent(
                                 horizontalArrangement = Arrangement.Center,
                             ) {
                                 TaskProgress(
-                                    percentage = timerValue.toPercentage(task.focusTime),
+                                    percentage = timerValue.toPercentage(
+                                        when (task.current.sessionType()) {
+                                            SessionType.Focus -> task.focusTime
+                                            SessionType.ShortBreak -> task.shortBreakTime
+                                            SessionType.LongBreak -> task.longBreakTime
+                                        },
+                                    ),
                                     radius = 40.dp,
                                     content = timerValue.toTimer(),
                                     mainColor = MaterialTheme.colorScheme.primary,
