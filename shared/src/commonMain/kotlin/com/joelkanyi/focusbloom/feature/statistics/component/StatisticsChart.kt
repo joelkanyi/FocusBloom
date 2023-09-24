@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.statistics.component
+package com.joelkanyi.focusbloom.feature.statistics.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absolutePadding
@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -31,9 +30,6 @@ import io.github.koalaplot.core.xychart.rememberAxisStyle
 
 internal val padding = 8.dp
 internal val paddingMod = Modifier.padding(padding)
-
-internal val fibo = mutableStateListOf(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
-// mutableStateListOf(10.0f, 8.0f, 5.0f, 3.0f, 5.0f, 8.0f, 22.0f)
 
 private const val BarWidth = 0.8f
 

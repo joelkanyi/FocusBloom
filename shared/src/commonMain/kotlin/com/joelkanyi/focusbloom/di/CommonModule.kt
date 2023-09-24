@@ -1,26 +1,26 @@
 package com.joelkanyi.focusbloom.di
 
-import com.joelkanyi.focusbloom.calendar.CalendarScreenModel
+import com.joelkanyi.focusbloom.feature.calendar.CalendarScreenModel
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.database.BloomDatabase
-import com.joelkanyi.focusbloom.home.HomeScreenModel
+import com.joelkanyi.focusbloom.feature.home.HomeScreenModel
 import com.joelkanyi.focusbloom.main.MainViewModel
-import com.joelkanyi.focusbloom.onboarding.OnboadingViewModel
+import com.joelkanyi.focusbloom.feature.onboarding.OnboadingViewModel
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import com.joelkanyi.focusbloom.settings.SettingsScreenModel
-import com.joelkanyi.focusbloom.statistics.StatisticsScreenModel
-import com.joelkanyi.focusbloom.task.AddTaskScreenModel
-import com.joelkanyi.focusbloom.taskprogress.TaskProgressScreenModel
+import com.joelkanyi.focusbloom.feature.settings.SettingsScreenModel
+import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreenModel
+import com.joelkanyi.focusbloom.feature.addtask.AddTaskScreenModel
+import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreenModel
 import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 @OptIn(ExperimentalSettingsApi::class)
-fun commonModule(isDebug: Boolean) = module {
+fun commonModule() = module {
     /**
      * Database
      */

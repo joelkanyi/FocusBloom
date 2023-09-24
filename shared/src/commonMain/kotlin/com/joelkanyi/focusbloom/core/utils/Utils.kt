@@ -3,8 +3,6 @@ package com.joelkanyi.focusbloom.core.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ParentDataModifier
@@ -24,17 +22,14 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.jvm.JvmInline
 
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
-
-@Composable
-fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 fun differenceBetweenMinutes(
     minTime: LocalTime,
@@ -51,13 +46,6 @@ fun differenceBetweenDays(
     return (maxDate.dayOfMonth - minDate.dayOfMonth)
 }
 
-fun differenceBetweenWeeks(
-    minDate: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-    maxDate: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-): Int {
-    return (maxDate.dayOfMonth - minDate.dayOfMonth)
-}
-
 fun LocalDate.plusDays(
     days: Int,
 ): LocalDate {
@@ -71,39 +59,20 @@ fun LocalTime.plusHours(
     return LocalTime(addedHours, this.minute)
 }
 
-fun LocalDateTime.plusWeeks(
-    weeks: Int,
-): LocalDateTime {
-    return this.date.plusDays(weeks * 7).atStartOfDayIn(
-        TimeZone.currentSystemDefault(),
-    ).toLocalDateTime(
-        TimeZone.currentSystemDefault(),
-    )
-}
-
-fun LocalDateTime.minusDays(
-    days: Int,
-): LocalDateTime {
-    return this.date.minus(1, DateTimeUnit.DAY).atStartOfDayIn(
-        TimeZone.currentSystemDefault(),
-    ).toLocalDateTime(
-        TimeZone.currentSystemDefault(),
-    )
-}
-
 fun LocalTime.truncatedTo(): LocalTime {
     return LocalTime(this.hour, this.minute)
 }
 
-fun LocalTime.MIN(): LocalTime {
+fun min(): LocalTime {
     return LocalTime(0, 0)
 }
 
-fun LocalTime.MAX(): LocalTime {
+fun max(): LocalTime {
     return LocalTime(23, 59, 59, 999999999)
 }
 
-inline class SplitType private constructor(val value: Int) {
+@JvmInline
+value class SplitType private constructor(val value: Int) {
     companion object {
         val None = SplitType(0)
         val Start = SplitType(1)
@@ -123,20 +92,15 @@ data class PositionedTask(
     val colTotal: Int = 1,
 )
 
-// val TaskTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
-// val DayFormatter = DateTimeFormatter.ofPattern("EE, MMM d")
-
 sealed class ScheduleSize {
     class FixedSize(val size: Dp) : ScheduleSize()
-    class FixedCount(val count: Float) : ScheduleSize() {
-        constructor(count: Int) : this(count.toFloat())
-    }
+    class FixedCount(val count: Float) : ScheduleSize()
 
     class Adaptive(val minSize: Dp) : ScheduleSize()
 }
 
 class TaskDataModifier(
-    val positionedTask: PositionedTask,
+    private val positionedTask: PositionedTask,
 ) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?) = positionedTask
 }
@@ -171,14 +135,12 @@ fun splitTasks(tasks: List<Task>): List<PositionedTask> {
                         start = if (date == startDate) {
                             task.start.time
                         } else {
-                            Clock.System.now()
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN()
+                            min()
                         },
                         end = if (date == endDate) {
                             task.end.time
                         } else {
-                            Clock.System.now()
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX()
+                            max()
                         },
                     )
                 }
@@ -248,7 +210,6 @@ fun arrangeTasks(tasks: List<PositionedTask>): List<PositionedTask> {
     }
     resetGroup()
     return positionedTasks
-    // return tasks
 }
 
 fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
@@ -511,10 +472,6 @@ fun Int.timeFormat(): String {
     }
 }
 
-fun Int.hourTo24HourSystem(): Int {
-    return this + 12
-}
-
 fun Task.durationInMinutes(): Int {
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }
@@ -553,7 +510,7 @@ fun today(): LocalDateTime {
 
 fun Long.toTimer(): String {
     /**
-     * Input is in miliseconds
+     * Input is in milliseconds
      */
     val seconds = this / 1000
     val minutes = seconds / 60
@@ -596,15 +553,6 @@ fun String?.sessionType(): SessionType {
         "ShortBreak" -> SessionType.ShortBreak
         "LongBreak" -> SessionType.LongBreak
         else -> SessionType.Focus
-    }
-}
-
-fun SessionType?.sessionType(): String {
-    return when (this) {
-        SessionType.Focus -> "Focus"
-        SessionType.ShortBreak -> "Short Break"
-        SessionType.LongBreak -> "Long Break"
-        else -> "Focus"
     }
 }
 

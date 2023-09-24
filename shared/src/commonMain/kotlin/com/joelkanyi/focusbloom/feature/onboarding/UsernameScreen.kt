@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.onboarding
+package com.joelkanyi.focusbloom.feature.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column

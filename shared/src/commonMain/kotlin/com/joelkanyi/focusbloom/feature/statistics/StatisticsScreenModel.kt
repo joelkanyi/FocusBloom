@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.statistics
+package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.runtime.mutableStateListOf
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -17,12 +17,12 @@ class StatisticsScreenModel(
 ) : ScreenModel {
     val hourFormat = settingsRepository.getHourFormat()
         .map {
-            it ?: 24
+            it
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 24,
+            initialValue = null,
         )
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
@@ -40,12 +40,6 @@ class StatisticsScreenModel(
     fun deleteTask(task: Task) {
         coroutineScope.launch {
             tasksRepository.deleteTask(task.id)
-        }
-    }
-
-    fun updateTask(task: Task) {
-        coroutineScope.launch {
-            tasksRepository.updateTask(task)
         }
     }
 

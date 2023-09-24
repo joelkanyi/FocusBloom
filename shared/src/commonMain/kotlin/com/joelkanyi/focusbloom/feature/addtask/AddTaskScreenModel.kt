@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.task
+package com.joelkanyi.focusbloom.feature.addtask
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -26,33 +26,33 @@ class AddTaskScreenModel(
 
     val sessionTime = settingsRepository.getSessionTime()
         .map {
-            it ?: 2
+            it
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 1,
+            initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
-        .map { it ?: 1 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 1,
+            initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
-        .map { it ?: 1 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 1,
+            initialValue = null,
         )
     val hourFormat = settingsRepository.getHourFormat()
-        .map { it ?: 24 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 24,
+            initialValue = null,
         )
 
     private val _focusSessions = MutableStateFlow(0)

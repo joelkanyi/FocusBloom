@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.calendar
+package com.joelkanyi.focusbloom.feature.calendar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
@@ -63,8 +63,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.core.utils.MAX
-import com.joelkanyi.focusbloom.core.utils.MIN
 import com.joelkanyi.focusbloom.core.utils.PositionedTask
 import com.joelkanyi.focusbloom.core.utils.ScheduleSize
 import com.joelkanyi.focusbloom.core.utils.SplitType
@@ -75,6 +73,8 @@ import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
 import com.joelkanyi.focusbloom.core.utils.dpToPx
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.insideThisWeek
+import com.joelkanyi.focusbloom.core.utils.max
+import com.joelkanyi.focusbloom.core.utils.min
 import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.prettyPrintedMonthAndYear
 import com.joelkanyi.focusbloom.core.utils.splitTasks
@@ -106,7 +106,7 @@ fun CalendarScreen() {
     val coroutineScope = rememberCoroutineScope()
     val tasks = screenModel.tasks.collectAsState().value
     val selectedDay = screenModel.selectedDay.collectAsState().value
-    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
     val calendarPagerState = rememberLazyListState()
     val verticalScrollState = rememberScrollState()
     LaunchedEffect(key1 = tasks, block = {
@@ -118,13 +118,13 @@ fun CalendarScreen() {
     BoxWithConstraints {
         val windowSizeClass = calculateWindowSizeClass()
         val useDesktopSize = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
-        val HOUR_SIZE = if (useDesktopSize) 90.dp else 92.dp
-        val DAY_SIZE = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
+        val hourSize = if (useDesktopSize) 90.dp else 92.dp
+        val daySize = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
         CalendarScreenContent(
             selectedDay = selectedDay,
             hourFormat = hourFormat,
-            hourSize = ScheduleSize.FixedSize(HOUR_SIZE),
-            daySize = ScheduleSize.FixedSize(DAY_SIZE),
+            hourSize = ScheduleSize.FixedSize(hourSize),
+            daySize = ScheduleSize.FixedSize(daySize),
             selectedDayTasks = tasks.filter {
                 it.date.date == selectedDay
             },
@@ -382,10 +382,8 @@ fun ScheduleSidebar(
     hourFormat: Int,
     hourHeight: Dp,
     modifier: Modifier = Modifier,
-    minTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
-    maxTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
+    minTime: LocalTime = min(),
+    maxTime: LocalTime = max(),
     label: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { _, time ->
         BasicSidebarLabel(
             hourFormat = hourFormat,
@@ -435,10 +433,8 @@ fun Schedule(
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
     maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    minTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
-    maxTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
+    minTime: LocalTime = min(),
+    maxTime: LocalTime = max(),
     daySize: ScheduleSize,
     hourSize: ScheduleSize,
 ) {
@@ -569,10 +565,8 @@ fun BasicSchedule(
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
     maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    minTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MIN(),
-    maxTime: LocalTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time.MAX(),
+    minTime: LocalTime = min(),
+    maxTime: LocalTime = max(),
     dayWidth: Dp,
     hourHeight: Dp,
 ) {

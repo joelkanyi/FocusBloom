@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.joelkanyi.focusbloom.calendar.CalendarScreen
-import com.joelkanyi.focusbloom.home.HomeScreen
-import com.joelkanyi.focusbloom.settings.SettingsScreen
-import com.joelkanyi.focusbloom.statistics.StatisticsScreen
-import com.joelkanyi.focusbloom.task.AddTaskScreen
+import com.joelkanyi.focusbloom.feature.calendar.CalendarScreen
+import com.joelkanyi.focusbloom.feature.home.HomeScreen
+import com.joelkanyi.focusbloom.feature.settings.SettingsScreen
+import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreen
+import com.joelkanyi.focusbloom.feature.addtask.AddTaskScreen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 

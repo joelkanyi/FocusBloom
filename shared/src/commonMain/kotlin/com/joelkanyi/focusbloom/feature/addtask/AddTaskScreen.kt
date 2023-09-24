@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.task
+package com.joelkanyi.focusbloom.feature.addtask
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -87,10 +87,10 @@ fun AddTaskScreen() {
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val navigator = LocalNavigator.currentOrThrow
-    val sessionTime = screenModel.sessionTime.collectAsState().value
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value
-    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
+    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
     val focusSessions = screenModel.focusSessions.collectAsState().value
     val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
     val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value

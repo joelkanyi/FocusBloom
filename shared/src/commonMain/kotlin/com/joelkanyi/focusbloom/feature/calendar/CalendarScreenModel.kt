@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.calendar
+package com.joelkanyi.focusbloom.feature.calendar
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -46,10 +46,10 @@ class CalendarScreenModel(
         )
 
     val hourFormat = settingsRepository.getHourFormat()
-        .map { it ?: 24 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 24,
+            initialValue = null,
         )
 }

@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.statistics
+package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -61,8 +61,8 @@ import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskIcon
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import com.joelkanyi.focusbloom.statistics.component.BarChart
-import com.joelkanyi.focusbloom.statistics.component.TickPositionState
+import com.joelkanyi.focusbloom.feature.statistics.component.BarChart
+import com.joelkanyi.focusbloom.feature.statistics.component.TickPositionState
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
@@ -83,7 +83,7 @@ fun StatisticsScreen() {
     val navigator = LocalAppNavigator.currentOrThrow
     val tasksHistory = screenModel.tasks.collectAsState().value
     val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
-    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = lastFiftyTwoWeeks.size - 1,

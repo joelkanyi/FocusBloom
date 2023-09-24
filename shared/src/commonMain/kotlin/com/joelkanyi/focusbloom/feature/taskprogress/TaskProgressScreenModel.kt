@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.taskprogress
+package com.joelkanyi.focusbloom.feature.taskprogress
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TaskProgressScreenModel(
-    private val settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
@@ -54,7 +54,6 @@ class TaskProgressScreenModel(
     val task = _task.asStateFlow()
     fun getTask(taskId: Int) {
         scope.launch {
-            println("TaskProgressScreenModel.getTask($taskId)")
             tasksRepository.getTask(taskId).collectLatest {
                 _task.value = it
             }
@@ -265,7 +264,7 @@ class TaskProgressScreenModel(
         }
     }
 
-    fun stop() {
+    private fun stop() {
         job?.cancel()
         _timerState.value = TimerState.Stopped
     }

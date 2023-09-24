@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.taskprogress.TimerState
+import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 
 @Composable
 fun BloomTimerControls(

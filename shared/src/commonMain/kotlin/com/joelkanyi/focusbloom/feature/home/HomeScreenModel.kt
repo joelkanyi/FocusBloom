@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.home
+package com.joelkanyi.focusbloom.feature.home
 
 import androidx.compose.runtime.mutableStateListOf
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -49,24 +49,31 @@ class HomeScreenModel(
 
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
-            tasks
-                .sortedBy { it.start }
-                .filter {
-                    it.date.date == Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                }
+            TasksState.Success(
+                tasks
+                    .sortedBy { it.start }
+                    .filter {
+                        it.date.date == Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                    },
+            )
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
+            initialValue = TasksState.Loading,
         )
 
     val username = settingsRepository.getUsername()
-        .map { it ?: "" }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = "",
+            initialValue = null,
         )
+}
+
+sealed class TasksState {
+    data object Loading : TasksState()
+    data class Success(val tasks: List<Task>) : TasksState()
 }

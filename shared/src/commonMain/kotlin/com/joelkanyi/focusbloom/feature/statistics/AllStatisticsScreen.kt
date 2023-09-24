@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.statistics
+package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
             navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
-        val hourFormat = screenModel.hourFormat.collectAsState().value
+        val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
         val tasksHistory = screenModel.tasks.collectAsState().value
 
         AllStatisticsScreenContent(

@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.onboarding
+package com.joelkanyi.focusbloom.feature.onboarding
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope

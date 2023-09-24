@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.settings
+package com.joelkanyi.focusbloom.feature.settings
 
 import androidx.compose.runtime.mutableStateListOf
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -48,12 +48,12 @@ class SettingsScreenModel(
 
     val sessionTime = settingsRepository.getSessionTime()
         .map {
-            it ?: 25
+            it
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 25,
+            initialValue = null,
         )
 
     fun setSessionTime(sessionTime: Int) {
@@ -63,11 +63,11 @@ class SettingsScreenModel(
     }
 
     val shortBreakTime = settingsRepository.getShortBreakTime()
-        .map { it ?: 5 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 5,
+            initialValue = null,
         )
 
     fun setShortBreakTime(shortBreakTime: Int) {
@@ -77,11 +77,11 @@ class SettingsScreenModel(
     }
 
     val longBreakTime = settingsRepository.getLongBreakTime()
-        .map { it ?: 15 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 15,
+            initialValue = null,
         )
 
     fun setLongBreakTime(longBreakTime: Int) {
@@ -91,11 +91,11 @@ class SettingsScreenModel(
     }
 
     val timeFormat = settingsRepository.getHourFormat()
-        .map { it ?: 24 }
+        .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 24,
+            initialValue = null,
         )
 
     fun setHourFormat(timeFormat: Int) {

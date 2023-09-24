@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.taskprogress
+package com.joelkanyi.focusbloom.feature.taskprogress
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,7 +57,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class FocusTimeScreen(
+class TaskProgressScreen(
     val taskId: Int,
 ) : Screen, KoinComponent {
     private val screenModel: TaskProgressScreenModel by inject()

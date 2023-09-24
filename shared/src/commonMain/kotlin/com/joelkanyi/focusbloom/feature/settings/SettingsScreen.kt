@@ -1,4 +1,4 @@
-package com.joelkanyi.focusbloom.settings
+package com.joelkanyi.focusbloom.feature.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -54,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
@@ -74,13 +73,10 @@ import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
 import com.joelkanyi.focusbloom.core.utils.timeFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.compose.rememberKoinInject
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 @Composable
 fun SettingsScreen() {
     val screenModel: SettingsScreenModel = rememberKoinInject()
-
 
     val darkTheme = when (screenModel.appTheme.collectAsState().value) {
         1 -> true
@@ -91,13 +87,10 @@ fun SettingsScreen() {
         navBarColor = MaterialTheme.colorScheme.background,
     )
 
-    val sessionTime = screenModel.sessionTime.collectAsState()
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState()
-    val longBreakTime = screenModel.longBreakTime.collectAsState()
-    val timeFormat = screenModel.timeFormat.collectAsState()
-    val state = screenModel.appTheme.collectAsState(
-        initial = 2,
-    )
+    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
+    val timeFormat = screenModel.timeFormat.collectAsState().value ?: 24
     val selectedColorCardTitle = screenModel.selectedColorCardTitle.collectAsState().value
     val currentShortBreakColor = screenModel.shortBreakColor.collectAsState().value
     val currentLongBreakColor = screenModel.longBreakColor.collectAsState().value
@@ -113,7 +106,7 @@ fun SettingsScreen() {
         openOptions = { option ->
             screenModel.openOptions(option)
         },
-        focusSessionMinutes = sessionTime.value,
+        focusSessionMinutes = sessionTime,
         onFocusSessionMinutesChange = { time ->
             if (time.isEmpty()) {
                 screenModel.setSessionTime(0)
@@ -124,7 +117,7 @@ fun SettingsScreen() {
             }
             screenModel.setSessionTime(time.toInt())
         },
-        shortBreakMinutes = shortBreakTime.value,
+        shortBreakMinutes = shortBreakTime,
         onShortBreakMinutesChange = { time ->
             if (time.isEmpty()) {
                 screenModel.setShortBreakTime(0)
@@ -135,7 +128,7 @@ fun SettingsScreen() {
             }
             screenModel.setShortBreakTime(time.toInt())
         },
-        longBreakMinutes = longBreakTime.value,
+        longBreakMinutes = longBreakTime,
         onLongBreakMinutesChange = { time ->
             if (time.isEmpty()) {
                 screenModel.setLongBreakTime(0)
@@ -147,7 +140,7 @@ fun SettingsScreen() {
             screenModel.setLongBreakTime(time.toInt())
         },
         hourFormats = screenModel.hourFormats,
-        selectedHourFormat = timeFormat.value,
+        selectedHourFormat = timeFormat,
         onHourFormatChange = {
             screenModel.setHourFormat(it)
         },
@@ -750,7 +743,10 @@ fun ColorCard(
     onClick: (Long) -> Unit,
 ) {
     Box(
-        modifier = modifier.size(32.dp).clip(MaterialTheme.shapes.medium).background(Color(color))
+        modifier = modifier
+            .size(32.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .background(Color(color))
             .clickable {
                 onClick(color)
             },

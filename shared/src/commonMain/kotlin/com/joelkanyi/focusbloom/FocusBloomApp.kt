@@ -13,7 +13,7 @@ import com.joelkanyi.focusbloom.core.utils.ProvideAppNavigator
 import com.joelkanyi.focusbloom.main.MainScreen
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.main.OnBoardingState
-import com.joelkanyi.focusbloom.onboarding.OnboardingScreen
+import com.joelkanyi.focusbloom.feature.onboarding.OnboardingScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.compose.rememberKoinInject
 
