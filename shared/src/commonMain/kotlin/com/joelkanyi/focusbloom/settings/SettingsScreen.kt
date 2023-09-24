@@ -55,75 +55,129 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.presentation.theme.Blue
+import com.joelkanyi.focusbloom.core.presentation.theme.Green
+import com.joelkanyi.focusbloom.core.presentation.theme.LightBlue
+import com.joelkanyi.focusbloom.core.presentation.theme.LightGreen
+import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
+import com.joelkanyi.focusbloom.core.presentation.theme.Orange
+import com.joelkanyi.focusbloom.core.presentation.theme.Pink
+import com.joelkanyi.focusbloom.core.presentation.theme.Red
+import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
+import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
+import com.joelkanyi.focusbloom.core.presentation.theme.Yellow
 import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
 import com.joelkanyi.focusbloom.core.utils.timeFormat
+import com.joelkanyi.focusbloom.platform.StatusBarColors
+import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SettingsScreen : Screen, KoinComponent {
-    private val screenModel: SettingsScreenModel by inject()
+@Composable
+fun SettingsScreen() {
+    val screenModel: SettingsScreenModel = rememberKoinInject()
 
-    @Composable
-    override fun Content() {
-        val sessionTime = screenModel.sessionTime.collectAsState()
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState()
-        val longBreakTime = screenModel.longBreakTime.collectAsState()
-        val timeFormat = screenModel.timeFormat.collectAsState()
-        val state = screenModel.appTheme.collectAsState(
-            initial = 2,
-        )
-        val navigator = LocalNavigator.currentOrThrow
-        SettingsScreenContent(
-            optionsOpened = screenModel.optionsOpened,
-            openOptions = { option ->
-                screenModel.openOptions(option)
-            },
-            focusSessionMinutes = sessionTime.value,
-            onFocusSessionMinutesChange = { time ->
-                if (time.isEmpty()) {
-                    screenModel.setSessionTime(0)
-                    return@SettingsScreenContent
-                }
-                if (time.isDigitsOnly().not()) {
-                    return@SettingsScreenContent
-                }
-                screenModel.setSessionTime(time.toInt())
-            },
-            shortBreakMinutes = shortBreakTime.value,
-            onShortBreakMinutesChange = { time ->
-                if (time.isEmpty()) {
-                    screenModel.setShortBreakTime(0)
-                    return@SettingsScreenContent
-                }
-                if (time.isDigitsOnly().not()) {
-                    return@SettingsScreenContent
-                }
-                screenModel.setShortBreakTime(time.toInt())
-            },
-            longBreakMinutes = longBreakTime.value,
-            onLongBreakMinutesChange = { time ->
-                if (time.isEmpty()) {
-                    screenModel.setLongBreakTime(0)
-                    return@SettingsScreenContent
-                }
-                if (time.isDigitsOnly().not()) {
-                    return@SettingsScreenContent
-                }
-                screenModel.setLongBreakTime(time.toInt())
-            },
-            hourFormats = screenModel.hourFormats,
-            selectedHourFormat = timeFormat.value,
-            onHourFormatChange = {
-                screenModel.setHourFormat(it)
-            },
-        )
+
+    val darkTheme = when (screenModel.appTheme.collectAsState().value) {
+        1 -> true
+        else -> false
     }
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+
+    val sessionTime = screenModel.sessionTime.collectAsState()
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState()
+    val longBreakTime = screenModel.longBreakTime.collectAsState()
+    val timeFormat = screenModel.timeFormat.collectAsState()
+    val state = screenModel.appTheme.collectAsState(
+        initial = 2,
+    )
+    val selectedColorCardTitle = screenModel.selectedColorCardTitle.collectAsState().value
+    val currentShortBreakColor = screenModel.shortBreakColor.collectAsState().value
+    val currentLongBreakColor = screenModel.longBreakColor.collectAsState().value
+    val currentSessionColor = screenModel.focusColor.collectAsState().value
+    val showColorDialog = screenModel.showColorDialog.collectAsState().value
+
+    SettingsScreenContent(
+        darkTheme = darkTheme,
+        onDarkThemeChange = { themeValue ->
+            screenModel.setAppTheme(if (themeValue) 1 else 0)
+        },
+        optionsOpened = screenModel.optionsOpened,
+        openOptions = { option ->
+            screenModel.openOptions(option)
+        },
+        focusSessionMinutes = sessionTime.value,
+        onFocusSessionMinutesChange = { time ->
+            if (time.isEmpty()) {
+                screenModel.setSessionTime(0)
+                return@SettingsScreenContent
+            }
+            if (time.isDigitsOnly().not()) {
+                return@SettingsScreenContent
+            }
+            screenModel.setSessionTime(time.toInt())
+        },
+        shortBreakMinutes = shortBreakTime.value,
+        onShortBreakMinutesChange = { time ->
+            if (time.isEmpty()) {
+                screenModel.setShortBreakTime(0)
+                return@SettingsScreenContent
+            }
+            if (time.isDigitsOnly().not()) {
+                return@SettingsScreenContent
+            }
+            screenModel.setShortBreakTime(time.toInt())
+        },
+        longBreakMinutes = longBreakTime.value,
+        onLongBreakMinutesChange = { time ->
+            if (time.isEmpty()) {
+                screenModel.setLongBreakTime(0)
+                return@SettingsScreenContent
+            }
+            if (time.isDigitsOnly().not()) {
+                return@SettingsScreenContent
+            }
+            screenModel.setLongBreakTime(time.toInt())
+        },
+        hourFormats = screenModel.hourFormats,
+        selectedHourFormat = timeFormat.value,
+        onHourFormatChange = {
+            screenModel.setHourFormat(it)
+        },
+        showColorDialog = showColorDialog,
+        selectedColorCardTitle = selectedColorCardTitle,
+        onColorCardTitleChange = {
+            screenModel.setSelectedColorCardTitle(it)
+        },
+        onShowColorDialog = {
+            screenModel.setShowColorDialog(it)
+        },
+        currentShortBreakColor = currentShortBreakColor ?: ShortBreakColor,
+        currentLongBreakColor = currentLongBreakColor ?: LongBreakColor,
+        currentSessionColor = currentSessionColor ?: SessionColor,
+        onSelectColor = {
+            when (selectedColorCardTitle) {
+                "Focus Session" -> {
+                    screenModel.setFocusColor(it)
+                }
+
+                "Short Break" -> {
+                    screenModel.setShortBreakColor(it)
+                }
+
+                "Long Break" -> {
+                    screenModel.setLongBreakColor(it)
+                }
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,6 +194,16 @@ fun SettingsScreenContent(
     hourFormats: List<String>,
     selectedHourFormat: Int,
     onHourFormatChange: (Int) -> Unit,
+    showColorDialog: Boolean,
+    selectedColorCardTitle: String,
+    onColorCardTitleChange: (String) -> Unit,
+    onShowColorDialog: (Boolean) -> Unit,
+    darkTheme: Boolean,
+    onDarkThemeChange: (Boolean) -> Unit,
+    currentShortBreakColor: Long,
+    currentLongBreakColor: Long,
+    currentSessionColor: Long,
+    onSelectColor: (Long) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -204,6 +268,16 @@ fun SettingsScreenContent(
                     onExpand = { title ->
                         openOptions(title)
                     },
+                    showColorDialog = showColorDialog,
+                    selectedColorCardTitle = selectedColorCardTitle,
+                    onColorCardTitleChange = onColorCardTitleChange,
+                    onShowColorDialog = onShowColorDialog,
+                    darkTheme = darkTheme,
+                    onDarkThemeChange = onDarkThemeChange,
+                    currentShortBreakColor = currentShortBreakColor,
+                    currentLongBreakColor = currentLongBreakColor,
+                    currentSessionColor = currentSessionColor,
+                    onSelectColor = onSelectColor,
                 )
             }
             item {
@@ -383,6 +457,16 @@ fun SoundSetting(
 fun ThemeSetting(
     onExpand: (String) -> Unit,
     expanded: (String) -> Boolean,
+    showColorDialog: Boolean,
+    selectedColorCardTitle: String,
+    onColorCardTitleChange: (String) -> Unit,
+    onShowColorDialog: (Boolean) -> Unit,
+    darkTheme: Boolean,
+    onDarkThemeChange: (Boolean) -> Unit,
+    currentShortBreakColor: Long,
+    currentLongBreakColor: Long,
+    currentSessionColor: Long,
+    onSelectColor: (Long) -> Unit,
 ) {
     SettingCard(
         onExpand = {
@@ -392,23 +476,15 @@ fun ThemeSetting(
         title = "Theme",
         icon = Icons.Outlined.LightMode,
         content = {
-            var showColorDialog by remember {
-                mutableStateOf(false)
-            }
-            var selectedColorCard by remember {
-                mutableStateOf("")
-            }
-            var darkTheme by remember {
-                mutableStateOf(false)
-            }
             if (showColorDialog) {
                 ColorsDialog(
-                    title = "Choose $selectedColorCard Color",
+                    title = "Choose $selectedColorCardTitle Color",
                     onDismiss = {
-                        showColorDialog = false
+                        onShowColorDialog(false)
                     },
                     onSelectColor = {
-                        showColorDialog = false
+                        onShowColorDialog(false)
+                        onSelectColor(it)
                     },
                 )
             }
@@ -420,31 +496,34 @@ fun ThemeSetting(
                 Text(text = "Sessions Color Scheme")
                 ColorsSelection(
                     onSelectSessionColor = {
-                        showColorDialog = true
-                        selectedColorCard = "Focus Session"
+                        onShowColorDialog(true)
+                        onColorCardTitleChange("Focus Session")
                     },
                     onSelectShortBreakColor = {
-                        showColorDialog = true
-                        selectedColorCard = "Short Break"
+                        onShowColorDialog(true)
+                        onColorCardTitleChange("Short Break")
                     },
                     onSelectLongBreakColor = {
-                        showColorDialog = true
-                        selectedColorCard = "Long Break"
+                        onShowColorDialog(true)
+                        onColorCardTitleChange("Long Break")
                     },
-                    /*currentSessionColor = SessionColor,
-                    currentShortBreakColor = ShortBreakColor,
-                    currentLongBreakColor = LongBreakColor,*/
-                    currentSessionColor = Color.Magenta,
-                    currentShortBreakColor = Color.Cyan,
-                    currentLongBreakColor = Color.Yellow,
+                    currentSessionColor = currentSessionColor,
+                    currentShortBreakColor = currentShortBreakColor,
+                    currentLongBreakColor = currentLongBreakColor,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
             AutoStartSession(
-                title = "App Theme (Light)",
+                title = "App Theme (${
+                    if (darkTheme) {
+                        "Dark"
+                    } else {
+                        "Light"
+                    }
+                })",
                 checked = darkTheme,
                 onCheckedChange = {
-                    darkTheme = it
+                    onDarkThemeChange(it)
                 },
             )
         },
@@ -638,12 +717,12 @@ fun SettingCard(
 
 @Composable
 fun ColorsSelection(
-    onSelectSessionColor: (Color) -> Unit,
-    onSelectShortBreakColor: (Color) -> Unit,
-    onSelectLongBreakColor: (Color) -> Unit,
-    currentSessionColor: Color,
-    currentShortBreakColor: Color,
-    currentLongBreakColor: Color,
+    onSelectSessionColor: (Long) -> Unit,
+    onSelectShortBreakColor: (Long) -> Unit,
+    onSelectLongBreakColor: (Long) -> Unit,
+    currentSessionColor: Long,
+    currentShortBreakColor: Long,
+    currentLongBreakColor: Long,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -667,11 +746,11 @@ fun ColorsSelection(
 @Composable
 fun ColorCard(
     modifier: Modifier = Modifier,
-    color: Color,
-    onClick: (Color) -> Unit,
+    color: Long,
+    onClick: (Long) -> Unit,
 ) {
     Box(
-        modifier = modifier.size(32.dp).clip(MaterialTheme.shapes.medium).background(color)
+        modifier = modifier.size(32.dp).clip(MaterialTheme.shapes.medium).background(Color(color))
             .clickable {
                 onClick(color)
             },
@@ -682,7 +761,7 @@ fun ColorCard(
 fun ColorsDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    onSelectColor: (Color) -> Unit,
+    onSelectColor: (Long) -> Unit,
     title: String,
 ) {
     AlertDialog(
@@ -722,17 +801,18 @@ fun ColorsDialog(
 }
 
 private val sessionColors = listOf(
-    Color.Magenta,
-    Color.Cyan,
-    Color.Yellow,
-    Color.Red,
-    Color.Green,
-    Color.Blue,
-    Color.Gray,
-    Color.LightGray,
-    Color.DarkGray,
-    Color.Black,
-    Color.White,
+    SessionColor,
+    ShortBreakColor,
+    LongBreakColor,
+    Red,
+    Green,
+    Orange,
+    Blue,
+    Green,
+    LightGreen,
+    Yellow,
+    LightBlue,
+    Pink,
 )
 
 /**

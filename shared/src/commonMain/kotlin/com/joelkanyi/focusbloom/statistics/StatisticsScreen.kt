@@ -44,15 +44,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.completedTasks
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.getLast52Weeks
@@ -60,6 +60,7 @@ import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskIcon
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import com.joelkanyi.focusbloom.statistics.component.BarChart
 import com.joelkanyi.focusbloom.statistics.component.TickPositionState
 import io.github.koalaplot.core.ChartLayout
@@ -68,70 +69,71 @@ import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.compose.rememberKoinInject
 
-class StatisticsScreen : Screen, KoinComponent {
-    private val screenModel: StatisticsScreenModel by inject()
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun StatisticsScreen() {
+    val screenModel: StatisticsScreenModel = rememberKoinInject()
 
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val tasksHistory = screenModel.tasks.collectAsState().value
-        val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
-        val hourFormat = screenModel.hourFormat.collectAsState().value
-        val coroutineScope = rememberCoroutineScope()
-        val pagerState = rememberPagerState(
-            initialPage = lastFiftyTwoWeeks.size - 1,
-            initialPageOffsetFraction = 0f,
-            pageCount = {
-                lastFiftyTwoWeeks.size
-            },
-        )
-        val selectedWeek = lastFiftyTwoWeeks[pagerState.currentPage].first
-        val selectedWeekTasks = tasksHistory.completedTasks(
-            lastFiftyTwoWeeks[pagerState.currentPage].second,
-        ).map { it.toFloat() }
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val navigator = LocalAppNavigator.currentOrThrow
+    val tasksHistory = screenModel.tasks.collectAsState().value
+    val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
+    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(
+        initialPage = lastFiftyTwoWeeks.size - 1,
+        initialPageOffsetFraction = 0f,
+        pageCount = {
+            lastFiftyTwoWeeks.size
+        },
+    )
+    val selectedWeek = lastFiftyTwoWeeks[pagerState.currentPage].first
+    val selectedWeekTasks = tasksHistory.completedTasks(
+        lastFiftyTwoWeeks[pagerState.currentPage].second,
+    ).map { it.toFloat() }
 
-        StatisticsScreenContent(
-            hourFormat = hourFormat,
-            pagerState = pagerState,
-            selectedWeek = selectedWeek,
-            selectedWeekTasks = selectedWeekTasks,
-            tasksHistory = tasksHistory,
-            onClickSeeAllTasks = {
-                navigator.push(AllStatisticsScreen())
-            },
-            onClickThisWeek = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(lastFiftyTwoWeeks.size - 1)
-                }
-            },
-            onClickNextWeek = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                }
-            },
-            onClickPreviousWeek = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                }
-            },
-            onClickDelete = {
-                screenModel.deleteTask(it)
-            },
-            showTaskOption = {
-                screenModel.openedTasks.contains(it)
-            },
-            onShowTaskOption = {
-                screenModel.openTaskOptions(it)
-            },
-            onClickCancel = {
-                screenModel.openTaskOptions(it)
-            },
-        )
-    }
+    StatisticsScreenContent(
+        hourFormat = hourFormat,
+        pagerState = pagerState,
+        selectedWeek = selectedWeek,
+        selectedWeekTasks = selectedWeekTasks,
+        tasksHistory = tasksHistory,
+        onClickSeeAllTasks = {
+            navigator.push(AllStatisticsScreen())
+        },
+        onClickThisWeek = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(lastFiftyTwoWeeks.size - 1)
+            }
+        },
+        onClickNextWeek = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+            }
+        },
+        onClickPreviousWeek = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+            }
+        },
+        onClickDelete = {
+            screenModel.deleteTask(it)
+        },
+        showTaskOption = {
+            screenModel.openedTasks.contains(it)
+        },
+        onShowTaskOption = {
+            screenModel.openTaskOptions(it)
+        },
+        onClickCancel = {
+            screenModel.openTaskOptions(it)
+        },
+    )
 }
 
 @OptIn(
@@ -276,6 +278,7 @@ fun StatisticsScreenContent(
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
+                            textAlign = TextAlign.End,
                         ),
                     )
                 }

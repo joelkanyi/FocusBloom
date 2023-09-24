@@ -61,6 +61,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.koin.core)
+                api(libs.koin.compose)
 
                 implementation(compose.material3)
                 implementation(compose.material)

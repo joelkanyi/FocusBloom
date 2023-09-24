@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +24,21 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class AllTasksScreen : Screen, KoinComponent {
+
     private val screenModel: HomeScreenModel by inject()
 
     @Composable
     override fun Content() {
+        StatusBarColors(
+            statusBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background,
+        )
         val navigator = LocalNavigator.currentOrThrow
         val allTasks = screenModel.tasks.collectAsState().value
         val hourFormat = screenModel.hourFormat.collectAsState().value

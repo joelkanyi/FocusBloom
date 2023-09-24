@@ -8,6 +8,8 @@ import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsReposito
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.database.BloomDatabase
 import com.joelkanyi.focusbloom.home.HomeScreenModel
+import com.joelkanyi.focusbloom.main.MainViewModel
+import com.joelkanyi.focusbloom.onboarding.OnboadingViewModel
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
 import com.joelkanyi.focusbloom.settings.SettingsScreenModel
 import com.joelkanyi.focusbloom.statistics.StatisticsScreenModel
@@ -86,6 +88,18 @@ fun commonModule(isDebug: Boolean) = module {
         TaskProgressScreenModel(
             settingsRepository = get(),
             tasksRepository = get(),
+        )
+    }
+
+    single<MainViewModel> {
+        MainViewModel(
+            settingsRepository = get(),
+        )
+    }
+
+    single<OnboadingViewModel> {
+        OnboadingViewModel(
+            settingsRepository = get(),
         )
     }
 }

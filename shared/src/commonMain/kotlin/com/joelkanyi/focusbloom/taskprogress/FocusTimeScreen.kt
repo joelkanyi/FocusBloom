@@ -1,8 +1,5 @@
 package com.joelkanyi.focusbloom.taskprogress
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -26,14 +22,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -56,11 +52,12 @@ import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-data class FocusTimeScreen(
+class FocusTimeScreen(
     val taskId: Int,
 ) : Screen, KoinComponent {
     private val screenModel: TaskProgressScreenModel by inject()
@@ -70,8 +67,34 @@ data class FocusTimeScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val task = screenModel.task.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
-        val selectedTab = screenModel.selectedTab.collectAsState().value
         val timer = screenModel.tickingTime.collectAsState().value
+        val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
+        val longBreakColor = screenModel.longBreakColor.collectAsState().value
+        val focusColor = screenModel.focusColor.collectAsState().value
+
+        val containerColor = when (task?.current.sessionType()) {
+            SessionType.Focus -> focusColor?.let {
+                Color(
+                    it,
+                )
+            }
+
+            SessionType.LongBreak -> longBreakColor?.let {
+                Color(
+                    it,
+                )
+            }
+
+            SessionType.ShortBreak -> shortBreakColor?.let {
+                Color(
+                    it,
+                )
+            }
+        }
+        StatusBarColors(
+            statusBarColor = containerColor ?: MaterialTheme.colorScheme.background,
+            navBarColor = containerColor ?: MaterialTheme.colorScheme.background,
+        )
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
             screenModel.eventsFlow.collectLatest { event ->
@@ -99,14 +122,9 @@ data class FocusTimeScreen(
             timerValue = timer,
             snackbarHostState = snackbarHostState,
             timerState = screenModel.timerState.collectAsState().value,
+            containerColor = containerColor ?: MaterialTheme.colorScheme.background,
             onClickNavigateBack = {
                 navigator.pop()
-            },
-            isSelected = { title ->
-                selectedTab == title
-            },
-            onClick = { title ->
-                screenModel.selectTab(title)
             },
             onClickNext = {
                 screenModel.next()
@@ -144,18 +162,18 @@ data class FocusTimeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FocusTimeScreenContent(
+    containerColor: Color,
     timerValue: Long,
     timerState: TimerState,
     task: Task?,
     snackbarHostState: SnackbarHostState,
     onClickNavigateBack: () -> Unit,
-    isSelected: (title: String) -> Boolean,
-    onClick: (title: String) -> Unit,
     onClickAction: (state: TimerState) -> Unit,
     onClickNext: () -> Unit,
     onClickReset: () -> Unit,
 ) {
     Scaffold(
+        containerColor = containerColor,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
@@ -170,6 +188,9 @@ fun FocusTimeScreenContent(
                         )
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = containerColor,
+                ),
             )
         },
     ) { paddingValues ->
@@ -184,194 +205,111 @@ fun FocusTimeScreenContent(
                     text = "Task not found",
                 )
             } else {
-                Column(
+                LazyColumn(
                     modifier = Modifier.padding(PaddingValues(horizontal = 16.dp)),
                 ) {
-                    /*Tabs(
-                        isSelected = isSelected,
-                        onClick = onClick,
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))*/
-                    LazyColumn {
-                        item {
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(12.dp),
                             ) {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
-                                    Row(
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(.85f),
+                                        text = task.name,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                    Column(
                                         modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.End,
                                     ) {
                                         Text(
-                                            modifier = Modifier.fillMaxWidth(.85f),
-                                            text = task.name,
-                                            style = MaterialTheme.typography.titleSmall,
-                                            maxLines = 3,
-                                            overflow = TextOverflow.Ellipsis,
+                                            text = buildAnnotatedString {
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        fontSize = 18.sp,
+                                                    ),
+                                                ) {
+                                                    append("${task.currentCycle}")
+                                                }
+                                                append("/${task.focusSessions}")
+                                            },
                                         )
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.End,
-                                        ) {
-                                            Text(
-                                                text = buildAnnotatedString {
-                                                    withStyle(
-                                                        style = SpanStyle(
-                                                            fontWeight = FontWeight.SemiBold,
-                                                            fontSize = 18.sp,
-                                                        ),
-                                                    ) {
-                                                        append("${task.currentCycle}")
-                                                    }
-                                                    append("/${task.focusSessions}")
-                                                },
-                                            )
-                                            Text(
-                                                text = when (task.current.sessionType()) {
-                                                    SessionType.Focus -> "${task.focusTime.toMinutes()} min"
-                                                    SessionType.ShortBreak -> "${task.shortBreakTime.toMinutes()} min"
-                                                    SessionType.LongBreak -> "${task.longBreakTime.toMinutes()} min"
-                                                },
-                                            )
-                                        }
+                                        Text(
+                                            text = when (task.current.sessionType()) {
+                                                SessionType.Focus -> "${task.focusTime.toMinutes()} min"
+                                                SessionType.ShortBreak -> "${task.shortBreakTime.toMinutes()} min"
+                                                SessionType.LongBreak -> "${task.longBreakTime.toMinutes()} min"
+                                            },
+                                        )
                                     }
-
-                                    Text(
-                                        text = "${task.durationInMinutes()} minutes",
-                                        style = MaterialTheme.typography.bodySmall,
-                                    )
                                 }
-                            }
-                        }
 
-                        item {
-                            Spacer(modifier = Modifier.height(32.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                            ) {
-                                TaskProgress(
-                                    percentage = timerValue.toPercentage(
-                                        when (task.current.sessionType()) {
-                                            SessionType.Focus -> task.focusTime
-                                            SessionType.ShortBreak -> task.shortBreakTime
-                                            SessionType.LongBreak -> task.longBreakTime
-                                        },
-                                    ),
-                                    radius = 40.dp,
-                                    content = timerValue.toTimer(),
-                                    mainColor = MaterialTheme.colorScheme.primary,
+                                Text(
+                                    text = "${task.durationInMinutes()} minutes",
+                                    style = MaterialTheme.typography.bodySmall,
                                 )
                             }
                         }
+                    }
 
-                        item {
-                            Spacer(modifier = Modifier.height(48.dp))
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = when (task.current.sessionType()) {
-                                    SessionType.Focus -> "Focus Time"
-                                    SessionType.ShortBreak -> "Short Break"
-                                    SessionType.LongBreak -> "Long Break"
-                                },
-                                style = MaterialTheme.typography.displaySmall,
-                                textAlign = TextAlign.Center,
+                    item {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            TaskProgress(
+                                percentage = timerValue.toPercentage(
+                                    when (task.current.sessionType()) {
+                                        SessionType.Focus -> task.focusTime
+                                        SessionType.ShortBreak -> task.shortBreakTime
+                                        SessionType.LongBreak -> task.longBreakTime
+                                    },
+                                ),
+                                radius = 40.dp,
+                                content = timerValue.toTimer(),
+                                mainColor = MaterialTheme.colorScheme.primary,
                             )
                         }
+                    }
 
-                        item {
-                            Spacer(modifier = Modifier.height(56.dp))
-                            BloomTimerControls(
-                                modifier = Modifier.fillMaxWidth(),
-                                state = timerState,
-                                onClickReset = onClickReset,
-                                onClickNext = onClickNext,
-                                onClickAction = onClickAction,
-                            )
-                        }
+                    item {
+                        Spacer(modifier = Modifier.height(48.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = when (task.current.sessionType()) {
+                                SessionType.Focus -> "Focus Time"
+                                SessionType.ShortBreak -> "Short Break"
+                                SessionType.LongBreak -> "Long Break"
+                            },
+                            style = MaterialTheme.typography.displaySmall,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(56.dp))
+                        BloomTimerControls(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = timerState,
+                            onClickReset = onClickReset,
+                            onClickNext = onClickNext,
+                            onClickAction = onClickAction,
+                        )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Tabs(
-    isSelected: (title: String) -> Boolean,
-    onClick: (title: String) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Tab(
-            title = "Focus Time",
-            isSelected = isSelected,
-            onClick = onClick,
-        )
-        Tab(
-            title = "Short Break",
-            isSelected = isSelected,
-            onClick = onClick,
-        )
-        Tab(
-            title = "Long Break",
-            isSelected = isSelected,
-            onClick = onClick,
-        )
-    }
-}
-
-@Composable
-fun Tab(
-    title: String,
-    isSelected: (title: String) -> Boolean,
-    onClick: (title: String) -> Unit,
-) {
-    val color = if (isSelected(title)) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-
-    Box(
-        modifier = Modifier
-            .wrapContentSize(align = Alignment.Center)
-            .clip(MaterialTheme.shapes.medium)
-            .background(color = color)
-            .then(
-                if (isSelected(title).not()) {
-                    Modifier.border(
-                        width = .5.dp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .5f),
-                        shape = MaterialTheme.shapes.medium,
-                    )
-                } else {
-                    Modifier
-                },
-            )
-            .clickable {
-                onClick(title)
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = title,
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = if (isSelected(title)) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .65f)
-                },
-            ),
-        )
     }
 }

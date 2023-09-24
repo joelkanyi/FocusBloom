@@ -61,7 +61,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import cafe.adriel.voyager.core.screen.Screen
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.MAX
@@ -83,6 +82,7 @@ import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskData
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -91,63 +91,64 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.compose.rememberKoinInject
 import kotlin.math.roundToInt
 
-class CalendarScreen : Screen, KoinComponent {
-    private val screenModel: CalendarScreenModel by inject()
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Composable
+fun CalendarScreen() {
+    val screenModel: CalendarScreenModel = rememberKoinInject()
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Composable
-    override fun Content() {
-        val coroutineScope = rememberCoroutineScope()
-        val tasks = screenModel.tasks.collectAsState().value
-        val selectedDay = screenModel.selectedDay.collectAsState().value
-        val hourFormat = screenModel.hourFormat.collectAsState().value
-        val calendarPagerState = rememberLazyListState()
-        val verticalScrollState = rememberScrollState()
-        LaunchedEffect(key1 = tasks, block = {
-            calendarPagerState.animateScrollToItem(
-                index = calendarLocalDates().indexOf(selectedDay),
-                scrollOffset = 0,
-            )
-        })
-        BoxWithConstraints {
-            val windowSizeClass = calculateWindowSizeClass()
-            val useDesktopSize = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
-            val HOUR_SIZE = if (useDesktopSize) 90.dp else 92.dp
-            val DAY_SIZE = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
-            CalendarScreenContent(
-                selectedDay = selectedDay,
-                hourFormat = hourFormat,
-                hourSize = ScheduleSize.FixedSize(HOUR_SIZE),
-                daySize = ScheduleSize.FixedSize(DAY_SIZE),
-                selectedDayTasks = tasks.filter {
-                    it.date.date == selectedDay
-                },
-                verticalScrollState = verticalScrollState,
-                calendarPagerState = calendarPagerState,
-                onClickThisWeek = {
-                    coroutineScope.launch {
-                        calendarPagerState.animateScrollToItem(
-                            index = calendarLocalDates().indexOf(
-                                Clock.System.now()
-                                    .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                            ),
-                            scrollOffset = 0,
-                        )
-                        screenModel.setSelectedDay(
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val coroutineScope = rememberCoroutineScope()
+    val tasks = screenModel.tasks.collectAsState().value
+    val selectedDay = screenModel.selectedDay.collectAsState().value
+    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val calendarPagerState = rememberLazyListState()
+    val verticalScrollState = rememberScrollState()
+    LaunchedEffect(key1 = tasks, block = {
+        calendarPagerState.animateScrollToItem(
+            index = calendarLocalDates().indexOf(selectedDay),
+            scrollOffset = 0,
+        )
+    })
+    BoxWithConstraints {
+        val windowSizeClass = calculateWindowSizeClass()
+        val useDesktopSize = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
+        val HOUR_SIZE = if (useDesktopSize) 90.dp else 92.dp
+        val DAY_SIZE = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
+        CalendarScreenContent(
+            selectedDay = selectedDay,
+            hourFormat = hourFormat,
+            hourSize = ScheduleSize.FixedSize(HOUR_SIZE),
+            daySize = ScheduleSize.FixedSize(DAY_SIZE),
+            selectedDayTasks = tasks.filter {
+                it.date.date == selectedDay
+            },
+            verticalScrollState = verticalScrollState,
+            calendarPagerState = calendarPagerState,
+            onClickThisWeek = {
+                coroutineScope.launch {
+                    calendarPagerState.animateScrollToItem(
+                        index = calendarLocalDates().indexOf(
                             Clock.System.now()
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                        )
-                    }
-                },
-                onSelectDay = {
-                    screenModel.setSelectedDay(it)
-                },
-            )
-        }
+                        ),
+                        scrollOffset = 0,
+                    )
+                    screenModel.setSelectedDay(
+                        Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                    )
+                }
+            },
+            onSelectDay = {
+                screenModel.setSelectedDay(it)
+            },
+        )
     }
 }
 

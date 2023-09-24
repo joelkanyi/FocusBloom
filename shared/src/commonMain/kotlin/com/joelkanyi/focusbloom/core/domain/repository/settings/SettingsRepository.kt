@@ -14,4 +14,12 @@ interface SettingsRepository {
     fun saveLongBreakTime(longBreakTime: Int)
     fun saveHourFormat(timeFormat: Int)
     fun saveShortBreakTime(shortBreakTime: Int)
+    fun shortBreakColor(): Flow<Long?>
+    fun saveShortBreakColor(color: Long)
+    fun longBreakColor(): Flow<Long?>
+    fun saveLongBreakColor(color: Long)
+    fun focusColor(): Flow<Long?>
+    fun saveFocusColor(color: Long)
+    fun saveUsername(value: String)
+    fun getUsername(): Flow<String?>
 }

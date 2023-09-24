@@ -28,6 +28,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -36,6 +37,10 @@ class AllStatisticsScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
+        StatusBarColors(
+            statusBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background,
+        )
         val navigator = LocalNavigator.currentOrThrow
         val hourFormat = screenModel.hourFormat.collectAsState().value
         val tasksHistory = screenModel.tasks.collectAsState().value

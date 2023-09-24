@@ -1,7 +1,7 @@
 [versions]
 componentsResources = "1.5.0"
 koalaplotCore = "0.4.0-dev1"
-kotlin = "1.9.0"
+kotlin = "1.9.10"
 gradle = "8.1.0"
 kotlinxCoroutinesSwing = "1.7.3"
 ktLint = "10.3.0"
@@ -16,11 +16,12 @@ napier = "2.4.0"
 primitiveAdapters = "2.0.0"
 sqlDelight = "1.5.5"
 multiplatformSettings = "0.8.1"
-compose = "1.5.0"
+compose = "1.5.1"
 core-library-desugaring = "1.1.5"
-voyager = "1.0.0-rc06"
+voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 accompanist = "0.25.1"
+koin-compose = "1.0.4"
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
@@ -40,6 +41,7 @@ sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight"
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }

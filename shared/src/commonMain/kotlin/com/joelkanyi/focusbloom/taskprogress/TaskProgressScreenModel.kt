@@ -10,24 +10,45 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TaskProgressScreenModel(
-    settingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
 
-    private val _selectedTab = MutableStateFlow("Focus Time")
-    val selectedTab = _selectedTab.asStateFlow()
-    fun selectTab(index: String) {
-        _selectedTab.value = index
-    }
+    val shortBreakColor = settingsRepository.shortBreakColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val longBreakColor = settingsRepository.longBreakColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val focusColor = settingsRepository.focusColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
 
     private val _task = MutableStateFlow<Task?>(null)
     val task = _task.asStateFlow()
@@ -141,57 +162,13 @@ class TaskProgressScreenModel(
     fun start() {
         job?.cancel()
         job = scope.launch {
-/*            if (task.value?.inProgressTask == true) {
-                when (task.value?.current) {
-                    *//*_tickingTime.emit(timerDuration)
-_timerState.emit(TimerState.Ticking)
-// _timerEvent.trySend(TimerEvent.Started)
-_eventsFlow.emit(UiEvents.TimerEventStarted(timerDuration))*//*
-                    "Focus" -> {
-                        _tickingTime.emit(task.value?.consumedFocusTime ?: 0L)
-                        _timerState.emit(TimerState.Ticking)
-                        _eventsFlow.emit(
-                            UiEvents.TimerEventStarted(
-                                task.value?.consumedFocusTime ?: 0L,
-                            ),
-                        )
-                    }
-
-                    "ShortBreak" -> {
-                        _tickingTime.emit(task.value?.consumedShortBreakTime ?: 0L)
-                        _timerState.emit(TimerState.Ticking)
-                        _eventsFlow.emit(
-                            UiEvents.TimerEventStarted(
-                                task.value?.consumedShortBreakTime ?: 0L,
-                            ),
-                        )
-                    }
-
-                    "LongBreak" -> {
-                        _tickingTime.emit(task.value?.consumedLongBreakTime ?: 0L)
-                        _timerState.emit(TimerState.Ticking)
-                        _eventsFlow.emit(
-                            UiEvents.TimerEventStarted(
-                                task.value?.consumedLongBreakTime ?: 0L,
-                            ),
-                        )
-                    }
-                }
-            } else {*/
-            /*_tickingTime.emit(timerDuration)
-            _timerState.emit(TimerState.Ticking)
-            // _timerEvent.trySend(TimerEvent.Started)
-            _eventsFlow.emit(UiEvents.TimerEventStarted(timerDuration))*/
-
             when (task.value?.current) {
                 "Focus" -> {
-                    // _tickingTime.emit(task.value?.focusTime ?: 0L)
                     _timerState.emit(TimerState.Ticking)
                     _eventsFlow.emit(UiEvents.TimerEventStarted(task.value?.focusTime ?: 0L))
                 }
 
                 "ShortBreak" -> {
-                    // _tickingTime.emit(task.value?.shortBreakTime ?: 0L)
                     _timerState.emit(TimerState.Ticking)
                     _eventsFlow.emit(
                         UiEvents.TimerEventStarted(
@@ -201,7 +178,6 @@ _eventsFlow.emit(UiEvents.TimerEventStarted(timerDuration))*//*
                 }
 
                 "LongBreak" -> {
-                    // _tickingTime.emit(task.value?.longBreakTime ?: 0L)
                     _timerState.emit(TimerState.Ticking)
                     _eventsFlow.emit(
                         UiEvents.TimerEventStarted(
@@ -210,7 +186,6 @@ _eventsFlow.emit(UiEvents.TimerEventStarted(timerDuration))*//*
                     )
                 }
             }
-            // }
 
             while (_tickingTime.value > 0L) {
                 delay(200L)
@@ -239,50 +214,51 @@ _eventsFlow.emit(UiEvents.TimerEventStarted(timerDuration))*//*
 
     fun executeTasks() {
         scope.launch {
-            if (task.value?.currentCycle == task.value?.focusSessions) {
-                updateCompletedTask(task.value?.id ?: 0, true)
-                updateInProgressTask(task.value?.id ?: 0, false)
-                stop()
-                println("Congratulations! You have completed the task!")
-                _eventsFlow.emit(UiEvents.ShowSnackbar("Congratulations! You have completed the task!"))
+            println("executeTasks: cycles not completed")
+            if (task.value?.currentCycle?.equals(0) == true) {
+                println("executeTasks: first cycle")
+                updateCurrentCycle(task.value?.id ?: 0, 1)
+                updateCurrentSession(task.value?.id ?: 0, "Focus")
+                updateInProgressTask(task.value?.id ?: 0, true)
+                _tickingTime.emit(task.value?.focusTime ?: 0L)
+                start()
             } else {
-                println("executeTasks: cycles not completed")
-                if (task.value?.currentCycle?.equals(0) == true) {
-                    println("executeTasks: first cycle")
-                    updateCurrentCycle(task.value?.id ?: 0, 1)
-                    updateCurrentSession(task.value?.id ?: 0, "Focus")
-                    updateInProgressTask(task.value?.id ?: 0, true)
-                    _tickingTime.emit(task.value?.focusTime ?: 0L)
-                    start()
-                } else {
-                    when (task.value?.current) {
-                        "Focus" -> {
+                when (task.value?.current) {
+                    "Focus" -> {
+                        if (task.value?.currentCycle == task.value?.focusSessions) {
+                            println("executeTasks: going for a long break after a focus session")
+                            updateCurrentSession(task.value?.id ?: 0, "LongBreak")
+                            updateInProgressTask(task.value?.id ?: 0, true)
+                            _tickingTime.emit(task.value?.longBreakTime ?: 0L)
+                            start()
+                        } else {
                             println("executeTasks: going for a short break after a focus session")
                             updateCurrentSession(task.value?.id ?: 0, "ShortBreak")
                             updateInProgressTask(task.value?.id ?: 0, true)
                             _tickingTime.emit(task.value?.shortBreakTime ?: 0L)
                             start()
                         }
+                    }
 
-                        "ShortBreak" -> {
-                            println("executeTasks: going for a focus session after a short break")
-                            updateCurrentSession(task.value?.id ?: 0, "Focus")
-                            updateCurrentCycle(
-                                task.value?.id ?: 0,
-                                task.value?.currentCycle?.plus(1) ?: (0 + 1),
-                            )
-                            updateInProgressTask(task.value?.id ?: 0, true)
-                            _tickingTime.emit(task.value?.focusTime ?: 0L)
-                            start()
-                        }
+                    "ShortBreak" -> {
+                        println("executeTasks: going for a focus session after a short break")
+                        updateCurrentSession(task.value?.id ?: 0, "Focus")
+                        updateCurrentCycle(
+                            task.value?.id ?: 0,
+                            task.value?.currentCycle?.plus(1) ?: (0 + 1),
+                        )
+                        updateInProgressTask(task.value?.id ?: 0, true)
+                        _tickingTime.emit(task.value?.focusTime ?: 0L)
+                        start()
+                    }
 
-                        "LongBreak" -> {
-                            println("executeTasks: going for a focus session after a long break")
-                            updateCurrentSession(task.value?.id ?: 0, "Focus")
-                            updateInProgressTask(task.value?.id ?: 0, true)
-                            _tickingTime.emit(task.value?.focusTime ?: 0L)
-                            start()
-                        }
+                    "LongBreak" -> {
+                        println("executeTasks: completed all cycles")
+                        updateCompletedTask(task.value?.id ?: 0, true)
+                        updateInProgressTask(task.value?.id ?: 0, false)
+                        stop()
+                        println("Congratulations! You have completed the task!")
+                        _eventsFlow.emit(UiEvents.ShowSnackbar("Congratulations! You have completed the task!"))
                     }
                 }
             }

@@ -25,56 +25,61 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
+import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
+import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
 import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import com.joelkanyi.focusbloom.taskprogress.FocusTimeScreen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.compose.rememberKoinInject
 
-class HomeScreen : Screen, KoinComponent {
-    private val screenModel: HomeScreenModel by inject()
+@Composable
+fun HomeScreen() {
+    val screenModel: HomeScreenModel = rememberKoinInject()
 
-    @Composable
-    override fun Content() {
-        val tasks = screenModel.tasks.collectAsState(emptyList()).value
-        val hourFormat = screenModel.hourFormat.collectAsState().value
-        val navigator = LocalNavigator.currentOrThrow
-        HomeScreenContent(
-            tasks = tasks,
-            hourFormat = hourFormat,
-            onClickTask = {
-                navigator.push(FocusTimeScreen(taskId = it.id))
-            },
-            onClickCancel = {
-                screenModel.openTaskOptions(it)
-            },
-            onClickSave = {
-                screenModel.updateTask(it)
-            },
-            onClickDelete = {
-                screenModel.deleteTask(it)
-            },
-            showTaskOption = {
-                screenModel.openedTasks.contains(it)
-            },
-            onShowTaskOption = {
-                screenModel.openTaskOptions(it)
-            },
-            onClickSeeAllTasks = {
-                navigator.push(AllTasksScreen())
-            },
-        )
-    }
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val tasks = screenModel.tasks.collectAsState(emptyList()).value
+    val username = screenModel.username.collectAsState().value
+    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val navigator = LocalAppNavigator.currentOrThrow
+    HomeScreenContent(
+        tasks = tasks.sortedByDescending { it.completed.not() },
+        hourFormat = hourFormat,
+        username = username,
+        onClickTask = {
+            navigator.push(FocusTimeScreen(taskId = it.id))
+        },
+        onClickCancel = {
+            screenModel.openTaskOptions(it)
+        },
+        onClickSave = {
+            screenModel.updateTask(it)
+        },
+        onClickDelete = {
+            screenModel.deleteTask(it)
+        },
+        showTaskOption = {
+            screenModel.openedTasks.contains(it)
+        },
+        onShowTaskOption = {
+            screenModel.openTaskOptions(it)
+        },
+        onClickSeeAllTasks = {
+            navigator.push(AllTasksScreen())
+        },
+    )
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -82,6 +87,7 @@ class HomeScreen : Screen, KoinComponent {
 private fun HomeScreenContent(
     tasks: List<Task>,
     hourFormat: Int,
+    username: String,
     onClickTask: (task: Task) -> Unit,
     onClickSeeAllTasks: () -> Unit,
     onClickCancel: (task: Task) -> Unit,
@@ -102,41 +108,13 @@ private fun HomeScreenContent(
             ) {
                 item {
                     Text(
-                        text = "Hello, Joel",
+                        text = "Hello, ${username.pickFirstName()}!",
                         style = MaterialTheme.typography.displaySmall,
                     )
                 }
                 item {
-                    Card {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            TaskProgress(
-                                mainColor = MaterialTheme.colorScheme.secondary,
-                                percentage = taskCompletionPercentage(tasks).toFloat(),
-                            )
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Text(
-                                    text = taskCompleteMessage(tasks),
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = "${tasks.filter { it.completed }.size} of ${tasks.size} tasks completed",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    ),
-                                )
-                            }
-                        }
+                    if (tasks.isNotEmpty() && tasks.all { it.completed }.not()) {
+                        TodayTaskProgressCard(tasks = tasks)
                     }
                 }
                 if (tasks.isNotEmpty()) {
@@ -167,17 +145,19 @@ private fun HomeScreenContent(
                         }
                     }
                 }
-                items(tasks.take(3)) {
-                    TaskCard(
-                        task = it,
-                        onClick = onClickTask,
-                        onClickDelete = onClickDelete,
-                        onClickCancel = onClickCancel,
-                        onClickSave = onClickSave,
-                        showTaskOption = showTaskOption,
-                        onShowTaskOption = onShowTaskOption,
-                        hourFormat = hourFormat,
-                    )
+                if (tasks.all { it.completed }.not()) {
+                    items(tasks.take(3)) {
+                        TaskCard(
+                            task = it,
+                            onClick = onClickTask,
+                            onClickDelete = onClickDelete,
+                            onClickCancel = onClickCancel,
+                            onClickSave = onClickSave,
+                            showTaskOption = showTaskOption,
+                            onShowTaskOption = onShowTaskOption,
+                            hourFormat = hourFormat,
+                        )
+                    }
                 }
 
                 if (tasks.all { it.completed } || tasks.isEmpty()) {
@@ -187,31 +167,90 @@ private fun HomeScreenContent(
                                 .fillMaxWidth(),
                             horizontalAlignment = CenterHorizontally,
                         ) {
-                            Spacer(modifier = Modifier.height(56.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
                             Image(
                                 modifier = Modifier
-                                    .size(200.dp)
+                                    .size(300.dp)
                                     .align(CenterHorizontally),
-                                painter = painterResource("empty_two.xml"),
+                                painter = painterResource(
+                                    if (tasks.isEmpty()) "il_empty.xml" else "il_completed.xml",
+                                ),
                                 contentDescription = null,
                             )
+                            Spacer(modifier = Modifier.height(24.dp))
                             Text(
                                 modifier = Modifier
+                                    .fillMaxWidth()
                                     .align(CenterHorizontally),
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontSize = 18.sp,
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
                                 ),
                                 text = if (tasks.isEmpty()) {
-                                    "No tasks for today"
+                                    "Start your day productively! Add your first task."
                                 } else if (tasks.all { it.completed }) {
-                                    "You've completed all your tasks for today"
+                                    "Great job! You've finished all your tasks for today."
                                 } else {
                                     ""
                                 },
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                modifier = Modifier
+                                    .padding(horizontal = 24.dp)
+                                    .fillMaxWidth(),
+                                text = if (tasks.isEmpty()) {
+                                    "To add a task, simply tap the '+' button at the bottom of the screen. Fill in the task details and tap 'Save'."
+                                } else if (tasks.all { it.completed }) {
+                                    "Now, take some time to have fun, recharge, maybe do some exercise, and consider opening your calendar to plan for tomorrow's tasks. Keep up the fantastic work!"
+                                } else {
+                                    ""
+                                },
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontSize = 14.sp,
+                                ),
+                                textAlign = TextAlign.Center,
                             )
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TodayTaskProgressCard(tasks: List<Task>) {
+    Card {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            TaskProgress(
+                mainColor = MaterialTheme.colorScheme.secondary,
+                percentage = taskCompletionPercentage(tasks).toFloat(),
+            )
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = taskCompleteMessage(tasks),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${tasks.filter { it.completed }.size} of ${tasks.size} tasks completed",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
+                )
             }
         }
     }

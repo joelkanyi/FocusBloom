@@ -4,7 +4,7 @@ import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 
-class SettingsRepositoryImpl constructor(
+class SettingsRepositoryImpl(
     private val preferenceManager: PreferenceManager,
 ) : SettingsRepository {
     override suspend fun saveAppTheme(theme: Int) {
@@ -49,5 +49,37 @@ class SettingsRepositoryImpl constructor(
 
     override fun saveShortBreakTime(shortBreakTime: Int) {
         preferenceManager.setInt(key = PreferenceManager.SHORT_BREAK_TIME, value = shortBreakTime)
+    }
+
+    override fun shortBreakColor(): Flow<Long?> {
+        return preferenceManager.getLong(key = PreferenceManager.SHORT_BREAK_COLOR)
+    }
+
+    override fun saveShortBreakColor(color: Long) {
+        preferenceManager.setLong(key = PreferenceManager.SHORT_BREAK_COLOR, value = color)
+    }
+
+    override fun longBreakColor(): Flow<Long?> {
+        return preferenceManager.getLong(key = PreferenceManager.LONG_BREAK_COLOR)
+    }
+
+    override fun saveLongBreakColor(color: Long) {
+        preferenceManager.setLong(key = PreferenceManager.LONG_BREAK_COLOR, value = color)
+    }
+
+    override fun focusColor(): Flow<Long?> {
+        return preferenceManager.getLong(key = PreferenceManager.FOCUS_COLOR)
+    }
+
+    override fun saveFocusColor(color: Long) {
+        preferenceManager.setLong(key = PreferenceManager.FOCUS_COLOR, value = color)
+    }
+
+    override fun saveUsername(value: String) {
+        preferenceManager.setString(key = PreferenceManager.USERNAME, value = value)
+    }
+
+    override fun getUsername(): Flow<String?> {
+        return preferenceManager.getString(key = PreferenceManager.USERNAME)
     }
 }

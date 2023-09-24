@@ -61,4 +61,12 @@ class HomeScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList(),
         )
+
+    val username = settingsRepository.getUsername()
+        .map { it ?: "" }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = "",
+        )
 }

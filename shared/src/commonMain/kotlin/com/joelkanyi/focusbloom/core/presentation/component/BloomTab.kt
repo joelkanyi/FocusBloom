@@ -2,8 +2,6 @@ package com.joelkanyi.focusbloom.core.presentation.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.joelkanyi.focusbloom.calendar.CalendarScreen
@@ -15,7 +13,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 internal sealed class BloomTab {
-    internal object HomeTab : Tab, Screen {
+    internal object HomeTab : Tab {
         @OptIn(ExperimentalResourceApi::class)
         override val options: TabOptions
             @Composable
@@ -34,7 +32,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            Navigator(HomeScreen())
+            HomeScreen()
         }
     }
 
@@ -57,7 +55,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            Navigator(CalendarScreen())
+            CalendarScreen()
         }
     }
 
@@ -80,7 +78,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            Navigator(StatisticsScreen())
+            StatisticsScreen()
         }
     }
 
@@ -103,7 +101,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            Navigator(SettingsScreen())
+            SettingsScreen()
         }
     }
 
@@ -126,7 +124,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            Navigator(AddTaskScreen())
+            AddTaskScreen()
         }
     }
 }

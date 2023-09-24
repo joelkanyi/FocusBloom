@@ -1,6 +1,11 @@
 package com.joelkanyi.focusbloom.core.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.platform.LocalDensity
@@ -8,6 +13,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import cafe.adriel.voyager.navigator.Navigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
@@ -600,4 +606,20 @@ fun SessionType?.sessionType(): String {
         SessionType.LongBreak -> "Long Break"
         else -> "Focus"
     }
+}
+
+val LocalAppNavigator: ProvidableCompositionLocal<Navigator?> = staticCompositionLocalOf { null }
+
+@Composable
+fun ProvideAppNavigator(
+    navigator: Navigator,
+    content: @Composable () -> Unit,
+) {
+    CompositionLocalProvider(LocalAppNavigator provides navigator) {
+        content()
+    }
+}
+
+fun String.pickFirstName(): String {
+    return this.split(" ").first()
 }

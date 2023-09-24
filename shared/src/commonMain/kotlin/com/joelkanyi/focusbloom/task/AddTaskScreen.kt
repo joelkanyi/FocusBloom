@@ -45,7 +45,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
@@ -64,7 +63,7 @@ import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toMillis
-import com.joelkanyi.focusbloom.home.HomeScreen
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -74,165 +73,164 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.compose.rememberKoinInject
 
-class AddTaskScreen : Screen, KoinComponent {
-    private val screenModel: AddTaskScreenModel by inject()
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+fun AddTaskScreen() {
+    val screenModel: AddTaskScreenModel = rememberKoinInject()
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-    @Composable
-    override fun Content() {
-        val snackbarHostState = remember { SnackbarHostState() }
-        val keyboardController = LocalSoftwareKeyboardController.current
-        val navigator = LocalNavigator.currentOrThrow
-        val sessionTime = screenModel.sessionTime.collectAsState().value
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
-        val longBreakTime = screenModel.longBreakTime.collectAsState().value
-        val hourFormat = screenModel.hourFormat.collectAsState().value
-        val focusSessions = screenModel.focusSessions.collectAsState().value
-        val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
-        val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
-        val selectedTaskType = screenModel.selectedOption.collectAsState().value
-        val taskName = screenModel.taskName.collectAsState().value
-        val taskDescription = screenModel.taskDescription.collectAsState().value
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val snackbarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val navigator = LocalNavigator.currentOrThrow
+    val sessionTime = screenModel.sessionTime.collectAsState().value
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value
+    val hourFormat = screenModel.hourFormat.collectAsState().value
+    val focusSessions = screenModel.focusSessions.collectAsState().value
+    val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
+    val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
+    val selectedTaskType = screenModel.selectedOption.collectAsState().value
+    val taskName = screenModel.taskName.collectAsState().value
+    val taskDescription = screenModel.taskDescription.collectAsState().value
 
-        val startTimeState = rememberTimePickerState(
-            initialHour = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
-                .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
-            initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
-                .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
-            is24Hour = hourFormat == 24,
-        )
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
-        )
-        val calculatedFocusTime = calculateFromFocusSessions(
-            focusSessions = focusSessions,
-            sessionTime = sessionTime,
-            shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime,
-            currentLocalDateTime = LocalDateTime(
-                year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
-                month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
-                dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
-                hour = startTimeState.hour,
-                minute = startTimeState.minute,
-            ),
-        )
+    val startTimeState = rememberTimePickerState(
+        initialHour = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
+            .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
+        initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
+            .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
+        is24Hour = hourFormat == 24,
+    )
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
+    )
+    val calculatedFocusTime = calculateFromFocusSessions(
+        focusSessions = focusSessions,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+        currentLocalDateTime = LocalDateTime(
+            year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
+            month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
+            dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
+            hour = startTimeState.hour,
+            minute = startTimeState.minute,
+        ),
+    )
 
-        LaunchedEffect(key1 = true) {
-            screenModel.eventsFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvents.ShowSnackbar -> {
-                        snackbarHostState.showSnackbar(
-                            message = event.message,
-                        )
-                        datePickerState.setSelection(
-                            Clock.System.now().toEpochMilliseconds(),
-                        )
-                    }
-
-                    UiEvents.NavigateBack -> {
-                        navigator.popUntil {
-                            it is HomeScreen
-                        }
-                    }
-
-                    else -> {}
+    LaunchedEffect(key1 = true) {
+        screenModel.eventsFlow.collectLatest { event ->
+            when (event) {
+                is UiEvents.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                    )
+                    datePickerState.setSelection(
+                        Clock.System.now().toEpochMilliseconds(),
+                    )
                 }
+
+                UiEvents.NavigateBack -> {
+                    navigator.pop()
+                }
+
+                else -> {}
             }
         }
+    }
 
-        if (showStartTimeInputDialog) {
-            TimerInputDialog(
-                title = "Start Time",
-                state = startTimeState,
-                onDismiss = {
-                    screenModel.setShowStartTimeInputDialog(false)
-                },
-            )
-        }
-
-        if (showTaskDatePickerDialog) {
-            TaskDatePicker(
-                datePickerState = datePickerState,
-                dismiss = {
-                    screenModel.setShowTaskDatePickerDialog(false)
-                },
-            )
-        }
-
-        AddTaskScreenContent(
-            snackbarHostState = snackbarHostState,
-            sessionTime = sessionTime,
-            shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime,
-            hourFormat = hourFormat,
-            calculatedFocusTime = calculatedFocusTime,
-            taskOptions = taskTypes,
-            selectedTaskType = selectedTaskType,
-            taskName = taskName,
-            taskDescription = taskDescription,
-            datePickerState = datePickerState,
-            focusSessions = focusSessions,
-            startTimePickerState = startTimeState,
-            onTaskNameChange = {
-                screenModel.setTaskName(it)
-            },
-            onIncrementFocusSessions = {
-                screenModel.incrementFocusSessions()
-            },
-            onDecrementIncrementFocusSessions = {
-                screenModel.decrementFocusSessions()
-            },
-            onSelectedTaskTypeChange = {
-                screenModel.setSelectedOption(it)
-            },
-            onTaskDescriptionChange = {
-                screenModel.setTaskDescription(it)
-            },
-            onClickPickStartTime = {
-                screenModel.setShowStartTimeInputDialog(true)
-            },
-            onClickPickDate = {
-                screenModel.setShowTaskDatePickerDialog(true)
-            },
-            onClickAddTask = {
-                keyboardController?.hide()
-                screenModel.addTask(
-                    task = Task(
-                        name = taskName,
-                        description = taskDescription,
-                        start = toLocalDateTime(
-                            date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                            hour = startTimeState.hour,
-                            minute = startTimeState.minute,
-                        ),
-                        end = toLocalDateTime(
-                            date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                            hour = calculatedFocusTime.hour,
-                            minute = calculatedFocusTime.minute,
-                        ),
-                        color = selectedTaskType.color,
-                        current = "Focus",
-                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
-                        focusSessions = focusSessions,
-                        completed = false,
-                        focusTime = sessionTime.toMillis(),
-                        shortBreakTime = shortBreakTime.toMillis(),
-                        longBreakTime = longBreakTime.toMillis(),
-                        type = selectedTaskType.name,
-                        consumedFocusTime = 0L,
-                        consumedShortBreakTime = 0L,
-                        consumedLongBreakTime = 0L,
-                        inProgressTask = false,
-                        currentCycle = 0,
-                    ),
-                )
+    if (showStartTimeInputDialog) {
+        TimerInputDialog(
+            title = "Start Time",
+            state = startTimeState,
+            onDismiss = {
+                screenModel.setShowStartTimeInputDialog(false)
             },
         )
     }
+
+    if (showTaskDatePickerDialog) {
+        TaskDatePicker(
+            datePickerState = datePickerState,
+            dismiss = {
+                screenModel.setShowTaskDatePickerDialog(false)
+            },
+        )
+    }
+
+    AddTaskScreenContent(
+        snackbarHostState = snackbarHostState,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+        hourFormat = hourFormat,
+        calculatedFocusTime = calculatedFocusTime,
+        taskOptions = taskTypes,
+        selectedTaskType = selectedTaskType,
+        taskName = taskName,
+        taskDescription = taskDescription,
+        datePickerState = datePickerState,
+        focusSessions = focusSessions,
+        startTimePickerState = startTimeState,
+        onTaskNameChange = {
+            screenModel.setTaskName(it)
+        },
+        onIncrementFocusSessions = {
+            screenModel.incrementFocusSessions()
+        },
+        onDecrementIncrementFocusSessions = {
+            screenModel.decrementFocusSessions()
+        },
+        onSelectedTaskTypeChange = {
+            screenModel.setSelectedOption(it)
+        },
+        onTaskDescriptionChange = {
+            screenModel.setTaskDescription(it)
+        },
+        onClickPickStartTime = {
+            screenModel.setShowStartTimeInputDialog(true)
+        },
+        onClickPickDate = {
+            screenModel.setShowTaskDatePickerDialog(true)
+        },
+        onClickAddTask = {
+            keyboardController?.hide()
+            screenModel.addTask(
+                task = Task(
+                    name = taskName,
+                    description = taskDescription,
+                    start = toLocalDateTime(
+                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
+                        hour = startTimeState.hour,
+                        minute = startTimeState.minute,
+                    ),
+                    end = toLocalDateTime(
+                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
+                        hour = calculatedFocusTime.hour,
+                        minute = calculatedFocusTime.minute,
+                    ),
+                    color = selectedTaskType.color,
+                    current = "Focus",
+                    date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
+                    focusSessions = focusSessions,
+                    completed = false,
+                    focusTime = sessionTime.toMillis(),
+                    shortBreakTime = shortBreakTime.toMillis(),
+                    longBreakTime = longBreakTime.toMillis(),
+                    type = selectedTaskType.name,
+                    consumedFocusTime = 0L,
+                    consumedShortBreakTime = 0L,
+                    consumedLongBreakTime = 0L,
+                    inProgressTask = false,
+                    currentCycle = 0,
+                ),
+            )
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -460,7 +458,7 @@ private fun AddTaskScreenContent(
                         .height(56.dp),
                     onClick = onClickAddTask,
                     content = {
-                        Text(text = "Add Task")
+                        Text(text = "Save")
                     },
                 )
             }
