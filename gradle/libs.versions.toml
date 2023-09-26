@@ -16,11 +16,10 @@ napier = "2.4.0"
 primitiveAdapters = "2.0.0"
 sqlDelight = "1.5.5"
 multiplatformSettings = "0.8.1"
-compose = "1.5.1"
+compose = "1.5.10-beta01"
 core-library-desugaring = "1.1.5"
 voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
-accompanist = "0.25.1"
 koin-compose = "1.0.4"
 
 [plugins]

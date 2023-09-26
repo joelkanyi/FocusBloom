@@ -71,12 +71,14 @@ import com.joelkanyi.focusbloom.core.utils.calendarLocalDates
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenDays
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
 import com.joelkanyi.focusbloom.core.utils.dpToPx
+import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.insideThisWeek
 import com.joelkanyi.focusbloom.core.utils.max
 import com.joelkanyi.focusbloom.core.utils.min
 import com.joelkanyi.focusbloom.core.utils.plusHours
 import com.joelkanyi.focusbloom.core.utils.prettyPrintedMonthAndYear
+import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.splitTasks
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskData
@@ -340,22 +342,36 @@ fun BasicTask(
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                text = "${task.start.time.formattedTimeBasedOnTimeFormat(hourFormat)} - ${
-                    task.end.time.formattedTimeBasedOnTimeFormat(
-                        hourFormat,
-                    )
-                }",
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 10.sp,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Clip,
-                textAlign = TextAlign.End,
-            )
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "${task.durationInMinutes()} minutes",
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 10.sp,
+                    ),
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = prettyTimeDifference(
+                        start = task.start,
+                        end = task.end,
+                        timeFormat = hourFormat,
+                    ),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 10.sp,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip,
+                    textAlign = TextAlign.End,
+                )
+            }
         }
     }
 }

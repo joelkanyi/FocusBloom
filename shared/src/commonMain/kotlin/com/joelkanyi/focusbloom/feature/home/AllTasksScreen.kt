@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -27,8 +28,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
-import com.joelkanyi.focusbloom.platform.StatusBarColors
+import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -36,6 +38,7 @@ class AllTasksScreen : Screen, KoinComponent {
 
     private val screenModel: HomeScreenModel by inject()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         StatusBarColors(
@@ -45,26 +48,48 @@ class AllTasksScreen : Screen, KoinComponent {
         val navigator = LocalNavigator.currentOrThrow
         val tasksState = screenModel.tasks.collectAsState().value
         val hourFormat = screenModel.hourFormat.collectAsState().value
+        val selectedTask = screenModel.selectedTask.collectAsState().value
+        val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+
+        val bottomSheetState = rememberModalBottomSheetState()
+
+        if (openBottomSheet) {
+            if (selectedTask != null) {
+                TaskOptionsBottomSheet(
+                    bottomSheetState = bottomSheetState,
+                    onClickCancel = {
+                        screenModel.openBottomSheet(false)
+                    },
+                    onClickSave = {
+                        screenModel.updateTask(it)
+                    },
+                    onClickDelete = {
+                        screenModel.deleteTask(it)
+                    },
+                    onDismissRequest = {
+                        screenModel.openBottomSheet(false)
+                        screenModel.selectTask(null)
+                    },
+                    onClickPushToTomorrow = {
+                        screenModel.pushToTomorrow(it)
+                    },
+                    onClickMarkAsCompleted = {
+                        screenModel.markAsCompleted(it)
+                    },
+                    task = selectedTask,
+                )
+            }
+        }
+
         AllTasksScreenContent(
             tasksState = tasksState,
             timeFormat = hourFormat,
             onClickNavigateBack = {
                 navigator.pop()
             },
-            onClickCancel = {
-                screenModel.openTaskOptions(it)
-            },
-            onClickSave = {
-                screenModel.updateTask(it)
-            },
-            onClickDelete = {
-                screenModel.deleteTask(it)
-            },
-            showTaskOption = {
-                screenModel.openedTasks.contains(it)
-            },
-            onShowTaskOption = {
-                screenModel.openTaskOptions(it)
+            onClickTaskOptions = {
+                screenModel.selectTask(it)
+                screenModel.openBottomSheet(true)
             },
             onClickTask = {
                 navigator.push(TaskProgressScreen(taskId = it.id))
@@ -79,11 +104,7 @@ fun AllTasksScreenContent(
     tasksState: TasksState,
     timeFormat: Int,
     onClickNavigateBack: () -> Unit,
-    onClickDelete: (task: Task) -> Unit,
-    onClickCancel: (task: Task) -> Unit,
-    onClickSave: (task: Task) -> Unit,
-    showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit,
+    onClickTaskOptions: (task: Task) -> Unit,
     onClickTask: (task: Task) -> Unit,
 ) {
     Box(
@@ -127,11 +148,7 @@ fun AllTasksScreenContent(
                                 task = it,
                                 hourFormat = timeFormat,
                                 onClick = onClickTask,
-                                onClickDelete = onClickDelete,
-                                onClickCancel = onClickCancel,
-                                onClickSave = onClickSave,
-                                showTaskOption = showTaskOption,
-                                onShowTaskOption = onShowTaskOption,
+                                onShowTaskOption = onClickTaskOptions,
                             )
                         }
                     }

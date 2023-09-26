@@ -1,5 +1,6 @@
 import SwiftUI
 import shared
+import UIKit
 
 @main
 struct iOSApp: App {
@@ -18,6 +19,6 @@ struct ComposeView: UIViewControllerRepresentable {
         // File name "Main" + "Kt" -> "Function Name"
         return MainKt.MainViewController()
     }
-    
+
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }

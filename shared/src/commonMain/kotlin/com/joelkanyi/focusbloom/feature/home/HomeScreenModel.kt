@@ -1,12 +1,14 @@
 package com.joelkanyi.focusbloom.feature.home
 
-import androidx.compose.runtime.mutableStateListOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
+import com.joelkanyi.focusbloom.core.utils.plusDays
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -18,6 +20,12 @@ class HomeScreenModel(
     private val tasksRepository: TasksRepository,
     settingsRepository: SettingsRepository,
 ) : ScreenModel {
+    private val _openBottomSheet = MutableStateFlow(false)
+    val openBottomSheet = _openBottomSheet.asStateFlow()
+    fun openBottomSheet(value: Boolean) {
+        _openBottomSheet.value = value
+    }
+
     val hourFormat = settingsRepository.getHourFormat()
         .map { it ?: 24 }
         .stateIn(
@@ -38,12 +46,30 @@ class HomeScreenModel(
         }
     }
 
-    val openedTasks = mutableStateListOf<Task?>(null)
-    fun openTaskOptions(task: Task?) {
-        if (openedTasks.contains(task)) {
-            openedTasks.remove(task)
-        } else {
-            openedTasks.add(task)
+    private val _selectedTask = MutableStateFlow<Task?>(null)
+    val selectedTask = _selectedTask.asStateFlow()
+    fun selectTask(task: Task?) {
+        _selectedTask.value = task
+    }
+
+    fun pushToTomorrow(task: Task) {
+        coroutineScope.launch {
+            tasksRepository.updateTask(
+                task.copy(
+                    date = task.date.plusDays(1),
+                    start = task.start.plusDays(1),
+                    end = task.end.plusDays(1),
+                ),
+            )
+        }
+    }
+
+    fun markAsCompleted(task: Task) {
+        coroutineScope.launch {
+            tasksRepository.updateTaskCompleted(
+                id = task.id,
+                completed = true,
+            )
         }
     }
 
@@ -54,7 +80,7 @@ class HomeScreenModel(
                     .sortedBy { it.start }
                     .filter {
                         it.date.date == Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date/*.minusDays(1)*/
                     },
             )
         }

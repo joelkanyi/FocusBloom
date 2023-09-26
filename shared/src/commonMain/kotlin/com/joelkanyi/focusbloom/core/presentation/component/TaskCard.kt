@@ -46,10 +46,6 @@ fun TaskCard(
     task: Task,
     hourFormat: Int,
     onClick: (task: Task) -> Unit,
-    onClickDelete: (task: Task) -> Unit,
-    onClickCancel: (task: Task) -> Unit,
-    onClickSave: (task: Task) -> Unit,
-    showTaskOption: (task: Task) -> Boolean,
     onShowTaskOption: (task: Task) -> Unit,
 ) {
     Card(
@@ -157,64 +153,6 @@ fun TaskCard(
                             contentDescription = "Task Options",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
-                    }
-                }
-            }
-
-            AnimatedVisibility(visible = showTaskOption(task)) {
-                Column {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        TextButton(onClick = {
-                            onClickDelete(task)
-                        }) {
-                            Text(
-                                text = "Delete",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontWeight = FontWeight.ExtraBold,
-                                ),
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            TextButton(onClick = {
-                                onClickCancel(task)
-                            }) {
-                                Text(
-                                    text = "Cancel",
-                                    style = MaterialTheme.typography.labelLarge.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .background(MaterialTheme.colorScheme.primary)
-                                    .clickable {
-                                        onClickSave(task)
-                                    },
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    text = "Save",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                    ),
-                                )
-                            }
-                        }
                     }
                 }
             }

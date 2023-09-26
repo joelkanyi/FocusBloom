@@ -22,6 +22,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
@@ -50,6 +51,23 @@ fun LocalDate.plusDays(
     days: Int,
 ): LocalDate {
     return this.plus(days, DateTimeUnit.DAY)
+}
+
+fun LocalDateTime.plusDays(
+    days: Int,
+): LocalDateTime {
+    return this.date.plus(days, DateTimeUnit.DAY).atTime(this.time)
+}
+
+fun LocalDate.minusDays(
+    days: Int,
+): LocalDate {
+    return this.minus(days, DateTimeUnit.DAY)
+}
+fun LocalDateTime.minusDays(
+    days: Int,
+): LocalDateTime {
+    return this.date.minus(days, DateTimeUnit.DAY).atTime(this.time)
 }
 
 fun LocalTime.plusHours(

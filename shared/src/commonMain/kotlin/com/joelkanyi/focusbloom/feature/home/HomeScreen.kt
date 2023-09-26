@@ -1,6 +1,7 @@
 package com.joelkanyi.focusbloom.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,15 +17,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,12 +42,14 @@ import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
 import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
-import com.joelkanyi.focusbloom.platform.StatusBarColors
+import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
     val screenModel: HomeScreenModel = rememberKoinInject()
@@ -55,6 +62,39 @@ fun HomeScreen() {
     val username = screenModel.username.collectAsState().value ?: ""
     val hourFormat = screenModel.hourFormat.collectAsState().value
     val navigator = LocalAppNavigator.currentOrThrow
+    val selectedTask = screenModel.selectedTask.collectAsState().value
+    val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if (openBottomSheet) {
+        if (selectedTask != null) {
+            TaskOptionsBottomSheet(
+                bottomSheetState = bottomSheetState,
+                onClickCancel = {
+                    screenModel.openBottomSheet(false)
+                },
+                onClickSave = {
+                    screenModel.updateTask(it)
+                },
+                onClickDelete = {
+                    screenModel.deleteTask(it)
+                },
+                onDismissRequest = {
+                    screenModel.openBottomSheet(false)
+                    screenModel.selectTask(null)
+                },
+                onClickPushToTomorrow = {
+                    screenModel.pushToTomorrow(it)
+                },
+                onClickMarkAsCompleted = {
+                    screenModel.markAsCompleted(it)
+                },
+                task = selectedTask,
+            )
+        }
+    }
+
     HomeScreenContent(
         tasksState = tasksState,
         hourFormat = hourFormat,
@@ -62,25 +102,45 @@ fun HomeScreen() {
         onClickTask = {
             navigator.push(TaskProgressScreen(taskId = it.id))
         },
-        onClickCancel = {
-            screenModel.openTaskOptions(it)
-        },
-        onClickSave = {
-            screenModel.updateTask(it)
-        },
-        onClickDelete = {
-            screenModel.deleteTask(it)
-        },
-        showTaskOption = {
-            screenModel.openedTasks.contains(it)
-        },
-        onShowTaskOption = {
-            screenModel.openTaskOptions(it)
-        },
         onClickSeeAllTasks = {
             navigator.push(AllTasksScreen())
         },
+        onClickTaskOptions = {
+            screenModel.selectTask(it)
+            screenModel.openBottomSheet(true)
+        },
     )
+}
+
+@Composable
+fun Option(
+    icon: ImageVector,
+    text: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            modifier = Modifier,
+            imageVector = icon,
+            contentDescription = text,
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        )
+        Text(
+            modifier = Modifier,
+            text = text,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp,
+            ),
+        )
+    }
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -91,11 +151,7 @@ private fun HomeScreenContent(
     username: String,
     onClickTask: (task: Task) -> Unit,
     onClickSeeAllTasks: () -> Unit,
-    onClickCancel: (task: Task) -> Unit,
-    onClickSave: (task: Task) -> Unit,
-    onClickDelete: (task: Task) -> Unit,
-    showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit,
+    onClickTaskOptions: (task: Task) -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -160,11 +216,7 @@ private fun HomeScreenContent(
                                 TaskCard(
                                     task = it,
                                     onClick = onClickTask,
-                                    onClickDelete = onClickDelete,
-                                    onClickCancel = onClickCancel,
-                                    onClickSave = onClickSave,
-                                    showTaskOption = showTaskOption,
-                                    onShowTaskOption = onShowTaskOption,
+                                    onShowTaskOption = onClickTaskOptions,
                                     hourFormat = hourFormat,
                                 )
                             }
