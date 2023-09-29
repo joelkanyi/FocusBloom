@@ -21,6 +21,7 @@ core-library-desugaring = "1.1.5"
 voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
+spotless = "5.17.1"
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
@@ -35,6 +36,7 @@ android-application = { id = "com.android.application", version.ref = "gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }

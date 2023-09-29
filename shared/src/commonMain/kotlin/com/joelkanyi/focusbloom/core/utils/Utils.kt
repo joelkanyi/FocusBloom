@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.joelkanyi.focusbloom.core.utils
 
 import androidx.compose.runtime.Composable
@@ -373,16 +388,16 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
     for (i in 0..51) {
         val week = getPreviousWeek(firstDateOfNextWeek = weeks.last().second.first())
         weeks += "${
-            week.first().month.name.lowercase().capitalize(Locale.current).substring(
+        week.first().month.name.lowercase().capitalize(Locale.current).substring(
+            0,
+            3,
+        )
+        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
+            " - ${
+            week.last().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
                 3,
             )
-        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
-            " - ${
-                week.last().month.name.lowercase().capitalize(Locale.current).substring(
-                    0,
-                    3,
-                )
             } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
     return weeks
@@ -404,12 +419,12 @@ fun List<Float>.aAllEntriesAreZero(): Boolean {
 
 fun LocalDate.prettyFormat(): String {
     return "${this.dayOfMonth}${
-        when (this.dayOfMonth) {
-            1, 21, 31 -> "st"
-            2, 22 -> "nd"
-            3, 23 -> "rd"
-            else -> "th"
-        }
+    when (this.dayOfMonth) {
+        1, 21, 31 -> "st"
+        2, 22 -> "nd"
+        3, 23 -> "rd"
+        else -> "th"
+    }
     }, ${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
 }
 
@@ -434,7 +449,7 @@ fun prettyTimeDifference(
             end.hour
         }
         "$startHourTo12HourSystem:${start.minute.formattedZeroMinutes()} ${if (start.hour > 12) "PM" else "AM"} - ${
-            endHourTo12HourSystem
+        endHourTo12HourSystem
         }:${end.minute.formattedZeroMinutes()} ${if (end.hour > 12) "PM" else "AM"}"
     } else {
         "${start.hour}:${start.minute.formattedZeroMinutes()} - ${end.hour}:${end.minute.formattedZeroMinutes()}"
@@ -467,7 +482,7 @@ fun LocalTime.formattedTimeBasedOnTimeFormat(
             this.hour
         }
         "$hourTo12HourSystem:${
-            this.minute.formattedZeroMinutes()
+        this.minute.formattedZeroMinutes()
         } ${if (this.hour > 12) "PM" else "AM"}"
     } else {
         "${this.hour}:${this.minute.formattedZeroMinutes()}"
@@ -534,11 +549,11 @@ fun Long.toTimer(): String {
     val minutes = seconds / 60
     val hours = minutes / 60
     return "${
-        if (hours > 0) {
-            hours.formattedZeroMinutes() + ":"
-        } else {
-            ""
-        }
+    if (hours > 0) {
+        hours.formattedZeroMinutes() + ":"
+    } else {
+        ""
+    }
     }${(minutes - (hours * 60)).formattedZeroMinutes()}:${(seconds - (minutes * 60)).formattedZeroMinutes()}"
 }
 

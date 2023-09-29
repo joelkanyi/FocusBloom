@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Joel Kanyi.
+ * Copyright $YEAR Joel Kanyi.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.joelkanyi.focusbloom.platform
-
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-
-@Composable
-actual fun font(name: String, res: String, weight: FontWeight, style: FontStyle): Font =
-    androidx.compose.ui.text.platform.Font("font/$res.ttf", weight, style)

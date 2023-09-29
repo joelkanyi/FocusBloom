@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.animation.AnimatedVisibility
@@ -60,9 +75,9 @@ import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskIcon
-import com.joelkanyi.focusbloom.platform.StatusBarColors
 import com.joelkanyi.focusbloom.feature.statistics.component.BarChart
 import com.joelkanyi.focusbloom.feature.statistics.component.TickPositionState
+import com.joelkanyi.focusbloom.platform.StatusBarColors
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
