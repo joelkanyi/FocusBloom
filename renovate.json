@@ -6,7 +6,7 @@
   "schedule": [
     "on friday"
   ],
-  "timezone": "Europe/Dublin",
+  "timezone": "Africa/Nairobi",
   "labels": [
     "dependency-update"
   ],
@@ -20,7 +20,7 @@
   "branchPrefix": "chore/",
   "additionalBranchPrefix": "update-libs/",
   "commitMessageAction": "update",
-  "commitMessageExtra": "{{{currentValue}}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
+  "commitMessageExtra": "from {{{currentValue}}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
   "packageRules": [
     {
       "groupName": "all non-major dependencies",
