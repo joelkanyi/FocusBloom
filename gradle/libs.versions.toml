@@ -2,7 +2,7 @@
 componentsResources = "1.5.0"
 koalaplotCore = "0.4.0-dev1"
 kotlin = "1.9.10"
-gradle = "8.1.0"
+gradle = "8.1.2"
 kotlinxCoroutinesSwing = "1.7.3"
 ktLint = "10.3.0"
 detekt = "1.19.0"
