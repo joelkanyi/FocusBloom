@@ -1,26 +1,26 @@
 [versions]
-componentsResources = "1.5.0"
-koalaplotCore = "0.4.0-dev1"
+componentsResources = "1.5.2"
+koalaplotCore = "0.4.0-dev2"
 kotlin = "1.9.10"
 gradle = "8.1.0"
 kotlinxCoroutinesSwing = "1.7.3"
 ktLint = "10.3.0"
-detekt = "1.19.0"
-gradleVersionUpdate = "0.46.0"
-koinCore = "3.4.0"
-koinAndroid = "3.4.0"
+detekt = "1.23.1"
+gradleVersionUpdate = "0.48.0"
+koinCore = "3.5.0"
+koinAndroid = "3.5.0"
 kotlinxSerializationJson = "1.5.0"
 kotlinxDateTime = "0.4.0"
 material3WindowSizeClassMultiplatform = "0.3.1"
-napier = "2.4.0"
+napier = "2.6.1"
 primitiveAdapters = "2.0.0"
 sqlDelight = "1.5.5"
-multiplatformSettings = "0.8.1"
-compose = "1.5.10-beta01"
-core-library-desugaring = "1.1.5"
+multiplatformSettings = "0.9"
+compose = "1.5.10-beta02"
+core-library-desugaring = "1.2.3"
 voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
-koin-compose = "1.0.4"
+koin-compose = "1.1.0"
 spotless = "5.17.1"
 
 [plugins]
@@ -64,4 +64,4 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
-accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.17.0" }
+accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.32.0" }
