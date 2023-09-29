@@ -106,7 +106,7 @@ kotlin {
                 implementation(libs.kotlinX.dateTime)
                 implementation(libs.koalaplot.core)
 
-                implementation("com.soywiz.korlibs.korau:korau:2.7.0")
+                implementation("com.soywiz.korlibs.korau:korau:4.0.10")
             }
         }
 
