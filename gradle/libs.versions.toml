@@ -21,7 +21,7 @@ core-library-desugaring = "1.1.5"
 voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
-spotless = "5.17.1"
+spotless = "6.22.0"
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
