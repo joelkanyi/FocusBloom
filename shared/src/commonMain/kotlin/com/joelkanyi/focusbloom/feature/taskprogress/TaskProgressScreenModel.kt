@@ -21,6 +21,7 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
+import com.joelkanyi.focusbloom.core.utils.toMillis
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -62,6 +63,32 @@ class TaskProgressScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val focusTime = settingsRepository.getSessionTime()
+        .map {
+            it?.toMillis() ?: (25).toMillis()
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val shortBreakTime = settingsRepository.getShortBreakTime()
+        .map {
+            it?.toMillis() ?: (5).toMillis()
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val longBreakTime = settingsRepository.getLongBreakTime()
+        .map { it?.toMillis() ?: (15).toMillis() }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
 
@@ -119,6 +146,13 @@ class TaskProgressScreenModel(
         }
     }
 
+    fun updateActiveTask(taskId: Int, activeTask: Boolean) {
+        scope.launch {
+            println("updateActiveTask: $taskId $activeTask")
+            tasksRepository.updateTaskActive(id = taskId, active = activeTask)
+        }
+    }
+
     /**
      * This function updates task as either completed or not completed
      * @param taskId the id of the task
@@ -127,6 +161,13 @@ class TaskProgressScreenModel(
     private fun updateCompletedTask(taskId: Int, completedTask: Boolean) {
         scope.launch {
             tasksRepository.updateTaskCompleted(taskId, completedTask)
+        }
+    }
+
+    fun resetAllTasksToInactive() {
+        println("resetAllTasksToInactive")
+        scope.launch {
+            tasksRepository.updateAllTasksActiveStatusToInactive()
         }
     }
 
@@ -179,14 +220,14 @@ class TaskProgressScreenModel(
             when (task.value?.current) {
                 "Focus" -> {
                     _timerState.emit(TimerState.Ticking)
-                    _eventsFlow.emit(UiEvents.TimerEventStarted(task.value?.focusTime ?: 0L))
+                    _eventsFlow.emit(UiEvents.TimerEventStarted(focusTime.value ?: 0L))
                 }
 
                 "ShortBreak" -> {
                     _timerState.emit(TimerState.Ticking)
                     _eventsFlow.emit(
                         UiEvents.TimerEventStarted(
-                            task.value?.shortBreakTime ?: 0L,
+                            shortBreakTime.value ?: 0L,
                         ),
                     )
                 }
@@ -195,7 +236,7 @@ class TaskProgressScreenModel(
                     _timerState.emit(TimerState.Ticking)
                     _eventsFlow.emit(
                         UiEvents.TimerEventStarted(
-                            task.value?.longBreakTime ?: 0L,
+                            longBreakTime.value ?: 0L,
                         ),
                     )
                 }
@@ -234,7 +275,7 @@ class TaskProgressScreenModel(
                 updateCurrentCycle(task.value?.id ?: 0, 1)
                 updateCurrentSession(task.value?.id ?: 0, "Focus")
                 updateInProgressTask(task.value?.id ?: 0, true)
-                _tickingTime.emit(task.value?.focusTime ?: 0L)
+                _tickingTime.emit(focusTime.value ?: 0L)
                 start()
             } else {
                 when (task.value?.current) {
@@ -243,13 +284,13 @@ class TaskProgressScreenModel(
                             println("executeTasks: going for a long break after a focus session")
                             updateCurrentSession(task.value?.id ?: 0, "LongBreak")
                             updateInProgressTask(task.value?.id ?: 0, true)
-                            _tickingTime.emit(task.value?.longBreakTime ?: 0L)
+                            _tickingTime.emit(longBreakTime.value ?: 0L)
                             start()
                         } else {
                             println("executeTasks: going for a short break after a focus session")
                             updateCurrentSession(task.value?.id ?: 0, "ShortBreak")
                             updateInProgressTask(task.value?.id ?: 0, true)
-                            _tickingTime.emit(task.value?.shortBreakTime ?: 0L)
+                            _tickingTime.emit(shortBreakTime.value ?: 0L)
                             start()
                         }
                     }
@@ -262,17 +303,18 @@ class TaskProgressScreenModel(
                             task.value?.currentCycle?.plus(1) ?: (0 + 1),
                         )
                         updateInProgressTask(task.value?.id ?: 0, true)
-                        _tickingTime.emit(task.value?.focusTime ?: 0L)
+                        _tickingTime.emit(focusTime.value ?: 0L)
                         start()
                     }
 
                     "LongBreak" -> {
                         println("executeTasks: completed all cycles")
-                        updateCompletedTask(task.value?.id ?: 0, true)
-                        updateInProgressTask(task.value?.id ?: 0, false)
+                        val taskId = task.value?.id ?: 0
+                        updateInProgressTask(taskId, false)
+                        updateCompletedTask(taskId, true)
+                        updateActiveTask(taskId, false)
                         stop()
-                        println("Congratulations! You have completed the task!")
-                        _eventsFlow.emit(UiEvents.ShowSnackbar("Congratulations! You have completed the task!"))
+                        reset()
                     }
                 }
             }

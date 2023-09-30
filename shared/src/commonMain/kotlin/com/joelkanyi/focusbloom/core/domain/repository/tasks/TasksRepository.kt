@@ -32,4 +32,8 @@ interface TasksRepository {
     suspend fun updateTaskCompleted(id: Int, completed: Boolean)
     suspend fun updateCurrentSessionName(id: Int, current: String)
     suspend fun updateTaskCycleNumber(id: Int, cycle: Int)
+    fun getActiveTask(): Flow<Task?>
+    suspend fun updateTaskActive(id: Int, active: Boolean)
+
+    suspend fun updateAllTasksActiveStatusToInactive()
 }

@@ -7,20 +7,21 @@ CREATE TABLE taskEntity (
     description TEXT,
     type TEXT NOT NULL,
     start TEXT NOT NULL,
-    end TEXT NOT NULL,
+--     end TEXT NOT NULL,
     color INTEGER AS Long NOT NULL,
     current TEXT AS String NOT NULL,
     date TEXT NOT NULL,
     focusSessions INTEGER AS Int NOT NULL,
     currentCycle INTEGER AS Int NOT NULL,
     completed INTEGER AS Boolean NOT NULL,
-    focusTime INTEGER AS Long NOT NULL,
+--     focusTime INTEGER AS Long NOT NULL,
     consumedFocusTime INTEGER AS Long NOT NULL,
-    shortBreakTime INTEGER AS Long NOT NULL,
+--     shortBreakTime INTEGER AS Long NOT NULL,
     consumedShortBreakTime INTEGER AS Long NOT NULL,
-    longBreakTime INTEGER AS Long NOT NULL,
+--     longBreakTime INTEGER AS Long NOT NULL,
     consumedLongBreakTime INTEGER AS Long NOT NULL,
-    inProgressTask INTEGER AS Boolean NOT NULL
+    inProgressTask INTEGER AS Boolean NOT NULL,
+    active INTEGER AS Boolean NOT NULL
 );
 
 getAllTasks:
@@ -29,13 +30,16 @@ SELECT * FROM taskEntity ORDER BY date DESC;
 getTaskById:
 SELECT * FROM taskEntity WHERE id = ?;
 
+getActiveTask:
+SELECT * FROM taskEntity WHERE active = 1;
+
 insertTask:
 INSERT OR REPLACE
-INTO taskEntity (name, description, type, start, end, color, current, date, focusSessions, currentCycle, completed, focusTime, consumedFocusTime, shortBreakTime, consumedShortBreakTime, longBreakTime, consumedLongBreakTime, inProgressTask)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+INTO taskEntity (name, description, type, start, color, current, date, focusSessions, currentCycle, completed, consumedFocusTime, consumedShortBreakTime, consumedLongBreakTime, inProgressTask, active)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 updateTask:
-UPDATE taskEntity SET name = ?, description = ?, start = ?, end = ?, color = ?, current = ?, date = ?, focusSessions = ?, completed = ?, focusTime = ?, shortBreakTime = ?, longBreakTime = ? WHERE id = ?;
+UPDATE taskEntity SET name = ?, description = ?, start = ?, color = ?, current = ?, date = ?, focusSessions = ?, completed = ?, active = ? WHERE id = ?;
 
 updateConsumedFocusTime:
 UPDATE taskEntity SET consumedFocusTime = ? WHERE id = ?;
@@ -57,6 +61,12 @@ UPDATE taskEntity SET completed = ? WHERE id = ?;
 
 updateTaskCycleNumber:
 UPDATE taskEntity SET currentCycle = ? WHERE id = ?;
+
+updateTaskActiveStatus:
+UPDATE taskEntity SET active = ? WHERE id = ?;
+
+updateAllTasksActiveStatusToInactive:
+UPDATE taskEntity SET active = 0;
 
 deleteTaskById:
 DELETE FROM taskEntity WHERE id = ?;

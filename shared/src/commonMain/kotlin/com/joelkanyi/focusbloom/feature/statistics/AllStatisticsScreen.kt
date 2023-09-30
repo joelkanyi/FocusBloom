@@ -45,23 +45,30 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class AllStatisticsScreen : Screen, KoinComponent {
-    private val screenModel: StatisticsScreenModel by inject()
 
     @Composable
     override fun Content() {
+        val screenModel = get<StatisticsScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
         val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
+        val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
         val tasksHistory = screenModel.tasks.collectAsState().value
 
         AllStatisticsScreenContent(
             timeFormat = hourFormat,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
             tasks = tasksHistory,
             onClickNavigateBack = {
                 navigator.pop()
@@ -86,6 +93,9 @@ class AllStatisticsScreen : Screen, KoinComponent {
 @Composable
 fun AllStatisticsScreenContent(
     timeFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     tasks: List<Task>,
     onClickNavigateBack: () -> Unit,
     onClickDelete: (task: Task) -> Unit,
@@ -139,6 +149,9 @@ fun AllStatisticsScreenContent(
                             .padding(bottom = 16.dp),
                         task = it,
                         hourFormat = timeFormat,
+                        sessionTime = sessionTime,
+                        shortBreakTime = shortBreakTime,
+                        longBreakTime = longBreakTime,
                         onClickDelete = onClickDelete,
                         onClickCancel = onClickCancel,
                         showTaskOption = showTaskOption,

@@ -47,15 +47,14 @@ import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.component.get
 
 class AllTasksScreen : Screen, KoinComponent {
-
-    private val screenModel: HomeScreenModel by inject()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        val screenModel = get<HomeScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
@@ -63,6 +62,9 @@ class AllTasksScreen : Screen, KoinComponent {
         val navigator = LocalNavigator.currentOrThrow
         val tasksState = screenModel.tasks.collectAsState().value
         val hourFormat = screenModel.hourFormat.collectAsState().value
+        val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
         val selectedTask = screenModel.selectedTask.collectAsState().value
         val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
 
@@ -99,6 +101,9 @@ class AllTasksScreen : Screen, KoinComponent {
         AllTasksScreenContent(
             tasksState = tasksState,
             timeFormat = hourFormat,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
             onClickNavigateBack = {
                 navigator.pop()
             },
@@ -118,6 +123,9 @@ class AllTasksScreen : Screen, KoinComponent {
 fun AllTasksScreenContent(
     tasksState: TasksState,
     timeFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     onClickNavigateBack: () -> Unit,
     onClickTaskOptions: (task: Task) -> Unit,
     onClickTask: (task: Task) -> Unit,
@@ -164,6 +172,10 @@ fun AllTasksScreenContent(
                                 hourFormat = timeFormat,
                                 onClick = onClickTask,
                                 onShowTaskOption = onClickTaskOptions,
+                                focusSessions = it.focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
                             )
                         }
                     }

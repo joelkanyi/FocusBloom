@@ -16,6 +16,7 @@
 package com.joelkanyi.focusbloom.feature.addtask
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +39,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -60,9 +59,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -77,20 +81,18 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomIncrementer
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.presentation.theme.SuccessColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
-import com.joelkanyi.focusbloom.core.utils.toMillis
+import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
@@ -115,14 +117,12 @@ fun AddTaskScreen() {
     val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
     val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
     val selectedTaskType = screenModel.selectedOption.collectAsState().value
-    val taskName = screenModel.taskName.collectAsState().value
-    val taskDescription = screenModel.taskDescription.collectAsState().value
+    val taskName = screenModel.taskName.value
+    val taskDescription = screenModel.taskDescription.value
 
     val startTimeState = rememberTimePickerState(
-        initialHour = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
-            .toLocalDateTime(TimeZone.currentSystemDefault()).hour,
-        initialMinute = Instant.fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
-            .toLocalDateTime(TimeZone.currentSystemDefault()).minute,
+        initialHour = today().hour,
+        initialMinute = today().minute,
         is24Hour = hourFormat == 24,
     )
     val datePickerState = rememberDatePickerState(
@@ -184,9 +184,6 @@ fun AddTaskScreen() {
 
     AddTaskScreenContent(
         snackbarHostState = snackbarHostState,
-        sessionTime = sessionTime,
-        shortBreakTime = shortBreakTime,
-        longBreakTime = longBreakTime,
         hourFormat = hourFormat,
         calculatedFocusTime = calculatedFocusTime,
         taskOptions = taskTypes,
@@ -228,25 +225,26 @@ fun AddTaskScreen() {
                         hour = startTimeState.hour,
                         minute = startTimeState.minute,
                     ),
-                    end = toLocalDateTime(
+                    /*end = toLocalDateTime(
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
                         hour = calculatedFocusTime.hour,
                         minute = calculatedFocusTime.minute,
-                    ),
+                    ),*/
                     color = selectedTaskType.color,
                     current = "Focus",
                     date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
                     focusSessions = focusSessions,
                     completed = false,
-                    focusTime = sessionTime.toMillis(),
+                    /*focusTime = sessionTime.toMillis(),
                     shortBreakTime = shortBreakTime.toMillis(),
-                    longBreakTime = longBreakTime.toMillis(),
+                    longBreakTime = longBreakTime.toMillis(),*/
                     type = selectedTaskType.name,
                     consumedFocusTime = 0L,
                     consumedShortBreakTime = 0L,
                     consumedLongBreakTime = 0L,
                     inProgressTask = false,
                     currentCycle = 0,
+                    active = false,
                 ),
             )
         },
@@ -257,9 +255,6 @@ fun AddTaskScreen() {
 @Composable
 private fun AddTaskScreenContent(
     snackbarHostState: SnackbarHostState,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
     calculatedFocusTime: LocalTime,
     hourFormat: Int,
     taskOptions: List<TaskType>,
@@ -416,69 +411,35 @@ private fun AddTaskScreenContent(
                     verticalAlignment = CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Column(
-                        modifier = Modifier,
-                    ) {
-                        Text(
-                            text = "Start Time",
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onClickPickStartTime()
-                                },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = CenterVertically,
-                        ) {
-                            Text(
-                                text = LocalTime(
-                                    startTimePickerState.hour,
-                                    startTimePickerState.minute,
-                                ).formattedTimeBasedOnTimeFormat(hourFormat),
-                            )
-                            IconButton(
-                                onClick = onClickPickStartTime,
-                            ) {
-                                Icon(
-                                    painter = painterResource("ic_time.xml"),
-                                    contentDescription = "Start Time Picker",
-                                )
-                            }
-                        }
-                    }
-
-                    Divider(
-                        modifier = Modifier
-                            .width(180.dp),
-                        thickness = 1.dp,
+                    TimeComponent(
+                        time = LocalTime(
+                            startTimePickerState.hour,
+                            startTimePickerState.minute,
+                        ),
+                        hourFormat = hourFormat,
+                        title = "Start Time",
+                        icon = "start_time.xml",
+                        iconColor = MaterialTheme.colorScheme.primary,
+                        iconSize = 24,
+                        onClick = onClickPickStartTime,
                     )
 
-                    Column(
-                        modifier = Modifier,
-                    ) {
-                        Text(
-                            text = "End Time",
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                        Row(
-                            modifier = Modifier,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = CenterVertically,
-                        ) {
-                            Text(
-                                text = calculatedFocusTime.formattedTimeBasedOnTimeFormat(hourFormat),
-                            )
-                            IconButton(
-                                onClick = { },
-                            ) {
-                                Icon(
-                                    painter = painterResource("ic_time.xml"),
-                                    contentDescription = "End Time Picker",
-                                )
-                            }
-                        }
-                    }
+                    DashedDivider(
+                        color = MaterialTheme.colorScheme.primary,
+                        thickness = 3.dp,
+                        phase = 5f,
+                        modifier = Modifier
+                            .width(180.dp),
+                    )
+
+                    TimeComponent(
+                        time = calculatedFocusTime,
+                        hourFormat = hourFormat,
+                        title = "End Time",
+                        icon = "end_time.xml",
+                        iconColor = SuccessColor,
+                        onClick = {},
+                    )
                 }
             }
 
@@ -520,6 +481,50 @@ private fun AddTaskScreenContent(
                     },
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+private fun TimeComponent(
+    title: String,
+    icon: String,
+    iconColor: Color,
+    iconSize: Int = 32,
+    time: LocalTime,
+    hourFormat: Int,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.clickable {
+            onClick()
+        },
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Row(
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = CenterVertically,
+        ) {
+            Text(
+                text = time.formattedTimeBasedOnTimeFormat(hourFormat),
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            )
+
+            Icon(
+                modifier = Modifier
+                    .size(iconSize.dp),
+                painter = painterResource(icon),
+                contentDescription = title,
+                tint = iconColor,
+            )
         }
     }
 }
@@ -593,5 +598,30 @@ fun TaskDatePicker(
         },
     ) {
         DatePicker(state = datePickerState)
+    }
+}
+
+@Composable
+fun DashedDivider(
+    thickness: Dp,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    phase: Float = 10f,
+    intervals: FloatArray = floatArrayOf(10f, 10f),
+    modifier: Modifier,
+) {
+    Canvas(
+        modifier = modifier,
+    ) {
+        val dividerHeight = thickness.toPx()
+        drawRoundRect(
+            color = color,
+            style = Stroke(
+                width = dividerHeight,
+                pathEffect = PathEffect.dashPathEffect(
+                    intervals = intervals,
+                    phase = phase,
+                ),
+            ),
+        )
     }
 }

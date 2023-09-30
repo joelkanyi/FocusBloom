@@ -15,6 +15,8 @@
  */
 package com.joelkanyi.focusbloom.feature.addtask
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
@@ -82,14 +84,14 @@ class AddTaskScreenModel(
         }
     }
 
-    private val _taskName = MutableStateFlow("")
-    val taskName = _taskName.asStateFlow()
+    private val _taskName = mutableStateOf("")
+    val taskName: State<String> = _taskName
     fun setTaskName(name: String) {
         _taskName.value = name
     }
 
-    private val _taskDescription = MutableStateFlow("")
-    val taskDescription = _taskDescription.asStateFlow()
+    private val _taskDescription = mutableStateOf("")
+    val taskDescription: State<String> = _taskDescription
     fun setTaskDescription(description: String) {
         _taskDescription.value = description
     }
@@ -111,6 +113,18 @@ class AddTaskScreenModel(
     fun setShowTaskDatePickerDialog(show: Boolean) {
         _showTaskDatePickerDialog.value = show
     }
+
+    /*    private val _selectedDate = MutableStateFlow(today())
+        val selectedDate = _selectedDate.asStateFlow()
+        fun setSelectedDate(date: LocalDateTime) {
+            _selectedDate.value = date
+        }
+
+        private val _selectedStartTime = MutableStateFlow(today().time)
+        val selectedStartTime = _selectedStartTime.asStateFlow()
+        fun setSelectedStartTime(time: LocalTime) {
+            _selectedStartTime.value = time
+        }*/
 
     fun addTask(
         task: Task,

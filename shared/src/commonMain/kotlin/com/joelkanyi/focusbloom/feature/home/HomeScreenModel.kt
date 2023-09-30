@@ -49,6 +49,30 @@ class HomeScreenModel(
             initialValue = 24,
         )
 
+    val sessionTime = settingsRepository.getSessionTime()
+        .map {
+            it
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val shortBreakTime = settingsRepository.getShortBreakTime()
+        .map { it }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val longBreakTime = settingsRepository.getLongBreakTime()
+        .map { it }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+
     fun deleteTask(task: Task) {
         coroutineScope.launch {
             tasksRepository.deleteTask(task.id)
@@ -73,7 +97,7 @@ class HomeScreenModel(
                 task.copy(
                     date = task.date.plusDays(1),
                     start = task.start.plusDays(1),
-                    end = task.end.plusDays(1),
+                    // end = task.end.plusDays(1),
                 ),
             )
         }
@@ -84,6 +108,14 @@ class HomeScreenModel(
             tasksRepository.updateTaskCompleted(
                 id = task.id,
                 completed = true,
+            )
+            tasksRepository.updateTaskActive(
+                id = task.id,
+                active = false,
+            )
+            tasksRepository.updateTaskInProgress(
+                id = task.id,
+                inProgressTask = false,
             )
         }
     }
@@ -110,6 +142,30 @@ class HomeScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+
+    val shortBreakColor = settingsRepository.shortBreakColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val longBreakColor = settingsRepository.longBreakColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null,
+        )
+
+    val focusColor = settingsRepository.focusColor()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 }

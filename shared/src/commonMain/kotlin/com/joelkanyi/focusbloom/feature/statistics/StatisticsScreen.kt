@@ -68,6 +68,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
+import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.completedTasks
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.getLast52Weeks
@@ -99,6 +100,9 @@ fun StatisticsScreen() {
     val tasksHistory = screenModel.tasks.collectAsState().value
     val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
     val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
+    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = lastFiftyTwoWeeks.size - 1,
@@ -114,6 +118,9 @@ fun StatisticsScreen() {
 
     StatisticsScreenContent(
         hourFormat = hourFormat,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
         pagerState = pagerState,
         selectedWeek = selectedWeek,
         selectedWeekTasks = selectedWeekTasks,
@@ -161,6 +168,9 @@ fun StatisticsScreen() {
 fun StatisticsScreenContent(
     selectedWeek: String,
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     selectedWeekTasks: List<Float>,
     tasksHistory: List<Task>,
     onClickSeeAllTasks: () -> Unit,
@@ -275,6 +285,7 @@ fun StatisticsScreenContent(
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.primary,
+                                    fontSize = 16.sp,
                                 ),
                             )
                         }
@@ -304,6 +315,9 @@ fun StatisticsScreenContent(
                             .padding(bottom = 6.dp),
                         task = it,
                         hourFormat = hourFormat,
+                        sessionTime = sessionTime,
+                        shortBreakTime = shortBreakTime,
+                        longBreakTime = longBreakTime,
                         onClickDelete = onClickDelete,
                         onClickCancel = onClickCancel,
                         showTaskOption = showTaskOption,
@@ -369,6 +383,9 @@ fun HistoryCard(
     task: Task,
     modifier: Modifier = Modifier,
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     onClickCancel: (task: Task) -> Unit,
     onClickDelete: (task: Task) -> Unit,
     showTaskOption: (task: Task) -> Boolean,
@@ -445,7 +462,12 @@ fun HistoryCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "${task.durationInMinutes()} minutes",
+                            text = "${task.durationInMinutes(
+                                focusSessions = task.focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
+                            )} minutes",
                             style = MaterialTheme.typography.displaySmall.copy(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -454,7 +476,12 @@ fun HistoryCard(
                         Text(
                             prettyTimeDifference(
                                 start = task.start,
-                                end = task.end,
+                                end = task.start.calculateEndTime(
+                                    focusSessions = task.focusSessions,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime,
+                                ),
                                 timeFormat = hourFormat,
                             ),
                             style = MaterialTheme.typography.displaySmall.copy(

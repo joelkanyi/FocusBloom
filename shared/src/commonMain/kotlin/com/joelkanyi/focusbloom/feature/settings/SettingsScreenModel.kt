@@ -144,7 +144,9 @@ class SettingsScreenModel(
     }
 
     val shortBreakColor = settingsRepository.shortBreakColor()
-        .map { it }
+        .map {
+            it
+        }
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),

@@ -167,9 +167,21 @@ fun SettingsScreen() {
         onShowColorDialog = {
             screenModel.setShowColorDialog(it)
         },
-        currentShortBreakColor = currentShortBreakColor ?: ShortBreakColor,
-        currentLongBreakColor = currentLongBreakColor ?: LongBreakColor,
-        currentSessionColor = currentSessionColor ?: SessionColor,
+        currentShortBreakColor = if (currentShortBreakColor?.toInt() == 0 || currentShortBreakColor == null) {
+            ShortBreakColor
+        } else {
+            currentShortBreakColor
+        },
+        currentLongBreakColor = if (currentLongBreakColor?.toInt() == 0 || currentLongBreakColor == null) {
+            LongBreakColor
+        } else {
+            currentLongBreakColor
+        },
+        currentSessionColor = if (currentSessionColor?.toInt() == 0 || currentSessionColor == null) {
+            SessionColor
+        } else {
+            currentSessionColor
+        },
         onSelectColor = {
             when (selectedColorCardTitle) {
                 "Focus Session" -> {
@@ -523,11 +535,11 @@ fun ThemeSetting(
             Spacer(modifier = Modifier.height(16.dp))
             AutoStartSession(
                 title = "App Theme (${
-                if (darkTheme) {
-                    "Dark"
-                } else {
-                    "Light"
-                }
+                    if (darkTheme) {
+                        "Dark"
+                    } else {
+                        "Light"
+                    }
                 })",
                 checked = darkTheme,
                 onCheckedChange = {

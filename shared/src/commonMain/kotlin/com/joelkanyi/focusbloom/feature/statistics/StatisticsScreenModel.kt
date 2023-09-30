@@ -39,6 +39,31 @@ class StatisticsScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
+
+    val sessionTime = settingsRepository.getSessionTime()
+        .map {
+            it
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val shortBreakTime = settingsRepository.getShortBreakTime()
+        .map { it }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+    val longBreakTime = settingsRepository.getLongBreakTime()
+        .map { it }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
             tasks.sortedByDescending { it.date }

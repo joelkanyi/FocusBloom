@@ -82,6 +82,7 @@ import com.joelkanyi.focusbloom.core.utils.PositionedTask
 import com.joelkanyi.focusbloom.core.utils.ScheduleSize
 import com.joelkanyi.focusbloom.core.utils.SplitType
 import com.joelkanyi.focusbloom.core.utils.arrangeTasks
+import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.calendarLocalDates
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenDays
 import com.joelkanyi.focusbloom.core.utils.differenceBetweenMinutes
@@ -126,6 +127,9 @@ fun CalendarScreen() {
     val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
     val calendarPagerState = rememberLazyListState()
     val verticalScrollState = rememberScrollState()
+    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
     LaunchedEffect(key1 = tasks, block = {
         calendarPagerState.animateScrollToItem(
             index = calendarLocalDates().indexOf(selectedDay),
@@ -140,6 +144,9 @@ fun CalendarScreen() {
         CalendarScreenContent(
             selectedDay = selectedDay,
             hourFormat = hourFormat,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
             hourSize = ScheduleSize.FixedSize(hourSize),
             daySize = ScheduleSize.FixedSize(daySize),
             selectedDayTasks = tasks.filter {
@@ -177,6 +184,9 @@ fun CalendarScreenContent(
     hourSize: ScheduleSize,
     daySize: ScheduleSize,
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     selectedDayTasks: List<Task>,
     selectedDay: LocalDate,
     onClickThisWeek: () -> Unit,
@@ -278,15 +288,18 @@ fun CalendarScreenContent(
                         tasks = selectedDayTasks.sortedBy { it.start },
                         hourSize = hourSize,
                         daySize = daySize,
+                        sessionTime = sessionTime,
+                        shortBreakTime = shortBreakTime,
+                        longBreakTime = longBreakTime,
                     )
                 } else {
                     Text(
                         text = "No tasks for ${
-                        if (selectedDay == today().date) {
-                            "today"
-                        } else {
-                            "this day"
-                        }
+                            if (selectedDay == today().date) {
+                                "today"
+                            } else {
+                                "this day"
+                            }
                         }",
                         style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center,
@@ -301,10 +314,23 @@ fun CalendarScreenContent(
 @Composable
 fun BasicTask(
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     positionedTask: PositionedTask,
     modifier: Modifier = Modifier,
 ) {
     val task = positionedTask.task
+    val end by remember {
+        mutableStateOf(
+            task.start.calculateEndTime(
+                focusSessions = task.focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+            ),
+        )
+    }
     val topRadius =
         if (positionedTask.splitType == SplitType.Start || positionedTask.splitType == SplitType.Both) 0.dp else 2.dp
     val bottomRadius =
@@ -363,7 +389,14 @@ fun BasicTask(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "${task.durationInMinutes()} minutes",
+                    text = "${
+                        task.durationInMinutes(
+                            focusSessions = task.focusSessions,
+                            sessionTime = sessionTime,
+                            shortBreakTime = shortBreakTime,
+                            longBreakTime = longBreakTime,
+                        )
+                    } minutes",
                     style = MaterialTheme.typography.displaySmall.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold,
@@ -374,7 +407,7 @@ fun BasicTask(
                     modifier = Modifier.fillMaxWidth(),
                     text = prettyTimeDifference(
                         start = task.start,
-                        end = task.end,
+                        end = end,
                         timeFormat = hourFormat,
                     ),
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -446,12 +479,20 @@ fun ScheduleSidebar(
 fun Schedule(
     hourFormat: Int,
     tasks: List<Task>,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     verticalScrollState: ScrollState,
     modifier: Modifier = Modifier,
-    taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
+    taskContent: @Composable (
+        positionedTask: PositionedTask,
+    ) -> Unit = { positionedTask ->
         BasicTask(
             hourFormat = hourFormat,
-            positionedTask = it,
+            positionedTask = positionedTask,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
         )
     },
     timeLabel: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { hrFormat, time ->
@@ -462,8 +503,16 @@ fun Schedule(
     },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    // maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
+    // .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = tasks.map {
+        it.start.calculateEndTime(
+            focusSessions = it.focusSessions,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
+        )
+    }.maxOfOrNull { it.date } ?: today().date,
     minTime: LocalTime = min(),
     maxTime: LocalTime = max(),
     daySize: ScheduleSize,
@@ -566,6 +615,9 @@ fun Schedule(
                     hourFormat = hourFormat,
                     tasks = tasks,
                     taskContent = taskContent,
+                    sessionTime = sessionTime,
+                    shortBreakTime = shortBreakTime,
+                    longBreakTime = longBreakTime,
                     minDate = minDate,
                     maxDate = maxDate,
                     minTime = minTime,
@@ -584,18 +636,30 @@ fun Schedule(
 @Composable
 fun BasicSchedule(
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     tasks: List<Task>,
     modifier: Modifier = Modifier,
     taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
         BasicTask(
             hourFormat = hourFormat,
             positionedTask = it,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
         )
     },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    maxDate: LocalDate = tasks.maxByOrNull(Task::end)?.end?.date ?: Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = tasks.map {
+        it.start.calculateEndTime(
+            focusSessions = it.focusSessions,
+            sessionTime = sessionTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
+        )
+    }.maxOfOrNull { it.date } ?: today().date,
     minTime: LocalTime = min(),
     maxTime: LocalTime = max(),
     dayWidth: Dp,
@@ -606,7 +670,16 @@ fun BasicSchedule(
     val dividerColor =
         if (androidx.compose.material.MaterialTheme.colors.isLight) Color.LightGray else Color.DarkGray
     val positionedTasks =
-        remember(tasks) { arrangeTasks(splitTasks(tasks.sortedBy(Task::start))).filter { it.end > minTime && it.start < maxTime } }
+        remember(tasks) {
+            arrangeTasks(
+                splitTasks(
+                    tasks = tasks.sortedBy(Task::start),
+                    sessionTime = sessionTime,
+                    shortBreakTime = shortBreakTime,
+                    longBreakTime = longBreakTime,
+                ),
+            ).filter { it.end > minTime && it.start < maxTime }
+        }
     Layout(
         content = {
             positionedTasks.forEach { positionedTask ->

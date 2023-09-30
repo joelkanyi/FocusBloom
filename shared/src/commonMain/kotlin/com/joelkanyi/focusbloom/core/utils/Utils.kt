@@ -79,6 +79,7 @@ fun LocalDate.minusDays(
 ): LocalDate {
     return this.minus(days, DateTimeUnit.DAY)
 }
+
 fun LocalDateTime.minusDays(
     days: Int,
 ): LocalDateTime {
@@ -141,11 +142,22 @@ class TaskDataModifier(
 fun Modifier.taskData(positionedTask: PositionedTask) =
     this.then(TaskDataModifier(positionedTask))
 
-fun splitTasks(tasks: List<Task>): List<PositionedTask> {
+fun splitTasks(
+    tasks: List<Task>,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): List<PositionedTask> {
     return tasks
         .map { task ->
+            val end = task.start.calculateEndTime(
+                focusSessions = task.focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+            )
             val startDate = task.start.date
-            val endDate = task.end.date
+            val endDate = end.date
             if (startDate == endDate) {
                 listOf(
                     PositionedTask(
@@ -153,7 +165,7 @@ fun splitTasks(tasks: List<Task>): List<PositionedTask> {
                         SplitType.None,
                         task.start.date,
                         task.start.time,
-                        task.end.time,
+                        end.time,
                     ),
                 )
             } else {
@@ -171,7 +183,7 @@ fun splitTasks(tasks: List<Task>): List<PositionedTask> {
                             min()
                         },
                         end = if (date == endDate) {
-                            task.end.time
+                            end.time
                         } else {
                             max()
                         },
@@ -388,16 +400,16 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
     for (i in 0..51) {
         val week = getPreviousWeek(firstDateOfNextWeek = weeks.last().second.first())
         weeks += "${
-        week.first().month.name.lowercase().capitalize(Locale.current).substring(
-            0,
-            3,
-        )
-        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
-            " - ${
-            week.last().month.name.lowercase().capitalize(Locale.current).substring(
+            week.first().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
                 3,
             )
+        } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
+            " - ${
+                week.last().month.name.lowercase().capitalize(Locale.current).substring(
+                    0,
+                    3,
+                )
             } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
     return weeks
@@ -419,12 +431,12 @@ fun List<Float>.aAllEntriesAreZero(): Boolean {
 
 fun LocalDate.prettyFormat(): String {
     return "${this.dayOfMonth}${
-    when (this.dayOfMonth) {
-        1, 21, 31 -> "st"
-        2, 22 -> "nd"
-        3, 23 -> "rd"
-        else -> "th"
-    }
+        when (this.dayOfMonth) {
+            1, 21, 31 -> "st"
+            2, 22 -> "nd"
+            3, 23 -> "rd"
+            else -> "th"
+        }
     }, ${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
 }
 
@@ -449,7 +461,7 @@ fun prettyTimeDifference(
             end.hour
         }
         "$startHourTo12HourSystem:${start.minute.formattedZeroMinutes()} ${if (start.hour > 12) "PM" else "AM"} - ${
-        endHourTo12HourSystem
+            endHourTo12HourSystem
         }:${end.minute.formattedZeroMinutes()} ${if (end.hour > 12) "PM" else "AM"}"
     } else {
         "${start.hour}:${start.minute.formattedZeroMinutes()} - ${end.hour}:${end.minute.formattedZeroMinutes()}"
@@ -482,7 +494,7 @@ fun LocalTime.formattedTimeBasedOnTimeFormat(
             this.hour
         }
         "$hourTo12HourSystem:${
-        this.minute.formattedZeroMinutes()
+            this.minute.formattedZeroMinutes()
         } ${if (this.hour > 12) "PM" else "AM"}"
     } else {
         "${this.hour}:${this.minute.formattedZeroMinutes()}"
@@ -505,7 +517,18 @@ fun Int.timeFormat(): String {
     }
 }
 
-fun Task.durationInMinutes(): Int {
+fun Task.durationInMinutes(
+    focusSessions: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): Int {
+    val end = start.calculateEndTime(
+        focusSessions = focusSessions,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+    )
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }
 
@@ -549,11 +572,11 @@ fun Long.toTimer(): String {
     val minutes = seconds / 60
     val hours = minutes / 60
     return "${
-    if (hours > 0) {
-        hours.formattedZeroMinutes() + ":"
-    } else {
-        ""
-    }
+        if (hours > 0) {
+            hours.formattedZeroMinutes() + ":"
+        } else {
+            ""
+        }
     }${(minutes - (hours * 60)).formattedZeroMinutes()}:${(seconds - (minutes * 60)).formattedZeroMinutes()}"
 }
 
@@ -603,4 +626,20 @@ fun ProvideAppNavigator(
 
 fun String.pickFirstName(): String {
     return this.split(" ").first()
+}
+
+fun LocalDateTime.calculateEndTime(
+    focusSessions: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): LocalDateTime {
+    val totalSessionTimeMinutes = sessionTime * focusSessions
+    val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)
+    val totalLongBreakTimeMinutes = longBreakTime * (focusSessions / 4)
+    val totalBreakTimeMinutes = totalShortBreakTimeMinutes + totalLongBreakTimeMinutes
+    val totalTaskTimeMinutes = totalSessionTimeMinutes + totalBreakTimeMinutes
+    val totalTaskTimeMillis = totalTaskTimeMinutes.toEpochMilliseconds()
+    return toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+        .plus(totalTaskTimeMillis).selectedDateMillisToLocalDateTime()
 }

@@ -30,10 +30,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,19 +49,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
+import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
+import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
+import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
 import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.pickFirstName
+import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
 import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
+import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
@@ -76,9 +88,15 @@ fun HomeScreen() {
     val tasksState = screenModel.tasks.collectAsState().value
     val username = screenModel.username.collectAsState().value ?: ""
     val hourFormat = screenModel.hourFormat.collectAsState().value
+    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
     val navigator = LocalAppNavigator.currentOrThrow
     val selectedTask = screenModel.selectedTask.collectAsState().value
     val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+    val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
+    val longBreakColor = screenModel.longBreakColor.collectAsState().value
+    val focusColor = screenModel.focusColor.collectAsState().value
 
     val bottomSheetState = rememberModalBottomSheetState()
 
@@ -112,7 +130,13 @@ fun HomeScreen() {
 
     HomeScreenContent(
         tasksState = tasksState,
+        focusTimeColor = focusColor,
+        shortBreakColor = shortBreakColor,
+        longBreakColor = longBreakColor,
         hourFormat = hourFormat,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
         username = username,
         onClickTask = {
             navigator.push(TaskProgressScreen(taskId = it.id))
@@ -163,10 +187,16 @@ fun Option(
 private fun HomeScreenContent(
     tasksState: TasksState,
     hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     username: String,
     onClickTask: (task: Task) -> Unit,
     onClickSeeAllTasks: () -> Unit,
     onClickTaskOptions: (task: Task) -> Unit,
+    focusTimeColor: Long?,
+    shortBreakColor: Long?,
+    longBreakColor: Long?,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -183,10 +213,56 @@ private fun HomeScreenContent(
 
                 is TasksState.Success -> {
                     val tasks = tasksState.tasks.sortedByDescending { it.completed.not() }
+                    val activeTask = tasks.firstOrNull { it.active }
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+                        item {
+                            if (activeTask != null) {
+                                val containerColor = when (activeTask.current.sessionType()) {
+                                    SessionType.Focus -> {
+                                        if (focusTimeColor == null || focusTimeColor == 0L) {
+                                            Color(SessionColor)
+                                        } else {
+                                            Color(
+                                                focusTimeColor,
+                                            )
+                                        }
+                                    }
+
+                                    SessionType.LongBreak -> {
+                                        if (longBreakColor == null || longBreakColor == 0L) {
+                                            Color(LongBreakColor)
+                                        } else {
+                                            Color(
+                                                longBreakColor,
+                                            )
+                                        }
+                                    }
+
+                                    SessionType.ShortBreak -> {
+                                        if (shortBreakColor == null || shortBreakColor == 0L) {
+                                            Color(ShortBreakColor)
+                                        } else {
+                                            Color(
+                                                shortBreakColor,
+                                            )
+                                        }
+                                    }
+                                }
+                                ActiveTaskCard(
+                                    task = activeTask,
+                                    onClick = onClickTask,
+                                    hourFormat = hourFormat,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime,
+                                    containerColor = containerColor,
+                                    onClickTaskOptions = { },
+                                )
+                            }
+                        }
                         item {
                             Text(
                                 text = "Hello, ${username.pickFirstName()}!",
@@ -219,6 +295,7 @@ private fun HomeScreenContent(
                                                 style = MaterialTheme.typography.labelLarge.copy(
                                                     fontWeight = FontWeight.SemiBold,
                                                     color = MaterialTheme.colorScheme.primary,
+                                                    fontSize = 16.sp,
                                                 ),
                                             )
                                         }
@@ -233,6 +310,10 @@ private fun HomeScreenContent(
                                     onClick = onClickTask,
                                     onShowTaskOption = onClickTaskOptions,
                                     hourFormat = hourFormat,
+                                    focusSessions = it.focusSessions,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime,
                                 )
                             }
                         }
@@ -294,6 +375,84 @@ private fun HomeScreenContent(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActiveTaskCard(
+    task: Task,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+    onClick: (task: Task) -> Unit,
+    onClickTaskOptions: (task: Task) -> Unit,
+    hourFormat: Int,
+    containerColor: Color,
+) {
+    Card(
+        onClick = {
+            onClick(task)
+        },
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(.85f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = task.name,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                    maxLines = 1,
+
+                )
+                Text(
+                    text = "${
+                        when (task.current.sessionType()) {
+                            SessionType.Focus -> {
+                                task.consumedFocusTime.toMinutes()
+                            }
+
+                            SessionType.ShortBreak -> {
+                                task.consumedShortBreakTime.toMinutes()
+                            }
+
+                            SessionType.LongBreak -> {
+                                task.consumedLongBreakTime.toMinutes()
+                            }
+                        }
+                    } mins remaining",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                )
+            }
+            IconButton(
+                onClick = {
+                    onClickTaskOptions(task)
+                },
+            ) {
+                Icon(
+                    modifier = Modifier,
+                    imageVector = if (task.inProgressTask) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = "Play/Pause",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                )
             }
         }
     }

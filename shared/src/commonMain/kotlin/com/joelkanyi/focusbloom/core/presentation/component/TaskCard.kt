@@ -37,6 +37,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +51,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -57,10 +61,24 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun TaskCard(
     task: Task,
+    focusSessions: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
     hourFormat: Int,
     onClick: (task: Task) -> Unit,
     onShowTaskOption: (task: Task) -> Unit,
 ) {
+    val end by remember {
+        mutableStateOf(
+            task.start.calculateEndTime(
+                focusSessions = focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+            ),
+        )
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -133,14 +151,21 @@ fun TaskCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${task.durationInMinutes()} minutes",
+                        text = "${
+                            task.durationInMinutes(
+                                focusSessions = focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
+                            )
+                        } minutes",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = prettyTimeDifference(
                             start = task.start,
-                            end = task.end,
+                            end = end,
                             timeFormat = hourFormat,
                         ),
                         style = MaterialTheme.typography.bodySmall,

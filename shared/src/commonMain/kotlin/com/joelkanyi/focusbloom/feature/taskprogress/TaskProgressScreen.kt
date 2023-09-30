@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.feature.taskprogress
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +26,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -61,24 +65,30 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTimerControls
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
+import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
+import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
+import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.sessionType
+import com.joelkanyi.focusbloom.core.utils.toMillis
 import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.component.get
 
-class TaskProgressScreen(
+data class TaskProgressScreen(
     val taskId: Int,
 ) : Screen, KoinComponent {
-    private val screenModel: TaskProgressScreenModel by inject()
 
     @Composable
     override fun Content() {
+        val screenModel = get<TaskProgressScreenModel>()
         val snackbarHostState = remember { SnackbarHostState() }
         val task = screenModel.task.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
@@ -86,29 +96,44 @@ class TaskProgressScreen(
         val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
         val longBreakColor = screenModel.longBreakColor.collectAsState().value
         val focusColor = screenModel.focusColor.collectAsState().value
+        val focusTime = screenModel.focusTime.collectAsState().value ?: (25).toMillis()
+        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: (5).toMillis()
+        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: (15).toMillis()
 
         val containerColor = when (task?.current.sessionType()) {
-            SessionType.Focus -> focusColor?.let {
-                Color(
-                    it,
-                )
+            SessionType.Focus -> {
+                if (focusColor == null || focusColor == 0L) {
+                    Color(SessionColor)
+                } else {
+                    Color(
+                        focusColor,
+                    )
+                }
             }
 
-            SessionType.LongBreak -> longBreakColor?.let {
-                Color(
-                    it,
-                )
+            SessionType.LongBreak -> {
+                if (longBreakColor == null || longBreakColor == 0L) {
+                    Color(LongBreakColor)
+                } else {
+                    Color(
+                        longBreakColor,
+                    )
+                }
             }
 
-            SessionType.ShortBreak -> shortBreakColor?.let {
-                Color(
-                    it,
-                )
+            SessionType.ShortBreak -> {
+                if (shortBreakColor == null || shortBreakColor == 0L) {
+                    Color(ShortBreakColor)
+                } else {
+                    Color(
+                        shortBreakColor,
+                    )
+                }
             }
         }
         StatusBarColors(
-            statusBarColor = containerColor ?: MaterialTheme.colorScheme.background,
-            navBarColor = containerColor ?: MaterialTheme.colorScheme.background,
+            statusBarColor = containerColor,
+            navBarColor = containerColor,
         )
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
@@ -132,12 +157,26 @@ class TaskProgressScreen(
             }
         }
 
+        if (task?.completed == true) {
+            SuccessfulCompletionOfTask(
+                title = "Task Completed",
+                message = "You have successfully completed this task",
+                onConfirm = {
+                    screenModel.reset()
+                    navigator.pop()
+                },
+            )
+        }
+
         FocusTimeScreenContent(
             task = task,
+            focusTime = focusTime,
+            shortBreakTime = shortBreakTime,
+            longBreakTime = longBreakTime,
             timerValue = timer,
             snackbarHostState = snackbarHostState,
             timerState = screenModel.timerState.collectAsState().value,
-            containerColor = containerColor ?: MaterialTheme.colorScheme.background,
+            containerColor = containerColor,
             onClickNavigateBack = {
                 navigator.pop()
             },
@@ -163,6 +202,8 @@ class TaskProgressScreen(
 
                     TimerState.Idle -> {
                         screenModel.start()
+                        screenModel.resetAllTasksToInactive()
+                        screenModel.updateActiveTask(taskId, true)
                     }
 
                     TimerState.Finished -> {
@@ -177,6 +218,9 @@ class TaskProgressScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FocusTimeScreenContent(
+    focusTime: Long,
+    shortBreakTime: Long,
+    longBreakTime: Long,
     containerColor: Color,
     timerValue: Long,
     timerState: TimerState,
@@ -210,9 +254,7 @@ fun FocusTimeScreenContent(
         },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
         ) {
             if (task == null) {
                 Text(
@@ -262,16 +304,23 @@ fun FocusTimeScreenContent(
                                         )
                                         Text(
                                             text = when (task.current.sessionType()) {
-                                                SessionType.Focus -> "${task.focusTime.toMinutes()} min"
-                                                SessionType.ShortBreak -> "${task.shortBreakTime.toMinutes()} min"
-                                                SessionType.LongBreak -> "${task.longBreakTime.toMinutes()} min"
+                                                SessionType.Focus -> "${focusTime.toMinutes()} min"
+                                                SessionType.ShortBreak -> "${shortBreakTime.toMinutes()} min"
+                                                SessionType.LongBreak -> "${longBreakTime.toMinutes()} min"
                                             },
                                         )
                                     }
                                 }
 
                                 Text(
-                                    text = "${task.durationInMinutes()} minutes",
+                                    text = "${
+                                        task.durationInMinutes(
+                                            sessionTime = focusTime.toMinutes(),
+                                            shortBreakTime = shortBreakTime.toMinutes(),
+                                            longBreakTime = longBreakTime.toMinutes(),
+                                            focusSessions = task.focusSessions,
+                                        )
+                                    } minutes",
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                             }
@@ -287,9 +336,9 @@ fun FocusTimeScreenContent(
                             TaskProgress(
                                 percentage = timerValue.toPercentage(
                                     when (task.current.sessionType()) {
-                                        SessionType.Focus -> task.focusTime
-                                        SessionType.ShortBreak -> task.shortBreakTime
-                                        SessionType.LongBreak -> task.longBreakTime
+                                        SessionType.Focus -> focusTime
+                                        SessionType.ShortBreak -> shortBreakTime
+                                        SessionType.LongBreak -> longBreakTime
                                     },
                                 ),
                                 radius = 40.dp,
@@ -327,4 +376,57 @@ fun FocusTimeScreenContent(
             }
         }
     }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun SuccessfulCompletionOfTask(
+    modifier: Modifier = Modifier,
+    title: String,
+    message: String,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        icon = {
+            Image(
+                modifier = Modifier.size(48.dp),
+                painter = painterResource("ic_complete.xml"),
+                contentDescription = "Task Completed",
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background,
+        onDismissRequest = onConfirm,
+        title = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    textAlign = TextAlign.Center,
+                ),
+            )
+        },
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = message,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    textAlign = TextAlign.Center,
+                ),
+            )
+        },
+        dismissButton = {},
+        confirmButton = {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onConfirm,
+            ) {
+                Text(
+                    text = "OK",
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+        },
+    )
 }

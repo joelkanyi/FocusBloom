@@ -58,21 +58,22 @@ class TasksRepositoryImpl(
                 name = it.name,
                 description = it.description,
                 start = it.start,
-                end = it.end,
+                // end = it.end,
                 color = it.color,
                 current = it.current,
                 date = it.date,
                 focusSessions = it.focusSessions,
                 completed = it.completed,
-                focusTime = it.focusTime,
+/*                focusTime = it.focusTime,
                 shortBreakTime = it.shortBreakTime,
-                longBreakTime = it.longBreakTime,
+                longBreakTime = it.longBreakTime,*/
                 type = it.type,
                 consumedFocusTime = it.consumedFocusTime,
                 consumedShortBreakTime = it.consumedShortBreakTime,
                 consumedLongBreakTime = it.consumedLongBreakTime,
                 inProgressTask = it.inProgressTask,
                 currentCycle = it.currentCycle,
+                active = it.active,
             )
         }
     }
@@ -84,15 +85,16 @@ class TasksRepositoryImpl(
                 name = it.name,
                 description = it.description,
                 start = it.start,
-                end = it.end,
+                // end = it.end,
                 color = it.color,
                 current = it.current,
                 date = it.date,
                 focusSessions = it.focusSessions,
                 completed = it.completed,
-                focusTime = it.focusTime,
+/*                focusTime = it.focusTime,
                 shortBreakTime = it.shortBreakTime,
-                longBreakTime = it.longBreakTime,
+                longBreakTime = it.longBreakTime,*/
+                active = it.active,
             )
         }
     }
@@ -131,5 +133,24 @@ class TasksRepositoryImpl(
 
     override suspend fun updateTaskCycleNumber(id: Int, cycle: Int) {
         dbQuery.updateTaskCycleNumber(id = id, currentCycle = cycle)
+    }
+
+    override fun getActiveTask(): Flow<Task?> {
+        return dbQuery
+            .getActiveTask()
+            .asFlow()
+            .mapToOneNotNull()
+            .map { taskEntity ->
+                taskEntity.toTask()
+            }
+    }
+
+    override suspend fun updateTaskActive(id: Int, active: Boolean) {
+        println("repo: updateTaskActive: $id, $active")
+        dbQuery.updateTaskActiveStatus(id = id, active = active)
+    }
+
+    override suspend fun updateAllTasksActiveStatusToInactive() {
+        dbQuery.updateAllTasksActiveStatusToInactive()
     }
 }
