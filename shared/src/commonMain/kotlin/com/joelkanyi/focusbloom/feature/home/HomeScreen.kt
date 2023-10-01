@@ -465,7 +465,7 @@ private fun TodayTaskProgressCard(tasks: List<Task>) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TaskProgress(
-                mainColor = MaterialTheme.colorScheme.secondary,
+                mainColor = MaterialTheme.colorScheme.primary,
                 percentage = taskCompletionPercentage(tasks).toFloat(),
                 counterColor = MaterialTheme.colorScheme.onSurface,
             )

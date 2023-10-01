@@ -70,6 +70,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -344,8 +345,10 @@ private fun AddTaskScreenContent(
                     label = {
                         Text(
                             text = "Task Name",
-                            style = MaterialTheme.typography.titleSmall,
-
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                            ),
                         )
                     },
                     value = TextFieldState(text = taskName),
@@ -360,6 +363,9 @@ private fun AddTaskScreenContent(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Words,
                     ),
+                    textStyle = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 16.sp,
+                    ),
                 )
             }
             item {
@@ -369,17 +375,26 @@ private fun AddTaskScreenContent(
                     label = {
                         Text(
                             text = "Description",
-                            style = MaterialTheme.typography.titleSmall,
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                            ),
 
                         )
                     },
                     value = TextFieldState(text = taskDescription),
                     onValueChange = onTaskDescriptionChange,
                     placeholder = {
-                        Text(text = "Enter Description")
+                        Text(
+                            text = "Enter Description",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,
+                    ),
+                    textStyle = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 16.sp,
                     ),
                 )
             }
@@ -390,23 +405,38 @@ private fun AddTaskScreenContent(
                     label = {
                         Text(
                             text = "Date",
-                            style = MaterialTheme.typography.titleSmall,
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                            ),
                         )
                     },
                     currentTextState = TextFieldState(text = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date.toString()),
                     onClick = onClickPickDate,
+                    textStyle = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 16.sp,
+                    ),
                 )
             }
 
             item {
                 BloomDropDown(
                     label = {
-                        Text(text = "Task Type")
+                        Text(
+                            text = "Task Type",
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                            ),
+                        )
                     },
                     modifier = Modifier.fillMaxWidth(),
                     options = taskOptions,
                     selectedOption = TextFieldState(selectedTaskType.name),
                     onOptionSelected = onSelectedTaskTypeChange,
+                    textStyle = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 16.sp,
+                    ),
                 )
             }
 
@@ -455,6 +485,8 @@ private fun AddTaskScreenContent(
                     text = "Focus Sessions",
                     style = MaterialTheme.typography.titleMedium.copy(
                         textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp,
                     ),
                 )
             }
@@ -506,11 +538,14 @@ private fun TimeComponent(
         modifier = Modifier.clickable {
             onClick()
         },
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp,
+            ),
         )
         Row(
             modifier = Modifier,
@@ -520,7 +555,7 @@ private fun TimeComponent(
             Text(
                 text = time.formattedTimeBasedOnTimeFormat(hourFormat),
                 style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
                 ),
             )
 
