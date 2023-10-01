@@ -83,6 +83,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
@@ -115,16 +116,25 @@ fun StatisticsScreen() {
     val selectedWeekTasks = tasksHistory.completedTasks(
         lastFiftyTwoWeeks[pagerState.currentPage].second,
     ).map { it.toFloat() }
+    val tickPositionState by remember {
+        mutableStateOf(
+            TickPositionState(
+                TickPosition.Outside,
+                TickPosition.Outside,
+            ),
+        )
+    }
 
     StatisticsScreenContent(
         hourFormat = hourFormat,
         sessionTime = sessionTime,
+        tickPositionState = tickPositionState,
         shortBreakTime = shortBreakTime,
         longBreakTime = longBreakTime,
         pagerState = pagerState,
         selectedWeek = selectedWeek,
         selectedWeekTasks = selectedWeekTasks,
-        tasksHistory = tasksHistory,
+        tasksHistory = tasksHistory.groupBy { it.date.date },
         onClickSeeAllTasks = {
             navigator.push(AllStatisticsScreen())
         },
@@ -172,7 +182,8 @@ fun StatisticsScreenContent(
     shortBreakTime: Int,
     longBreakTime: Int,
     selectedWeekTasks: List<Float>,
-    tasksHistory: List<Task>,
+    tickPositionState: TickPositionState,
+    tasksHistory: Map<LocalDate, List<Task>>,
     onClickSeeAllTasks: () -> Unit,
     pagerState: PagerState,
     onClickNextWeek: () -> Unit,
@@ -243,15 +254,6 @@ fun StatisticsScreenContent(
                     modifier = Modifier
                         .fillMaxWidth(),
                 ) {
-                    val tickPositionState by remember {
-                        mutableStateOf(
-                            TickPositionState(
-                                TickPosition.Outside,
-                                TickPosition.Outside,
-                            ),
-                        )
-                    }
-
                     ChartLayout(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -266,7 +268,7 @@ fun StatisticsScreenContent(
             }
 
             item {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -278,7 +280,7 @@ fun StatisticsScreenContent(
                             fontWeight = FontWeight.Bold,
                         ),
                     )
-                    if (tasksHistory.size > 3) {
+                    if (tasksHistory.values.size > 3) {
                         TextButton(onClick = onClickSeeAllTasks) {
                             Text(
                                 text = "See All",
@@ -292,9 +294,8 @@ fun StatisticsScreenContent(
                     }
                 }
             }
-            val groupedTasksHistory = tasksHistory.take(3).groupBy { it.date.date }
 
-            groupedTasksHistory.forEach { (date, tasks) ->
+            tasksHistory.forEach { (date, tasks) ->
                 item {
                     Text(
                         modifier = Modifier
@@ -462,12 +463,14 @@ fun HistoryCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "${task.durationInMinutes(
-                                focusSessions = task.focusSessions,
-                                sessionTime = sessionTime,
-                                shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime,
-                            )} minutes",
+                            text = "${
+                                task.durationInMinutes(
+                                    focusSessions = task.focusSessions,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime,
+                                )
+                            } minutes",
                             style = MaterialTheme.typography.displaySmall.copy(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,

@@ -97,7 +97,6 @@ class HomeScreenModel(
                 task.copy(
                     date = task.date.plusDays(1),
                     start = task.start.plusDays(1),
-                    // end = task.end.plusDays(1),
                 ),
             )
         }

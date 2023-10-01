@@ -50,6 +50,7 @@ fun BloomTimerControls(
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.Replay,
                 contentDescription = "Reset Timer",
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         }
 
@@ -58,14 +59,19 @@ fun BloomTimerControls(
             icon = {
                 Icon(
                     modifier = Modifier.size(48.dp),
-                    imageVector = if (state == TimerState.Paused) {
-                        Icons.Filled.PlayArrow
-                    } else if (state == TimerState.Ticking) {
-                        Icons.Filled.Pause
-                    } else if (state == TimerState.Finished) {
-                        Icons.Filled.Replay
-                    } else {
-                        Icons.Filled.PlayArrow
+                    imageVector = when (state) {
+                        TimerState.Paused -> {
+                            Icons.Filled.PlayArrow
+                        }
+                        TimerState.Ticking -> {
+                            Icons.Filled.Pause
+                        }
+                        TimerState.Finished -> {
+                            Icons.Filled.Replay
+                        }
+                        else -> {
+                            Icons.Filled.PlayArrow
+                        }
                     },
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
@@ -82,6 +88,7 @@ fun BloomTimerControls(
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.SkipNext,
                 contentDescription = "Next Timer",
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         }
     }

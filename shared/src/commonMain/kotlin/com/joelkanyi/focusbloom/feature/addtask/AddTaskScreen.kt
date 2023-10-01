@@ -54,6 +54,8 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -128,19 +130,23 @@ fun AddTaskScreen() {
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
     )
-    val calculatedFocusTime = calculateFromFocusSessions(
-        focusSessions = focusSessions,
-        sessionTime = sessionTime,
-        shortBreakTime = shortBreakTime,
-        longBreakTime = longBreakTime,
-        currentLocalDateTime = LocalDateTime(
-            year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
-            month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
-            dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
-            hour = startTimeState.hour,
-            minute = startTimeState.minute,
-        ),
-    )
+    val calculatedFocusTime by remember {
+        mutableStateOf(
+            calculateFromFocusSessions(
+                focusSessions = focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+                currentLocalDateTime = LocalDateTime(
+                    year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
+                    month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
+                    dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
+                    hour = startTimeState.hour,
+                    minute = startTimeState.minute,
+                ),
+            ),
+        )
+    }
 
     LaunchedEffect(key1 = true) {
         screenModel.eventsFlow.collectLatest { event ->

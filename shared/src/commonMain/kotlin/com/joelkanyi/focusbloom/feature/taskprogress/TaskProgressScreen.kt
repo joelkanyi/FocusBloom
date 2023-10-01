@@ -92,7 +92,8 @@ data class TaskProgressScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val task = screenModel.task.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
-        val timer = screenModel.tickingTime.collectAsState().value
+        val timer = Timer.tickingTime.collectAsState().value
+        val timerState = Timer.timerState.collectAsState().value
         val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
         val longBreakColor = screenModel.longBreakColor.collectAsState().value
         val focusColor = screenModel.focusColor.collectAsState().value
@@ -137,19 +138,10 @@ data class TaskProgressScreen(
         )
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
-            screenModel.eventsFlow.collectLatest { event ->
+            Timer.eventsFlow.collectLatest { event ->
                 when (event) {
                     is UiEvents.ShowSnackbar -> {
                         snackbarHostState.showSnackbar(event.message)
-                    }
-
-                    is UiEvents.TimerEventFinished -> {
-                        println("Timer Finished")
-                        screenModel.executeTasks()
-                    }
-
-                    is UiEvents.TimerEventStarted -> {
-                        println("Timer Started")
                     }
 
                     else -> {}
@@ -162,7 +154,7 @@ data class TaskProgressScreen(
                 title = "Task Completed",
                 message = "You have successfully completed this task",
                 onConfirm = {
-                    screenModel.reset()
+                    Timer.reset()
                     navigator.pop()
                 },
             )
@@ -175,25 +167,25 @@ data class TaskProgressScreen(
             longBreakTime = longBreakTime,
             timerValue = timer,
             snackbarHostState = snackbarHostState,
-            timerState = screenModel.timerState.collectAsState().value,
+            timerState = timerState,
             containerColor = containerColor,
             onClickNavigateBack = {
                 navigator.pop()
             },
             onClickNext = {
-                screenModel.next()
+                screenModel.moveToNextSessionOfTheTask()
             },
             onClickReset = {
-                screenModel.reset()
+                screenModel.resetCurrentSessionOfTheTask()
             },
             onClickAction = { state ->
                 when (state) {
                     TimerState.Ticking -> {
-                        screenModel.pause()
+                        Timer.pause()
                     }
 
                     TimerState.Paused -> {
-                        screenModel.resume()
+                        Timer.resume()
                     }
 
                     TimerState.Stopped -> {
@@ -201,7 +193,14 @@ data class TaskProgressScreen(
                     }
 
                     TimerState.Idle -> {
-                        screenModel.start()
+                        Timer.start(
+                            update = {
+                                screenModel.updateConsumedTime()
+                            },
+                            executeTasks = {
+                                screenModel.executeTasks()
+                            },
+                        )
                         screenModel.resetAllTasksToInactive()
                         screenModel.updateActiveTask(taskId, true)
                     }
@@ -244,6 +243,7 @@ fun FocusTimeScreenContent(
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Add Task Back Button",
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 },
@@ -270,7 +270,9 @@ fun FocusTimeScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Column(
-                                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -284,45 +286,45 @@ fun FocusTimeScreenContent(
                                         maxLines = 3,
                                         overflow = TextOverflow.Ellipsis,
                                     )
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.End,
-                                    ) {
-                                        Text(
-                                            text = buildAnnotatedString {
-                                                withStyle(
-                                                    style = SpanStyle(
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        fontSize = 18.sp,
-                                                    ),
-                                                ) {
-                                                    append("${task.currentCycle}")
-                                                }
-                                                append("/${task.focusSessions}")
-                                            },
-                                        )
-                                        Text(
-                                            text = when (task.current.sessionType()) {
-                                                SessionType.Focus -> "${focusTime.toMinutes()} min"
-                                                SessionType.ShortBreak -> "${shortBreakTime.toMinutes()} min"
-                                                SessionType.LongBreak -> "${longBreakTime.toMinutes()} min"
-                                            },
-                                        )
-                                    }
-                                }
 
-                                Text(
-                                    text = "${
-                                        task.durationInMinutes(
-                                            sessionTime = focusTime.toMinutes(),
-                                            shortBreakTime = shortBreakTime.toMinutes(),
-                                            longBreakTime = longBreakTime.toMinutes(),
-                                            focusSessions = task.focusSessions,
-                                        )
-                                    } minutes",
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
+                                    Text(
+                                        text = buildAnnotatedString {
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    fontSize = 18.sp,
+                                                ),
+                                            ) {
+                                                append("${task.currentCycle}")
+                                            }
+                                            append("/${task.focusSessions}")
+                                        },
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
+                                        text = "Total: ${
+                                            task.durationInMinutes(
+                                                sessionTime = focusTime.toMinutes(),
+                                                shortBreakTime = shortBreakTime.toMinutes(),
+                                                longBreakTime = longBreakTime.toMinutes(),
+                                                focusSessions = task.focusSessions,
+                                            )
+                                        } minutes",
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
+                                    Text(
+                                        text = when (task.current.sessionType()) {
+                                            SessionType.Focus -> "${focusTime.toMinutes()} min"
+                                            SessionType.ShortBreak -> "${shortBreakTime.toMinutes()} min"
+                                            SessionType.LongBreak -> "${longBreakTime.toMinutes()} min"
+                                        },
+                                    )
+                                }
                             }
                         }
                     }
@@ -344,6 +346,7 @@ fun FocusTimeScreenContent(
                                 radius = 40.dp,
                                 content = timerValue.toTimer(),
                                 mainColor = MaterialTheme.colorScheme.primary,
+                                counterColor = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
                     }
@@ -357,7 +360,9 @@ fun FocusTimeScreenContent(
                                 SessionType.ShortBreak -> "Short Break"
                                 SessionType.LongBreak -> "Long Break"
                             },
-                            style = MaterialTheme.typography.displaySmall,
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            ),
                             textAlign = TextAlign.Center,
                         )
                     }

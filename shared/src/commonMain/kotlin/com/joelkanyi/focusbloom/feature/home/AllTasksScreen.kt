@@ -67,7 +67,6 @@ class AllTasksScreen : Screen, KoinComponent {
         val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
         val selectedTask = screenModel.selectedTask.collectAsState().value
         val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
-
         val bottomSheetState = rememberModalBottomSheetState()
 
         if (openBottomSheet) {
@@ -76,9 +75,6 @@ class AllTasksScreen : Screen, KoinComponent {
                     bottomSheetState = bottomSheetState,
                     onClickCancel = {
                         screenModel.openBottomSheet(false)
-                    },
-                    onClickSave = {
-                        screenModel.updateTask(it)
                     },
                     onClickDelete = {
                         screenModel.deleteTask(it)

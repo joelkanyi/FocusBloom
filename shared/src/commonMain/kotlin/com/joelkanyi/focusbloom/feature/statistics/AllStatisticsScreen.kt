@@ -44,9 +44,9 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
 
 class AllStatisticsScreen : Screen, KoinComponent {
 
@@ -62,7 +62,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
         val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
         val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
         val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-        val tasksHistory = screenModel.tasks.collectAsState().value
+        val tasksHistory = screenModel.tasks.collectAsState().value.groupBy { it.date.date }
 
         AllStatisticsScreenContent(
             timeFormat = hourFormat,
@@ -96,7 +96,7 @@ fun AllStatisticsScreenContent(
     sessionTime: Int,
     shortBreakTime: Int,
     longBreakTime: Int,
-    tasks: List<Task>,
+    tasks: Map<LocalDate, List<Task>>,
     onClickNavigateBack: () -> Unit,
     onClickDelete: (task: Task) -> Unit,
     onClickCancel: (task: Task) -> Unit,
@@ -126,9 +126,7 @@ fun AllStatisticsScreenContent(
                 .fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            val groupedTasksHistory = tasks.groupBy { it.date.date }
-
-            groupedTasksHistory.forEach { (date, tasks) ->
+            tasks.forEach { (date, tasks) ->
                 stickyHeader {
                     Text(
                         modifier = Modifier

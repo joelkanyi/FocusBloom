@@ -114,18 +114,6 @@ class AddTaskScreenModel(
         _showTaskDatePickerDialog.value = show
     }
 
-    /*    private val _selectedDate = MutableStateFlow(today())
-        val selectedDate = _selectedDate.asStateFlow()
-        fun setSelectedDate(date: LocalDateTime) {
-            _selectedDate.value = date
-        }
-
-        private val _selectedStartTime = MutableStateFlow(today().time)
-        val selectedStartTime = _selectedStartTime.asStateFlow()
-        fun setSelectedStartTime(time: LocalTime) {
-            _selectedStartTime.value = time
-        }*/
-
     fun addTask(
         task: Task,
     ) {

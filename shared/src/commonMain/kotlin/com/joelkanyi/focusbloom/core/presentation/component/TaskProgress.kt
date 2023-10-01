@@ -48,6 +48,7 @@ fun TaskProgress(
     percentage: Float,
     radius: Dp = 20.dp,
     mainColor: Color,
+    counterColor: Color,
     strokeWidth: Dp = 8.dp,
     animationDuration: Int = 800,
     animDelay: Int = 0,
@@ -104,7 +105,7 @@ fun TaskProgress(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (content?.isNullOrEmpty()?.not() == true) {
+                if (content?.isEmpty()?.not() == true) {
                     Text(
                         text = content,
                         fontSize = 22.sp,
@@ -115,6 +116,7 @@ fun TaskProgress(
                         text = "${(currentPercentage.value).toInt()}%",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
+                        color = counterColor,
                     )
                 }
             }

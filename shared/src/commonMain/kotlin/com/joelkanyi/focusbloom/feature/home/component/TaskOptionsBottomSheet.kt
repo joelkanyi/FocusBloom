@@ -32,14 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.core.domain.model.Task
-import com.joelkanyi.focusbloom.feature.home.Option
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskOptionsBottomSheet(
     bottomSheetState: SheetState,
     onClickCancel: (task: Task) -> Unit,
-    onClickSave: (task: Task) -> Unit,
     onClickDelete: (task: Task) -> Unit,
     onClickPushToTomorrow: (task: Task) -> Unit,
     task: Task,

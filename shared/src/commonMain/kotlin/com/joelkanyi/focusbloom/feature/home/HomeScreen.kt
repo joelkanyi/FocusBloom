@@ -16,7 +16,6 @@
 package com.joelkanyi.focusbloom.feature.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,9 +49,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -68,9 +67,11 @@ import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
 import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
-import com.joelkanyi.focusbloom.core.utils.toMinutes
+import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
+import com.joelkanyi.focusbloom.feature.taskprogress.Timer
+import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -97,7 +98,8 @@ fun HomeScreen() {
     val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
     val longBreakColor = screenModel.longBreakColor.collectAsState().value
     val focusColor = screenModel.focusColor.collectAsState().value
-
+    val timerState = Timer.timerState.collectAsState().value
+    val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
 
     if (openBottomSheet) {
@@ -106,9 +108,6 @@ fun HomeScreen() {
                 bottomSheetState = bottomSheetState,
                 onClickCancel = {
                     screenModel.openBottomSheet(false)
-                },
-                onClickSave = {
-                    screenModel.updateTask(it)
                 },
                 onClickDelete = {
                     screenModel.deleteTask(it)
@@ -130,6 +129,8 @@ fun HomeScreen() {
 
     HomeScreenContent(
         tasksState = tasksState,
+        timerState = timerState,
+        tickingTime = tickingTime,
         focusTimeColor = focusColor,
         shortBreakColor = shortBreakColor,
         longBreakColor = longBreakColor,
@@ -148,44 +149,28 @@ fun HomeScreen() {
             screenModel.selectTask(it)
             screenModel.openBottomSheet(true)
         },
-    )
-}
+        onClickActiveTaskOptions = {
+            when (timerState) {
+                TimerState.Ticking -> {
+                    Timer.pause()
+                }
 
-@Composable
-fun Option(
-    icon: ImageVector,
-    text: String,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Icon(
-            modifier = Modifier,
-            imageVector = icon,
-            contentDescription = text,
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-        )
-        Text(
-            modifier = Modifier,
-            text = text,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-            ),
-        )
-    }
+                TimerState.Paused -> {
+                    Timer.resume()
+                }
+
+                else -> {}
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun HomeScreenContent(
     tasksState: TasksState,
+    timerState: TimerState,
+    tickingTime: Long,
     hourFormat: Int,
     sessionTime: Int,
     shortBreakTime: Int,
@@ -197,6 +182,7 @@ private fun HomeScreenContent(
     focusTimeColor: Long?,
     shortBreakColor: Long?,
     longBreakColor: Long?,
+    onClickActiveTaskOptions: (task: Task) -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -254,12 +240,10 @@ private fun HomeScreenContent(
                                 ActiveTaskCard(
                                     task = activeTask,
                                     onClick = onClickTask,
-                                    hourFormat = hourFormat,
-                                    sessionTime = sessionTime,
-                                    shortBreakTime = shortBreakTime,
-                                    longBreakTime = longBreakTime,
                                     containerColor = containerColor,
-                                    onClickTaskOptions = { },
+                                    onClickTaskOptions = onClickActiveTaskOptions,
+                                    timerState = timerState,
+                                    tickingTime = tickingTime,
                                 )
                             }
                         }
@@ -384,12 +368,10 @@ private fun HomeScreenContent(
 @Composable
 fun ActiveTaskCard(
     task: Task,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
+    timerState: TimerState,
+    tickingTime: Long,
     onClick: (task: Task) -> Unit,
     onClickTaskOptions: (task: Task) -> Unit,
-    hourFormat: Int,
     containerColor: Color,
 ) {
     Card(
@@ -418,24 +400,26 @@ fun ActiveTaskCard(
                         color = MaterialTheme.colorScheme.onPrimary,
                     ),
                     maxLines = 1,
-
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = "${
                         when (task.current.sessionType()) {
                             SessionType.Focus -> {
-                                task.consumedFocusTime.toMinutes()
+                                "Focus Session"
                             }
 
                             SessionType.ShortBreak -> {
-                                task.consumedShortBreakTime.toMinutes()
+                                "Short Break"
                             }
 
                             SessionType.LongBreak -> {
-                                task.consumedLongBreakTime.toMinutes()
+                                "Long Break"
                             }
                         }
-                    } mins remaining",
+                    } - ${
+                        tickingTime.toTimer()
+                    }",
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold,
@@ -449,7 +433,19 @@ fun ActiveTaskCard(
             ) {
                 Icon(
                     modifier = Modifier,
-                    imageVector = if (task.inProgressTask) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    imageVector = when (timerState) {
+                        TimerState.Ticking -> {
+                            Icons.Default.Pause
+                        }
+
+                        TimerState.Paused -> {
+                            Icons.Default.PlayArrow
+                        }
+
+                        else -> {
+                            Icons.Default.PlayArrow
+                        }
+                    },
                     contentDescription = "Play/Pause",
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
@@ -471,6 +467,7 @@ private fun TodayTaskProgressCard(tasks: List<Task>) {
             TaskProgress(
                 mainColor = MaterialTheme.colorScheme.secondary,
                 percentage = taskCompletionPercentage(tasks).toFloat(),
+                counterColor = MaterialTheme.colorScheme.onSurface,
             )
 
             Column(
