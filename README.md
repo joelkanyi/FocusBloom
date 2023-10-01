@@ -13,15 +13,7 @@ FocusBloom is a Kotlin Multiplatform Pomodoro app that helps users enhance their
 <img src="art/app_screen1.jpeg"  width="250"/> <img src="art/app_screen2.jpeg"  width="250"/> <img src="art/app_screen3.jpeg"  width="250/">  <img src="art/app_screen4.jpeg"  width="250"/> <img src="art/app_screen5.jpeg"  width="250"/> 
 
 ### iOS
-<img src="art/ios_screen1.png"  width="250"/>
-<img src="art/ios_screen2.png"  width="250"/>
-<img src="art/ios_screen3.png"  width="250"/>
-<img src="art/ios_screen4.png"  width="250"/>
-<img src="art/ios_screen5.png"  width="250"/>
-<img src="art/ios_screen6.png"  width="250"/>
-<img src="art/ios_screen7.png"  width="250"/>
-<img src="art/ios_screen8.png"  width="250"/>
-<img src="art/ios_screen9.png"  width="250"/>
+<img src="art/ios_screen1.png"  width="250"/> <img src="art/ios_screen2.png"  width="250"/> <img src="art/ios_screen3.png"  width="250"/> <img src="art/ios_screen4.png"  width="250"/> <img src="art/ios_screen5.png"  width="250"/> <img src="art/ios_screen6.png"  width="250"/> <img src="art/ios_screen7.png"  width="250"/> <img src="art/ios_screen8.png"  width="250"/> <img src="art/ios_screen9.png"  width="250"/>
 
 ### Desktop
 <img src="art/dsk_screen1.png"/>
