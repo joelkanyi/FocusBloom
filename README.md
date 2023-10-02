@@ -8,6 +8,9 @@ FocusBloom is a Kotlin Multiplatform Pomodoro app that helps users enhance their
 ---- | ---- | ---- | ----
 ✅ | ✅ | ✅ | Planned
 
+## Currently available on the Play Store
+<a href='https://play.google.com/store/apps/details?id=com.joelkanyi.focusbloom.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
+
 ## Screenshots
 ### Android
 <img src="art/app_screen1.jpeg"  width="250"/> <img src="art/app_screen2.jpeg"  width="250"/> <img src="art/app_screen3.jpeg"  width="250/">  <img src="art/app_screen4.jpeg"  width="250"/> <img src="art/app_screen5.jpeg"  width="250"/> 
