@@ -42,21 +42,21 @@ fun TaskOptionsBottomSheet(
     onClickPushToTomorrow: (task: Task) -> Unit,
     task: Task,
     onDismissRequest: () -> Unit,
-    onClickMarkAsCompleted: (task: Task) -> Unit,
+    onClickMarkAsCompleted: (task: Task) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = bottomSheetState,
+        sheetState = bottomSheetState
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Option(
                 icon = Icons.Default.Edit,
                 text = "Edit Task",
                 onClick = {
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.EditCalendar,
@@ -64,7 +64,7 @@ fun TaskOptionsBottomSheet(
                 onClick = {
                     onClickPushToTomorrow(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Done,
@@ -72,7 +72,7 @@ fun TaskOptionsBottomSheet(
                 onClick = {
                     onClickMarkAsCompleted(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Delete,
@@ -80,7 +80,7 @@ fun TaskOptionsBottomSheet(
                 onClick = {
                     onClickDelete(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Close,
@@ -88,7 +88,7 @@ fun TaskOptionsBottomSheet(
                 onClick = {
                     onClickCancel(task)
                     onDismissRequest()
-                },
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
         }

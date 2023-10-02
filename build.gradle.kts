@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.ktLint)
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.gradleVersionUpdates)
 }
@@ -56,7 +56,7 @@ subprojects {
             ktlint().userData(mapOf("disabled_rules" to "filename"))
             licenseHeaderFile(
                 rootProject.file("${project.rootDir}/spotless/copyright.kt"),
-                "^(package|object|import|interface)",
+                "^(package|object|import|interface)"
             )
             trimTrailingWhitespace()
             endWithNewline()
@@ -74,9 +74,3 @@ subprojects {
         }
     }
 }
-
-/*
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
-}
-*/

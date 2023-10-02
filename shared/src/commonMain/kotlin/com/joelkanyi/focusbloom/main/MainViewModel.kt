@@ -24,13 +24,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(
-    settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository
 ) : ScreenModel {
 
     val appTheme: StateFlow<Int?> = settingsRepository.getAppTheme().map { it }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = null,
+        initialValue = null
     )
 
     val onBoardingCompleted: StateFlow<OnBoardingState> =
@@ -39,7 +39,7 @@ class MainViewModel(
         }.stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = OnBoardingState.Loading,
+            initialValue = OnBoardingState.Loading
         )
 }
 

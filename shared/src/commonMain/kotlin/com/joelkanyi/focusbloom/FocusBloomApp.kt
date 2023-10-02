@@ -42,17 +42,17 @@ fun FocusBloomApp() {
     val onBoardingCompleted = mainViewModel.onBoardingCompleted.collectAsState().value
 
     FocusBloomTheme(
-        useDarkTheme = darkTheme,
+        useDarkTheme = darkTheme
     ) {
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background
         )
         when (onBoardingCompleted) {
             is OnBoardingState.Success -> {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Navigator(
                         screen = if (onBoardingCompleted.completed) {
@@ -63,9 +63,9 @@ fun FocusBloomApp() {
                         content = { navigator ->
                             ProvideAppNavigator(
                                 navigator = navigator,
-                                content = { SlideTransition(navigator = navigator) },
+                                content = { SlideTransition(navigator = navigator) }
                             )
-                        },
+                        }
                     )
                 }
             }

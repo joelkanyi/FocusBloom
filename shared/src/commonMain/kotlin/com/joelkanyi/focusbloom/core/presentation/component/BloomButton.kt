@@ -29,15 +29,15 @@ fun BloomButton(
     onClick: () -> Unit,
     shape: Shape = MaterialTheme.shapes.medium,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-        ),
+            containerColor = backgroundColor
+        )
     ) {
         content()
     }

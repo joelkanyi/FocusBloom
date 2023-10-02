@@ -33,7 +33,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class HomeScreenModel(
     private val tasksRepository: TasksRepository,
-    settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository
 ) : ScreenModel {
     private val _openBottomSheet = MutableStateFlow(false)
     val openBottomSheet = _openBottomSheet.asStateFlow()
@@ -46,7 +46,7 @@ class HomeScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 24,
+            initialValue = 24
         )
 
     val sessionTime = settingsRepository.getSessionTime()
@@ -56,21 +56,21 @@ class HomeScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     fun deleteTask(task: Task) {
@@ -96,8 +96,8 @@ class HomeScreenModel(
             tasksRepository.updateTask(
                 task.copy(
                     date = task.date.plusDays(1),
-                    start = task.start.plusDays(1),
-                ),
+                    start = task.start.plusDays(1)
+                )
             )
         }
     }
@@ -106,15 +106,15 @@ class HomeScreenModel(
         coroutineScope.launch {
             tasksRepository.updateTaskCompleted(
                 id = task.id,
-                completed = true,
+                completed = true
             )
             tasksRepository.updateTaskActive(
                 id = task.id,
-                active = false,
+                active = false
             )
             tasksRepository.updateTaskInProgress(
                 id = task.id,
-                inProgressTask = false,
+                inProgressTask = false
             )
         }
     }
@@ -126,14 +126,14 @@ class HomeScreenModel(
                     .sortedBy { it.start }
                     .filter {
                         it.date.date == Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date/*.minusDays(1)*/
-                    },
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date // .minusDays(1)
+                    }
             )
         }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = TasksState.Loading,
+            initialValue = TasksState.Loading
         )
 
     val username = settingsRepository.getUsername()
@@ -141,7 +141,7 @@ class HomeScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     val shortBreakColor = settingsRepository.shortBreakColor()
@@ -149,7 +149,7 @@ class HomeScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 
     val longBreakColor = settingsRepository.longBreakColor()
@@ -157,7 +157,7 @@ class HomeScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 
     val focusColor = settingsRepository.focusColor()
@@ -165,7 +165,7 @@ class HomeScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 }
 

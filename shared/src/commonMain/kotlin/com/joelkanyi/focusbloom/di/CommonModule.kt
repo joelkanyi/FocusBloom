@@ -41,7 +41,7 @@ fun commonModule() = module {
      */
     single<BloomDatabase> {
         BloomDatabase(
-            driver = get<DatabaseDriverFactory>().createDriver(),
+            driver = get<DatabaseDriverFactory>().createDriver()
         )
     }
     /**
@@ -56,13 +56,13 @@ fun commonModule() = module {
      */
     single<SettingsRepository> {
         SettingsRepositoryImpl(
-            preferenceManager = get(),
+            preferenceManager = get()
         )
     }
 
     single<TasksRepository> {
         TasksRepositoryImpl(
-            bloomDatabase = get(),
+            bloomDatabase = get()
         )
     }
 
@@ -71,50 +71,50 @@ fun commonModule() = module {
      */
     single<SettingsScreenModel> {
         SettingsScreenModel(
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
     single<AddTaskScreenModel> {
         AddTaskScreenModel(
             settingsRepository = get(),
-            tasksRepository = get(),
+            tasksRepository = get()
         )
     }
     single<HomeScreenModel> {
         HomeScreenModel(
             tasksRepository = get(),
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
     single<StatisticsScreenModel> {
         StatisticsScreenModel(
             tasksRepository = get(),
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
     single<CalendarScreenModel> {
         CalendarScreenModel(
             tasksRepository = get(),
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
 
     single<TaskProgressScreenModel> {
         TaskProgressScreenModel(
             settingsRepository = get(),
-            tasksRepository = get(),
+            tasksRepository = get()
         )
     }
 
     single<MainViewModel> {
         MainViewModel(
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
 
     single<OnboadingViewModel> {
         OnboadingViewModel(
-            settingsRepository = get(),
+            settingsRepository = get()
         )
     }
 }

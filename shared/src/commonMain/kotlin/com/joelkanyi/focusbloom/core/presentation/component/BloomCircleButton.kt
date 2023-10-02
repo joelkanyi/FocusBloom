@@ -32,7 +32,7 @@ fun BloomCircleButton(
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
     onClick: () -> Unit,
-    color: Color,
+    color: Color
 ) {
     Box(
         modifier = modifier
@@ -42,7 +42,7 @@ fun BloomCircleButton(
             .clickable {
                 onClick()
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         icon()
     }

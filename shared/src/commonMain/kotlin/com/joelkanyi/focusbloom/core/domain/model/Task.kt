@@ -33,5 +33,5 @@ data class Task(
     val consumedShortBreakTime: Long,
     val consumedLongBreakTime: Long,
     val inProgressTask: Boolean,
-    val active: Boolean,
+    val active: Boolean
 )

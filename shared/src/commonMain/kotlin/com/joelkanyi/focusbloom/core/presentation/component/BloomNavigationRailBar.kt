@@ -34,7 +34,7 @@ import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
 fun BloomNavigationRailBar(
     modifier: Modifier = Modifier,
     tabNavigator: TabNavigator,
-    navRailItems: List<Tab>,
+    navRailItems: List<Tab>
 ) {
     NavigationRail(
         modifier = modifier.fillMaxHeight().alpha(0.95F),
@@ -47,7 +47,7 @@ fun BloomNavigationRailBar(
                 contentDescription = "Logo",
             )*/
         },
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         navRailItems.forEach { item ->
             val isSelected = tabNavigator.current == item
@@ -61,14 +61,14 @@ fun BloomNavigationRailBar(
                             } else {
                                 it
                             },
-                            contentDescription = item.options.title,
+                            contentDescription = item.options.title
                         )
                     }
                 },
                 label = { Text(text = item.options.title) },
                 alwaysShowLabel = true,
                 selected = tabNavigator.current == item,
-                onClick = { tabNavigator.current = item },
+                onClick = { tabNavigator.current = item }
             )
         }
     }

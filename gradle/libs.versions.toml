@@ -1,6 +1,7 @@
 [versions]
 componentsResources = "1.5.0"
 koalaplotCore = "0.4.0-dev1"
+korau = "4.0.6"
 kotlin = "1.9.10"
 gradle = "8.1.0"
 kotlinxCoroutinesSwing = "1.7.3"
@@ -22,6 +23,8 @@ voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
 spotless = "5.17.1"
+ktlint = "11.3.1"
+accompanist-systemUIController = "0.17.0"
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
@@ -37,12 +40,14 @@ jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
+korau = { module = "com.soywiz.korlibs.korau:korau", version.ref = "korau" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
@@ -64,4 +69,4 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
-accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.17.0" }
+accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }

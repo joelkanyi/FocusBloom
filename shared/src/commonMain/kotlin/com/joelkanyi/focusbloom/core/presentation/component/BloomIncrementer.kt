@@ -35,30 +35,30 @@ fun BloomIncrementer(
     modifier: Modifier = Modifier,
     onClickRemove: () -> Unit,
     onClickAdd: () -> Unit,
-    currentValue: Int,
+    currentValue: Int
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Center
     ) {
         BloomCircleButton(
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Remove,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             onClick = onClickRemove,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.width(12.dp))
 
         Text(
             text = "$currentValue",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -68,11 +68,11 @@ fun BloomIncrementer(
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             onClick = onClickAdd,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

@@ -47,48 +47,35 @@ import kotlin.jvm.JvmInline
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
-fun differenceBetweenMinutes(
-    minTime: LocalTime,
-    maxTime: LocalTime,
-): Int {
+fun differenceBetweenMinutes(minTime: LocalTime, maxTime: LocalTime): Int {
     return (maxTime.hour - minTime.hour) * 60
 }
 
 fun differenceBetweenDays(
     minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 ): Int {
     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
     return (maxDate.dayOfMonth - minDate.dayOfMonth)
 }
 
-fun LocalDate.plusDays(
-    days: Int,
-): LocalDate {
+fun LocalDate.plusDays(days: Int): LocalDate {
     return this.plus(days, DateTimeUnit.DAY)
 }
 
-fun LocalDateTime.plusDays(
-    days: Int,
-): LocalDateTime {
+fun LocalDateTime.plusDays(days: Int): LocalDateTime {
     return this.date.plus(days, DateTimeUnit.DAY).atTime(this.time)
 }
 
-fun LocalDate.minusDays(
-    days: Int,
-): LocalDate {
+fun LocalDate.minusDays(days: Int): LocalDate {
     return this.minus(days, DateTimeUnit.DAY)
 }
 
-fun LocalDateTime.minusDays(
-    days: Int,
-): LocalDateTime {
+fun LocalDateTime.minusDays(days: Int): LocalDateTime {
     return this.date.minus(days, DateTimeUnit.DAY).atTime(this.time)
 }
 
-fun LocalTime.plusHours(
-    hours: Int,
-): LocalTime {
+fun LocalTime.plusHours(hours: Int): LocalTime {
     val addedHours = this.hour + hours
     return LocalTime(addedHours, this.minute)
 }
@@ -123,7 +110,7 @@ data class PositionedTask(
     val end: LocalTime,
     val col: Int = 0,
     val colSpan: Int = 1,
-    val colTotal: Int = 1,
+    val colTotal: Int = 1
 )
 
 sealed class ScheduleSize {
@@ -134,19 +121,18 @@ sealed class ScheduleSize {
 }
 
 class TaskDataModifier(
-    private val positionedTask: PositionedTask,
+    private val positionedTask: PositionedTask
 ) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?) = positionedTask
 }
 
-fun Modifier.taskData(positionedTask: PositionedTask) =
-    this.then(TaskDataModifier(positionedTask))
+fun Modifier.taskData(positionedTask: PositionedTask) = this.then(TaskDataModifier(positionedTask))
 
 fun splitTasks(
     tasks: List<Task>,
     sessionTime: Int,
     shortBreakTime: Int,
-    longBreakTime: Int,
+    longBreakTime: Int
 ): List<PositionedTask> {
     return tasks
         .map { task ->
@@ -154,7 +140,7 @@ fun splitTasks(
                 focusSessions = task.focusSessions,
                 sessionTime = sessionTime,
                 shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime,
+                longBreakTime = longBreakTime
             )
             val startDate = task.start.date
             val endDate = end.date
@@ -165,8 +151,8 @@ fun splitTasks(
                         SplitType.None,
                         task.start.date,
                         task.start.time,
-                        end.time,
-                    ),
+                        end.time
+                    )
                 )
             } else {
                 val days = differenceBetweenDays(startDate, endDate)
@@ -186,7 +172,7 @@ fun splitTasks(
                             end.time
                         } else {
                             max()
-                        },
+                        }
                     )
                 }
                 splitTasks
@@ -267,7 +253,7 @@ fun calculateFromFocusSessions(
     sessionTime: Int = 25,
     shortBreakTime: Int = 5,
     longBreakTime: Int = 15,
-    currentLocalDateTime: LocalDateTime,
+    currentLocalDateTime: LocalDateTime
 ): LocalTime {
     return if (focusSessions <= 0) {
         currentLocalDateTime.time
@@ -296,7 +282,7 @@ fun LocalDateTime.dateTimeToString(): String {
 fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
     return LocalDateTime(
         date,
-        LocalTime(hour, minute),
+        LocalTime(hour, minute)
     )
 }
 
@@ -362,7 +348,7 @@ fun getThisWeek(): List<LocalDate> {
 
 fun getPreviousWeek(
     firstDateOfNextWeek: LocalDate = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date
 ): List<LocalDate> {
     /**
      * From Monday to Sunday
@@ -400,24 +386,22 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
     for (i in 0..51) {
         val week = getPreviousWeek(firstDateOfNextWeek = weeks.last().second.first())
         weeks += "${
-            week.first().month.name.lowercase().capitalize(Locale.current).substring(
-                0,
-                3,
-            )
+        week.first().month.name.lowercase().capitalize(Locale.current).substring(
+            0,
+            3
+        )
         } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
             " - ${
-                week.last().month.name.lowercase().capitalize(Locale.current).substring(
-                    0,
-                    3,
-                )
+            week.last().month.name.lowercase().capitalize(Locale.current).substring(
+                0,
+                3
+            )
             } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
     return weeks
 }
 
-fun List<Task>.completedTasks(
-    dates: List<LocalDate>,
-): List<Int> {
+fun List<Task>.completedTasks(dates: List<LocalDate>): List<Int> {
     return dates.map { date ->
         filter { task ->
             task.date.date == date
@@ -431,12 +415,12 @@ fun List<Float>.aAllEntriesAreZero(): Boolean {
 
 fun LocalDate.prettyFormat(): String {
     return "${this.dayOfMonth}${
-        when (this.dayOfMonth) {
-            1, 21, 31 -> "st"
-            2, 22 -> "nd"
-            3, 23 -> "rd"
-            else -> "th"
-        }
+    when (this.dayOfMonth) {
+        1, 21, 31 -> "st"
+        2, 22 -> "nd"
+        3, 23 -> "rd"
+        else -> "th"
+    }
     }, ${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
 }
 
@@ -444,11 +428,7 @@ fun LocalDate.prettyPrintedMonthAndYear(): String {
     return "${this.month.name.lowercase().capitalize(Locale.current).substring(0, 3)} ${this.year}"
 }
 
-fun prettyTimeDifference(
-    start: LocalDateTime,
-    end: LocalDateTime,
-    timeFormat: Int,
-): String {
+fun prettyTimeDifference(start: LocalDateTime, end: LocalDateTime, timeFormat: Int): String {
     return if (timeFormat == 12) {
         val startHourTo12HourSystem = if (start.hour > 12) {
             start.hour - 12
@@ -461,7 +441,7 @@ fun prettyTimeDifference(
             end.hour
         }
         "$startHourTo12HourSystem:${start.minute.formattedZeroMinutes()} ${if (start.hour > 12) "PM" else "AM"} - ${
-            endHourTo12HourSystem
+        endHourTo12HourSystem
         }:${end.minute.formattedZeroMinutes()} ${if (end.hour > 12) "PM" else "AM"}"
     } else {
         "${start.hour}:${start.minute.formattedZeroMinutes()} - ${end.hour}:${end.minute.formattedZeroMinutes()}"
@@ -484,9 +464,7 @@ fun Long.formattedZeroMinutes(): String {
     }
 }
 
-fun LocalTime.formattedTimeBasedOnTimeFormat(
-    timeFormat: Int,
-): String {
+fun LocalTime.formattedTimeBasedOnTimeFormat(timeFormat: Int): String {
     return if (timeFormat == 12) {
         val hourTo12HourSystem = if (this.hour > 12) {
             this.hour - 12
@@ -494,7 +472,7 @@ fun LocalTime.formattedTimeBasedOnTimeFormat(
             this.hour
         }
         "$hourTo12HourSystem:${
-            this.minute.formattedZeroMinutes()
+        this.minute.formattedZeroMinutes()
         } ${if (this.hour > 12) "PM" else "AM"}"
     } else {
         "${this.hour}:${this.minute.formattedZeroMinutes()}"
@@ -521,13 +499,13 @@ fun Task.durationInMinutes(
     focusSessions: Int,
     sessionTime: Int,
     shortBreakTime: Int,
-    longBreakTime: Int,
+    longBreakTime: Int
 ): Int {
     val end = start.calculateEndTime(
         focusSessions = focusSessions,
         sessionTime = sessionTime,
         shortBreakTime = shortBreakTime,
-        longBreakTime = longBreakTime,
+        longBreakTime = longBreakTime
     )
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }
@@ -572,11 +550,11 @@ fun Long.toTimer(): String {
     val minutes = seconds / 60
     val hours = minutes / 60
     return "${
-        if (hours > 0) {
-            hours.formattedZeroMinutes() + ":"
-        } else {
-            ""
-        }
+    if (hours > 0) {
+        hours.formattedZeroMinutes() + ":"
+    } else {
+        ""
+    }
     }${(minutes - (hours * 60)).formattedZeroMinutes()}:${(seconds - (minutes * 60)).formattedZeroMinutes()}"
 }
 
@@ -615,10 +593,7 @@ fun String?.sessionType(): SessionType {
 val LocalAppNavigator: ProvidableCompositionLocal<Navigator?> = staticCompositionLocalOf { null }
 
 @Composable
-fun ProvideAppNavigator(
-    navigator: Navigator,
-    content: @Composable () -> Unit,
-) {
+fun ProvideAppNavigator(navigator: Navigator, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalAppNavigator provides navigator) {
         content()
     }
@@ -632,7 +607,7 @@ fun LocalDateTime.calculateEndTime(
     focusSessions: Int,
     sessionTime: Int,
     shortBreakTime: Int,
-    longBreakTime: Int,
+    longBreakTime: Int
 ): LocalDateTime {
     val totalSessionTimeMinutes = sessionTime * focusSessions
     val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)

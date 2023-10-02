@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SettingsScreenModel(
-    private val settingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository
 ) : ScreenModel {
     private val _selectedColorCardTitle = MutableStateFlow("")
     val selectedColorCardTitle = _selectedColorCardTitle.asStateFlow()
@@ -52,7 +52,7 @@ class SettingsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 
     fun setAppTheme(appTheme: Int) {
@@ -68,7 +68,7 @@ class SettingsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     fun setSessionTime(sessionTime: Int) {
@@ -82,7 +82,7 @@ class SettingsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     fun setShortBreakTime(shortBreakTime: Int) {
@@ -96,7 +96,7 @@ class SettingsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     fun setLongBreakTime(longBreakTime: Int) {
@@ -110,7 +110,7 @@ class SettingsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     fun setHourFormat(timeFormat: Int) {
@@ -150,7 +150,7 @@ class SettingsScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 
     val longBreakColor = settingsRepository.longBreakColor()
@@ -158,7 +158,7 @@ class SettingsScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 
     val focusColor = settingsRepository.focusColor()
@@ -166,6 +166,6 @@ class SettingsScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = null
         )
 }

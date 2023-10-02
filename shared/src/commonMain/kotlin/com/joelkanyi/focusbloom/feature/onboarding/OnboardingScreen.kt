@@ -74,7 +74,7 @@ class OnboardingScreen : Screen, KoinComponent {
             },
             onClickGetStarted = {
                 navigator.push(UsernameScreen())
-            },
+            }
         )
     }
 }
@@ -85,7 +85,7 @@ fun OnboardingScreenContent(
     pageCount: Int,
     pagerState: PagerState,
     onClickNext: () -> Unit,
-    onClickGetStarted: () -> Unit,
+    onClickGetStarted: () -> Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -93,25 +93,25 @@ fun OnboardingScreenContent(
                 OnBoardingNavigationButton(
                     modifier = Modifier.padding(16.dp),
                     text = "Get Started",
-                    onClick = onClickGetStarted,
+                    onClick = onClickGetStarted
                 )
             } else {
                 OnBoardingNavigationButton(
                     modifier = Modifier.padding(16.dp),
                     text = "Next",
-                    onClick = onClickNext,
+                    onClick = onClickNext
                 )
             }
-        },
+        }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(paddingValues)
         ) {
             HorizontalPager(
                 modifier = Modifier
                     .weight(.9f)
                     .padding(16.dp),
-                state = pagerState,
+                state = pagerState
             ) { currentPage ->
                 when (currentPage) {
                     0 -> OnboardingFirstPage()
@@ -122,22 +122,19 @@ fun OnboardingScreenContent(
 
             PageIndicators(
                 pageCount = pageCount,
-                currentPage = pagerState.currentPage,
+                currentPage = pagerState.currentPage
             )
         }
     }
 }
 
 @Composable
-private fun ColumnScope.PageIndicators(
-    pageCount: Int,
-    currentPage: Int,
-) {
+private fun ColumnScope.PageIndicators(pageCount: Int, currentPage: Int) {
     Row(
         Modifier
             .weight(.1f)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Center
     ) {
         repeat(pageCount) { iteration ->
             val color =
@@ -145,7 +142,7 @@ private fun ColumnScope.PageIndicators(
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onSurface.copy(
-                        alpha = 0.2f,
+                        alpha = 0.2f
                     )
                 }
             Box(
@@ -154,7 +151,7 @@ private fun ColumnScope.PageIndicators(
                     .clip(CircleShape)
                     .background(color)
                     .width(24.dp)
-                    .height(8.dp),
+                    .height(8.dp)
 
             )
         }
@@ -166,7 +163,7 @@ private fun OnboardingFirstPage() {
     PageContent(
         title = "Organize Tasks and Boost Productivity",
         description = "Welcome to FocusBloom, your task management and productivity companion. Effortlessly organize your tasks and supercharge your productivity journey.",
-        illustration = "il_tasks.xml",
+        illustration = "il_tasks.xml"
     )
 }
 
@@ -175,7 +172,7 @@ private fun OnboardingSecondPage() {
     PageContent(
         title = "Tailor Your Work Sessions",
         description = "With FocusBloom, you have the power to customize your work and break durations to match your preferences and maximize efficiency.",
-        illustration = "il_work_time.xml",
+        illustration = "il_work_time.xml"
     )
 }
 
@@ -184,25 +181,21 @@ private fun OnboardingThirdPage() {
     PageContent(
         title = "Visualize Your Progress",
         description = "Experience the power of progress tracking with FocusBloom. Gain insights into your productivity journey and visualize task completion trends.",
-        illustration = "il_statistics.xml",
+        illustration = "il_statistics.xml"
     )
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun PageContent(
-    title: String,
-    description: String,
-    illustration: String,
-) {
+private fun PageContent(title: String, description: String, illustration: String) {
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(illustration),
             contentDescription = illustration,
-            modifier = Modifier.size(370.dp),
+            modifier = Modifier.size(370.dp)
         )
         Spacer(modifier = Modifier.height(32.dp))
         Text(
@@ -210,8 +203,8 @@ private fun PageContent(
             text = title,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 22.sp,
-                textAlign = TextAlign.Center,
-            ),
+                textAlign = TextAlign.Center
+            )
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -219,31 +212,27 @@ private fun PageContent(
             text = description,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-            ),
+                textAlign = TextAlign.Center
+            )
         )
     }
 }
 
 @Composable
-fun OnBoardingNavigationButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit,
-) {
+fun OnBoardingNavigationButton(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
     Button(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
         onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.medium
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-            ),
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }

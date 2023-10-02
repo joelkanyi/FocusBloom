@@ -51,10 +51,7 @@ private fun statusBarView() = remember {
 }
 
 @Composable
-actual fun StatusBarColors(
-    statusBarColor: Color,
-    navBarColor: Color,
-) {
+actual fun StatusBarColors(statusBarColor: Color, navBarColor: Color) {
     val statusBar = statusBarView()
     SideEffect {
         statusBar.backgroundColor = statusBarColor.toUIColor()
@@ -66,5 +63,5 @@ private fun Color.toUIColor(): UIColor = UIColor(
     red = this.red.toDouble(),
     green = this.green.toDouble(),
     blue = this.blue.toDouble(),
-    alpha = this.alpha.toDouble(),
+    alpha = this.alpha.toDouble()
 )
