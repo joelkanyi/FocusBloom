@@ -40,9 +40,22 @@ The app is shared between Android, iOS and Desktop. The shared code is written i
   - contains the desktop app 
 
 ## Built with
-- [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) - Kotlin Multiplatform Mobile (KMM) is an SDK that allows you to use the same business logic code in both iOS and Android applications.
-- [Compose Multiplatform]()
-- [SQLDelight]() - SQLDelight generates typesafe Kotlin APIs from your SQL statements. It allows you to easily query your data and eliminates a lot of boilerplate code you'd normally have to write.
+- [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) - The Kotlin Multiplatform technology is designed to simplify the development of cross-platform projects.
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) -  a modern UI framework for Kotlin that makes building performant and beautiful user interfaces easy and enjoyable.
+- [SQLDelight](https://github.com/cashapp/sqldelight) - SQLDelight is an open-source library developed by Cash App (formerly Square, Inc.) for working with SQL databases in Kotlin-based Android and multi-platform applications.
+- [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) - A Kotlin Multiplatform library for saving simple key-value data.
+- [Koin](https://insert-koin.io/) - The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework.
+- [Voyager](https://voyager.adriel.cafe/) - A multiplatform navigation library.
+- [Kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime) - KotlinX multiplatform date/time library.
+- [Kotlinx-serilization](https://github.com/Kotlin/kotlinx.serialization) - Kotlin multiplatform / multi-format serialization.
+- [Koala plot](https://github.com/KoalaPlot/koalaplot-core) - Koala Plot is a Compose Multiplatform based charting and plotting library written in Kotlin.
+- [Compose Components Resources](https://mvnrepository.com/artifact/org.jetbrains.compose.components/components-resources) - Resources For Compose Multiplatform.
+- [Material3 Window Size Multiplatform](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) - About Material 3 Window Size Class for Compose Multiplatform.
+- [Spotless](https://github.com/diffplug/spotless) - A code formatter that helps keep the codebase clean.
+- [Detekt](https://github.com/detekt/detekt) - Static code analysis for Kotlin.
+- [Ktlint](https://github.com/pinterest/ktlint) - A static code analysis tool and formatter for Kotlin.
+- [Github Actions](https://docs.github.com/en/actions) - A CI/CD tool that helps automate workflows.
+- [Renovate](https://docs.renovatebot.com/) - An open-source software tool designed to help automate the process of updating dependencies in software projects.
 
 ## Run project
 ### Android
