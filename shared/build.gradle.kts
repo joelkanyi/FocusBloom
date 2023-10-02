@@ -110,12 +110,6 @@ kotlin {
             }
         }
 
-        val commonTest by getting {
-            dependencies {
-                dependsOn(commonMain)
-            }
-        }
-
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.android)
