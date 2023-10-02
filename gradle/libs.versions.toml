@@ -1,33 +1,31 @@
 [versions]
-componentsResources = "1.5.0"
+componentsResources = "1.5.1"
 koalaplotCore = "0.4.0-dev1"
 korau = "4.0.6"
 kotlin = "1.9.10"
-gradle = "8.1.0"
+gradle = "8.1.1"
 kotlinxCoroutinesSwing = "1.7.3"
-ktLint = "10.3.0"
 detekt = "1.19.0"
 gradleVersionUpdate = "0.46.0"
-koinCore = "3.4.0"
-koinAndroid = "3.4.0"
-kotlinxSerializationJson = "1.5.0"
-kotlinxDateTime = "0.4.0"
+koinCore = "3.4.3"
+koinAndroid = "3.4.3"
+kotlinxSerializationJson = "1.5.1"
+kotlinxDateTime = "0.4.1"
 material3WindowSizeClassMultiplatform = "0.3.1"
-napier = "2.4.0"
+napier = "2.6.1"
 primitiveAdapters = "2.0.0"
 sqlDelight = "1.5.5"
 multiplatformSettings = "0.8.1"
 compose = "1.5.10-beta01"
-core-library-desugaring = "1.1.5"
+core-library-desugaring = "2.0.3"
 voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
 spotless = "5.17.1"
 ktlint = "11.3.1"
-accompanist-systemUIController = "0.17.0"
+accompanist-systemUIController = "0.30.1"
 
 [plugins]
-ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
 gradleVersionUpdates = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionUpdate" }
