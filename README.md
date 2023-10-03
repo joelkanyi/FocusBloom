@@ -1,7 +1,7 @@
 <p align="center"><img src="art/app_logo.png" alt="MealTime" height="150px"></p>
 
 # FocusBloom
-FocusBloom is a Kotlin Multiplatform Pomodoro app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
+FocusBloom is a Kotlin Multiplatform app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
 
 > Please note that this project is still under development and some features may not work as expected.
 
