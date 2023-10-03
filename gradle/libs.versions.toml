@@ -1,25 +1,31 @@
 [versions]
-componentsResources = "1.5.0"
-kotlin = "1.9.0"
-gradle = "8.1.0"
-ktLint = "10.3.0"
+componentsResources = "1.5.1"
+koalaplotCore = "0.4.0-dev1"
+korau = "4.0.6"
+kotlin = "1.9.10"
+gradle = "8.1.1"
+kotlinxCoroutinesSwing = "1.7.3"
 detekt = "1.19.0"
 gradleVersionUpdate = "0.46.0"
-koinCore = "3.4.0"
-koinAndroid = "3.4.0"
-kotlinxSerializationJson = "1.5.0"
-kotlinxDateTime = "0.4.0"
+koinCore = "3.4.3"
+koinAndroid = "3.4.3"
+kotlinxSerializationJson = "1.6.0"
+kotlinxDateTime = "0.4.1"
 material3WindowSizeClassMultiplatform = "0.3.1"
-napier = "2.4.0"
+napier = "2.6.1"
+primitiveAdapters = "2.0.0"
 sqlDelight = "1.5.5"
-multiplatformSettings = "1.0.0"
-compose = "1.5.0"
-core-library-desugaring = "1.1.5"
-voyager = "1.0.0-rc06"
+multiplatformSettings = "0.8.1"
+compose = "1.5.10-beta01"
+core-library-desugaring = "2.0.3"
+voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
+koin-compose = "1.0.4"
+spotless = "5.17.1"
+ktlint = "11.3.1"
+accompanist-systemUIController = "0.30.1"
 
 [plugins]
-ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
 gradleVersionUpdates = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionUpdate" }
@@ -31,12 +37,19 @@ android-application = { id = "com.android.application", version.ref = "gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
+koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
+korau = { module = "com.soywiz.korlibs.korau:korau", version.ref = "korau" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
+primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "primitiveAdapters" }
 sqlDelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqlDelight" }
 sqlDelight-coroutine = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sqlDelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqlDelight" }
@@ -54,3 +67,4 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
+accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }

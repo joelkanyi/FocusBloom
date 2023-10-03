@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name="com.joelkanyi.focusbloom.android.FocusBloomApp"
+        android:name="com.joelkanyi.focusbloom.android.BloomApp"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:label="@string/focusbloom"
+        android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
         <activity
             android:name="com.joelkanyi.focusbloom.android.MainActivity"

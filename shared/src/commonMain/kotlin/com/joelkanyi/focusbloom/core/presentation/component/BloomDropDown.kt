@@ -1,6 +1,22 @@
+/*
+ * Copyright 2023 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.joelkanyi.focusbloom.core.presentation.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +25,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-/*import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults*/
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +46,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.joelkanyi.focusbloom.domain.model.TextFieldState
+import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> BloomDropDown(
     modifier: Modifier = Modifier,
@@ -38,7 +57,7 @@ fun <T> BloomDropDown(
     selectedOption: TextFieldState,
     onOptionSelected: (T) -> Unit,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
-    shape: CornerBasedShape = MaterialTheme.shapes.small,
+    shape: CornerBasedShape = MaterialTheme.shapes.small
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column {
@@ -46,14 +65,6 @@ fun <T> BloomDropDown(
             label()
             Spacer(modifier = Modifier.height(4.dp))
         }
-        /*ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                if (enabled) {
-                    expanded = !expanded
-                }
-            },
-        ) {*/
         Box(
             modifier = modifier
                 .height(56.dp)
@@ -65,50 +76,63 @@ fun <T> BloomDropDown(
                     } else {
                         MaterialTheme.colorScheme.onBackground.copy(alpha = .4f)
                     },
-                    shape = shape,
+                    shape = shape
                 )
-                .clip(shape),
-            contentAlignment = Alignment.CenterStart,
+                .clip(shape)
+                .clickable {
+                    if (enabled) {
+                        expanded = !expanded
+                    }
+                },
+            contentAlignment = Alignment.CenterStart
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         vertical = 8.dp,
-                        horizontal = 12.dp,
+                        horizontal = 12.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = selectedOption.text,
-                    style = textStyle,
+                    style = textStyle
                 )
-                /*if (enabled) {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                }*/
-                // }
+                if (enabled) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .size(24.dp),
+                        imageVector = if (expanded) {
+                            Icons.Filled.ArrowDropUp
+                        } else {
+                            Icons.Filled.ArrowDropDown
+                        },
+                        contentDescription = null
+                    )
+                }
             }
-            /*ExposedDropdownMenu(
+            DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
+                onDismissRequest = { expanded = false }
             ) {
                 options.forEach { selectionOption ->
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = selectionOption.toString(),
-                                style = MaterialTheme.typography.labelLarge,
+                                style = MaterialTheme.typography.labelLarge
                             )
                         },
                         onClick = {
                             onOptionSelected(selectionOption)
                             expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                        }
                     )
                 }
-            }*/
+            }
         }
         if (!selectedOption.error.isNullOrEmpty()) {
             Text(
@@ -116,7 +140,7 @@ fun <T> BloomDropDown(
                 text = selectedOption.error,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.End
             )
         }
     }

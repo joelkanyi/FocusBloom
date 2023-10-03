@@ -1,0 +1,92 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "schedule": [
+    "on friday"
+  ],
+  "timezone": "Africa/Nairobi",
+  "labels": [
+    "dependency-update"
+  ],
+  "prHourlyLimit": 0,
+  "baseBranches": [
+    "develop"
+  ],
+  "separateMultipleMajor": true,
+  "dependencyDashboardTitle": "automated dependency updates dashboard",
+  "dependencyDashboard": true,
+  "branchPrefix": "chore/",
+  "additionalBranchPrefix": "update-libs/",
+  "commitMessageAction": "update",
+  "commitMessageExtra": "from {{{currentValue}}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
+  "packageRules": [
+    {
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "groupName": "kotlin dependencies",
+      "matchPackagePatterns": [
+        "org.jetbrains.kotlin:*",
+        "com.google.devtools.ksp",
+        "composeOptions"
+      ]
+    },
+    {
+      "groupName": "coroutine dependencies",
+      "matchPackagePatterns": [
+        "io.coil-kt:*",
+        "org.jetbrains.kotlinx:*"
+      ]
+    },
+    {
+      "groupName": "plugin dependencies",
+      "matchPackagePatterns": [
+        "com.android.library",
+        "com.android.application",
+        "app.cash.paparazzi"
+      ]
+    },
+    {
+      "groupName": "sonar",
+      "matchPackagePatterns": [
+        "org.sonarqube"
+      ]
+    },
+    {
+      "groupName": "target sdk 34",
+      "matchPackagePatterns": [
+        "androidx.navigation:navigation-compose"
+      ]
+    },
+    {
+      "groupName": "ktlint",
+      "matchPackagePatterns": [
+        "org.jlleitschuh.gradle.ktlint"
+      ]
+    },
+    {
+      "groupName": "test dependencies",
+      "matchPackagePatterns": [
+        "com.google.truth:truth",
+        "androidx.compose.ui:ui-test-junit4",
+        "androidx.compose.ui:ui-test-manifest",
+        "org.robolectric:robolectric",
+        "junit:junit",
+        "androidx.test:core-ktx"
+      ]
+    }
+  ],
+  "ignoreDeps": [
+    "androidx.emoji2:emoji2"
+  ]
+}

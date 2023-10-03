@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.joelkanyi.focusbloom.core.presentation.component
 
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,9 +48,10 @@ fun TaskProgress(
     percentage: Float,
     radius: Dp = 20.dp,
     mainColor: Color,
+    counterColor: Color,
     strokeWidth: Dp = 8.dp,
     animationDuration: Int = 800,
-    animDelay: Int = 0,
+    animDelay: Int = 0
 ) {
     var animationPlayed by remember {
         mutableStateOf(false)
@@ -45,9 +61,9 @@ fun TaskProgress(
         targetValue = if (animationPlayed) percentage else 0f,
         animationSpec = tween(
             durationMillis = animationDuration,
-            delayMillis = animDelay,
+            delayMillis = animDelay
         ),
-        label = "",
+        label = ""
     )
 
     LaunchedEffect(key1 = true) {
@@ -55,18 +71,18 @@ fun TaskProgress(
     }
 
     Box(
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
-                .size(radius * 5f),
+                .size(radius * 5f)
         ) {
             drawArc(
                 color = Color.LightGray,
                 startAngle = 0f,
                 sweepAngle = 360f,
                 useCenter = false,
-                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round),
+                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
             )
 
             drawArc(
@@ -74,7 +90,7 @@ fun TaskProgress(
                 startAngle = -360f,
                 sweepAngle = (360 * (currentPercentage.value * 0.01)).toFloat(),
                 useCenter = false,
-                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round),
+                style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
             )
         }
 
@@ -82,24 +98,25 @@ fun TaskProgress(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(110.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
         ) {
             Column(
                 modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (content?.isNullOrEmpty()?.not() == true) {
+                if (content?.isEmpty()?.not() == true) {
                     Text(
                         text = content,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Bold
                     )
                 } else {
                     Text(
                         text = "${(currentPercentage.value).toInt()}%",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
+                        color = counterColor
                     )
                 }
             }

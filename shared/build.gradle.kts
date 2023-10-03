@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
@@ -41,7 +57,7 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
         }
     }
 
@@ -58,6 +74,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.koin.core)
+                api(libs.koin.compose)
 
                 implementation(compose.material3)
                 implementation(compose.material)
@@ -77,31 +94,31 @@ kotlin {
 
                 implementation(libs.sqlDelight.runtime)
                 implementation(libs.sqlDelight.coroutine)
+                implementation(libs.primitive.adapters)
 
-                implementation(libs.multiplatformSettings.noArg)
-                implementation(libs.multiplatformSettings.coroutines)
+                api(libs.multiplatformSettings.noArg)
+                api(libs.multiplatformSettings.coroutines)
 
                 api(libs.napier)
 
                 implementation(libs.kotlinX.dateTime)
-            }
-        }
+                implementation(libs.koalaplot.core)
 
-        val commonTest by getting {
-            dependencies {
-                dependsOn(commonMain)
+                implementation(libs.korau)
             }
         }
 
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.android)
+                implementation(libs.accompanist.systemUIController)
             }
         }
 
         val jvmMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.jvm)
+                implementation(libs.kotlinx.coroutines.swing)
             }
         }
 
@@ -122,8 +139,8 @@ kotlin {
 }
 
 sqldelight {
-    database(name = "AppDatabase") {
-        packageName = "com.joelkanyi.focusbloom.data.cache.sqldelight"
-        sourceFolders = listOf("kotlin")
+    database("BloomDatabase") {
+        packageName = "com.joelkanyi.focusbloom.database"
+        sourceFolders = listOf("sqldelight")
     }
 }

@@ -1,8 +1,12 @@
 import SwiftUI
 import shared
+import UIKit
 
 @main
 struct iOSApp: App {
+    init() {
+        DiModule.koin
+    }
 	var body: some Scene {
 		WindowGroup {
 			ComposeView()
@@ -15,8 +19,6 @@ struct ComposeView: UIViewControllerRepresentable {
         // File name "Main" + "Kt" -> "Function Name"
         return MainKt.MainViewController()
     }
-    
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
-    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
