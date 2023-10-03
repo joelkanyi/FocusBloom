@@ -75,6 +75,7 @@ To run the application on iPhone device/simulator:
 - [ ] Add sound effects: for breaks and work sessions
 - [ ] Add web platform: to enable users to use the app on the web
 - [ ] Implement device synchronization: to enable users to sync their data across devices(Desktop, Android and iOS)
+- [ ] Write tests
 
 
 ## License
