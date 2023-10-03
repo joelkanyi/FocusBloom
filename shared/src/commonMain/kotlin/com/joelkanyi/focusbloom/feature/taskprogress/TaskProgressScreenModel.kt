@@ -33,14 +33,14 @@ import kotlinx.coroutines.launch
 
 class TaskProgressScreenModel(
     settingsRepository: SettingsRepository,
-    private val tasksRepository: TasksRepository
+    private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val longBreakColor = settingsRepository.longBreakColor()
@@ -48,7 +48,7 @@ class TaskProgressScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val focusColor = settingsRepository.focusColor()
@@ -56,7 +56,7 @@ class TaskProgressScreenModel(
         .stateIn(
             coroutineScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val focusTime = settingsRepository.getSessionTime()
@@ -66,7 +66,7 @@ class TaskProgressScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map {
@@ -75,14 +75,14 @@ class TaskProgressScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it?.toMillis() ?: (15).toMillis() }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
 
     private val _task = MutableStateFlow<Task?>(null)
@@ -188,17 +188,17 @@ class TaskProgressScreenModel(
         when (task.value?.current) {
             "Focus" -> updateConsumedFocusTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
 
             "ShortBreak" -> updateConsumedShortBreakTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
 
             "LongBreak" -> updateConsumedLongBreakTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
         }
     }
@@ -217,7 +217,7 @@ class TaskProgressScreenModel(
                     },
                     executeTasks = {
                         executeTasks()
-                    }
+                    },
                 )
             } else {
                 when (task.value?.current) {
@@ -233,7 +233,7 @@ class TaskProgressScreenModel(
                                 },
                                 executeTasks = {
                                     executeTasks()
-                                }
+                                },
                             )
                         } else {
                             println("executeTasks: going for a short break after a focus session")
@@ -246,7 +246,7 @@ class TaskProgressScreenModel(
                                 },
                                 executeTasks = {
                                     executeTasks()
-                                }
+                                },
                             )
                         }
                     }
@@ -256,7 +256,7 @@ class TaskProgressScreenModel(
                         updateCurrentSession(task.value?.id ?: 0, "Focus")
                         updateCurrentCycle(
                             task.value?.id ?: 0,
-                            task.value?.currentCycle?.plus(1) ?: (0 + 1)
+                            task.value?.currentCycle?.plus(1) ?: (0 + 1),
                         )
                         updateInProgressTask(task.value?.id ?: 0, true)
                         Timer.setTickingTime(focusTime.value ?: 0L)
@@ -266,7 +266,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     }
 
@@ -298,7 +298,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     } else {
                         updateCurrentSession(task.value?.id ?: 0, "ShortBreak")
@@ -310,7 +310,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     }
                 }
@@ -328,7 +328,7 @@ class TaskProgressScreenModel(
                     updateCurrentSession(task.value?.id ?: 0, "Focus")
                     updateCurrentCycle(
                         task.value?.id ?: 0,
-                        task.value?.currentCycle?.plus(1) ?: (0 + 1)
+                        task.value?.currentCycle?.plus(1) ?: (0 + 1),
                     )
                     updateInProgressTask(task.value?.id ?: 0, true)
                     Timer.setTickingTime(focusTime.value ?: 0L)
@@ -338,7 +338,7 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
             }
@@ -358,7 +358,7 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
 
@@ -381,7 +381,7 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
             }

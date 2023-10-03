@@ -31,7 +31,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_regular",
             FontWeight.Normal,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratBold =
@@ -39,7 +39,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_bold",
             FontWeight.Bold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratLight =
@@ -47,7 +47,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_light",
             FontWeight.Light,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratMedium =
@@ -55,7 +55,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_medium",
             FontWeight.Medium,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratSemiBold =
@@ -63,7 +63,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_semi_bold",
             FontWeight.SemiBold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratThin =
@@ -71,7 +71,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_thin",
             FontWeight.Thin,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratExtraBold =
@@ -79,7 +79,7 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_extrabold",
             FontWeight.ExtraBold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratExtraLight =
@@ -87,13 +87,13 @@ internal fun getTypography(): Typography {
             "Montserrat",
             "montserrat_extralight",
             FontWeight.ExtraLight,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
     val montserratBlack = font(
         "Montserrat",
         "montserrat_black",
         FontWeight.Black,
-        FontStyle.Normal
+        FontStyle.Normal,
     )
 
     @Composable
@@ -106,107 +106,107 @@ internal fun getTypography(): Typography {
         montserratSemiBold,
         montserratBold,
         montserratExtraBold,
-        montserratBlack
+        montserratBlack,
     )
 
     return Typography(
         displayLarge = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 50.sp
+            fontSize = 50.sp,
             // lineHeight = 64.sp,
             // letterSpacing = (-0.25).sp,
         ),
         displayMedium = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 40.sp
+            fontSize = 40.sp,
             // lineHeight = 52.sp,
         ),
         displaySmall = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 30.sp
+            fontSize = 30.sp,
             // lineHeight = 44.sp,
         ),
         headlineLarge = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 28.sp
+            fontSize = 28.sp,
             // lineHeight = 40.sp,
         ),
         headlineMedium = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 24.sp
+            fontSize = 24.sp,
             // lineHeight = 36.sp,
         ),
         headlineSmall = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 20.sp
+            fontSize = 20.sp,
             // lineHeight = 32.sp,
         ),
         titleLarge = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W700,
-            fontSize = 18.sp
+            fontSize = 18.sp,
             // lineHeight = 28.sp,
         ),
         titleMedium = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W700,
-            fontSize = 14.sp
+            fontSize = 14.sp,
             // lineHeight = 24.sp,
             // letterSpacing = 0.1.sp,
         ),
         titleSmall = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W500,
-            fontSize = 12.sp
+            fontSize = 12.sp,
             // lineHeight = 20.sp,
             // letterSpacing = 0.1.sp,
         ),
         bodyLarge = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 14.sp
+            fontSize = 14.sp,
             // lineHeight = 24.sp,
             // letterSpacing = 0.5.sp,
         ),
         bodyMedium = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 12.sp
+            fontSize = 12.sp,
             // lineHeight = 20.sp,
             // letterSpacing = 0.25.sp,
         ),
         bodySmall = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 11.sp
+            fontSize = 11.sp,
             // lineHeight = 16.sp,
             // letterSpacing = 0.4.sp,
         ),
         labelLarge = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 13.sp
+            fontSize = 13.sp,
             // lineHeight = 20.sp,
             // letterSpacing = 0.1.sp,
         ),
         labelMedium = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W400,
-            fontSize = 11.sp
+            fontSize = 11.sp,
             // lineHeight = 16.sp,
             // letterSpacing = 0.5.sp,
         ),
         labelSmall = TextStyle(
             fontFamily = montserrat(),
             fontWeight = FontWeight.W500,
-            fontSize = 9.sp
+            fontSize = 9.sp,
             // lineHeight = 16.sp,
-        )
+        ),
     )
 }

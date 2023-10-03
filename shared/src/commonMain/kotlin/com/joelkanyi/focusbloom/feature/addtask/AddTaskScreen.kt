@@ -107,7 +107,7 @@ fun AddTaskScreen() {
 
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
-        navBarColor = MaterialTheme.colorScheme.background
+        navBarColor = MaterialTheme.colorScheme.background,
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -126,10 +126,10 @@ fun AddTaskScreen() {
     val startTimeState = rememberTimePickerState(
         initialHour = today().hour,
         initialMinute = today().minute,
-        is24Hour = hourFormat == 24
+        is24Hour = hourFormat == 24,
     )
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds()
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
     )
     val calculatedFocusTime by remember {
         mutableStateOf(
@@ -143,9 +143,9 @@ fun AddTaskScreen() {
                     month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
                     dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
                     hour = startTimeState.hour,
-                    minute = startTimeState.minute
-                )
-            )
+                    minute = startTimeState.minute,
+                ),
+            ),
         )
     }
 
@@ -154,10 +154,10 @@ fun AddTaskScreen() {
             when (event) {
                 is UiEvents.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = event.message,
                     )
                     datePickerState.setSelection(
-                        Clock.System.now().toEpochMilliseconds()
+                        Clock.System.now().toEpochMilliseconds(),
                     )
                 }
 
@@ -176,7 +176,7 @@ fun AddTaskScreen() {
             state = startTimeState,
             onDismiss = {
                 screenModel.setShowStartTimeInputDialog(false)
-            }
+            },
         )
     }
 
@@ -185,7 +185,7 @@ fun AddTaskScreen() {
             datePickerState = datePickerState,
             dismiss = {
                 screenModel.setShowTaskDatePickerDialog(false)
-            }
+            },
         )
     }
 
@@ -230,7 +230,7 @@ fun AddTaskScreen() {
                     start = toLocalDateTime(
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
                         hour = startTimeState.hour,
-                        minute = startTimeState.minute
+                        minute = startTimeState.minute,
                     ),
                     /*end = toLocalDateTime(
                         date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
@@ -251,10 +251,10 @@ fun AddTaskScreen() {
                     consumedLongBreakTime = 0L,
                     inProgressTask = false,
                     currentCycle = 0,
-                    active = false
-                )
+                    active = false,
+                ),
             )
-        }
+        },
     )
 }
 
@@ -278,13 +278,13 @@ private fun AddTaskScreenContent(
     onClickPickStartTime: () -> Unit,
     onClickPickDate: () -> Unit,
     startTimePickerState: TimePickerState,
-    datePickerState: DatePickerState
+    datePickerState: DatePickerState,
 ) {
     Scaffold(
         snackbarHost = {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter // Change to your desired position
+                contentAlignment = Alignment.TopCenter, // Change to your desired position
             ) {
                 SnackbarHost(
                     hostState = snackbarHostState,
@@ -297,33 +297,33 @@ private fun AddTaskScreenContent(
                                 },
                             border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondary
-                            )
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                            ),
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp),
                                 verticalAlignment = CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
                                     modifier = Modifier
                                         .fillMaxWidth(.85f),
                                     text = it.visuals.message,
                                     style = MaterialTheme.typography.titleSmall.copy(
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    ),
                                 )
                                 Image(
                                     modifier = Modifier
                                         .size(32.dp),
                                     painter = painterResource("ic_complete.xml"),
-                                    contentDescription = "Task Options"
+                                    contentDescription = "Task Options",
                                 )
                             }
                         }
-                    }
+                    },
                 )
             }
         },
@@ -331,12 +331,12 @@ private fun AddTaskScreenContent(
             BloomTopAppBar {
                 Text(text = "Add Task")
             }
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
             contentPadding = PaddingValues(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
                 BloomInputTextField(
@@ -347,8 +347,8 @@ private fun AddTaskScreenContent(
                             text = "Task Name",
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp
-                            )
+                                fontSize = 16.sp,
+                            ),
                         )
                     },
                     value = TextFieldState(text = taskName),
@@ -356,16 +356,16 @@ private fun AddTaskScreenContent(
                     placeholder = {
                         Text(
                             text = "Enter Task Name",
-                            style = MaterialTheme.typography.titleSmall
+                            style = MaterialTheme.typography.titleSmall,
 
                         )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Words
+                        capitalization = KeyboardCapitalization.Words,
                     ),
                     textStyle = MaterialTheme.typography.titleSmall.copy(
-                        fontSize = 16.sp
-                    )
+                        fontSize = 16.sp,
+                    ),
                 )
             }
             item {
@@ -377,8 +377,8 @@ private fun AddTaskScreenContent(
                             text = "Description",
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp
-                            )
+                                fontSize = 16.sp,
+                            ),
 
                         )
                     },
@@ -387,15 +387,15 @@ private fun AddTaskScreenContent(
                     placeholder = {
                         Text(
                             text = "Enter Description",
-                            style = MaterialTheme.typography.titleSmall
+                            style = MaterialTheme.typography.titleSmall,
                         )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
                     ),
                     textStyle = MaterialTheme.typography.titleSmall.copy(
-                        fontSize = 16.sp
-                    )
+                        fontSize = 16.sp,
+                    ),
                 )
             }
             item {
@@ -407,17 +407,17 @@ private fun AddTaskScreenContent(
                             text = "Date",
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp
-                            )
+                                fontSize = 16.sp,
+                            ),
                         )
                     },
                     currentTextState = TextFieldState(
-                        text = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date.toString()
+                        text = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date.toString(),
                     ),
                     onClick = onClickPickDate,
                     textStyle = MaterialTheme.typography.titleSmall.copy(
-                        fontSize = 16.sp
-                    )
+                        fontSize = 16.sp,
+                    ),
                 )
             }
 
@@ -428,8 +428,8 @@ private fun AddTaskScreenContent(
                             text = "Task Type",
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp
-                            )
+                                fontSize = 16.sp,
+                            ),
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -437,8 +437,8 @@ private fun AddTaskScreenContent(
                     selectedOption = TextFieldState(selectedTaskType.name),
                     onOptionSelected = onSelectedTaskTypeChange,
                     textStyle = MaterialTheme.typography.titleSmall.copy(
-                        fontSize = 16.sp
-                    )
+                        fontSize = 16.sp,
+                    ),
                 )
             }
 
@@ -447,19 +447,19 @@ private fun AddTaskScreenContent(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TimeComponent(
                         time = LocalTime(
                             startTimePickerState.hour,
-                            startTimePickerState.minute
+                            startTimePickerState.minute,
                         ),
                         hourFormat = hourFormat,
                         title = "Start Time",
                         icon = "start_time.xml",
                         iconColor = MaterialTheme.colorScheme.primary,
                         iconSize = 24,
-                        onClick = onClickPickStartTime
+                        onClick = onClickPickStartTime,
                     )
 
                     DashedDivider(
@@ -467,7 +467,7 @@ private fun AddTaskScreenContent(
                         thickness = 3.dp,
                         phase = 5f,
                         modifier = Modifier
-                            .width(180.dp)
+                            .width(180.dp),
                     )
 
                     TimeComponent(
@@ -476,7 +476,7 @@ private fun AddTaskScreenContent(
                         title = "End Time",
                         icon = "end_time.xml",
                         iconColor = SuccessColor,
-                        onClick = {}
+                        onClick = {},
                     )
                 }
             }
@@ -488,8 +488,8 @@ private fun AddTaskScreenContent(
                     style = MaterialTheme.typography.titleMedium.copy(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    )
+                        fontSize = 18.sp,
+                    ),
                 )
             }
 
@@ -502,7 +502,7 @@ private fun AddTaskScreenContent(
                     onClickAdd = {
                         onIncrementFocusSessions()
                     },
-                    currentValue = focusSessions
+                    currentValue = focusSessions,
                 )
             }
 
@@ -518,7 +518,7 @@ private fun AddTaskScreenContent(
                     onClick = onClickAddTask,
                     content = {
                         Text(text = "Save")
-                    }
+                    },
                 )
             }
         }
@@ -527,38 +527,30 @@ private fun AddTaskScreenContent(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun TimeComponent(
-    title: String,
-    icon: String,
-    iconColor: Color,
-    iconSize: Int = 32,
-    time: LocalTime,
-    hourFormat: Int,
-    onClick: () -> Unit
-) {
+private fun TimeComponent(title: String, icon: String, iconColor: Color, iconSize: Int = 32, time: LocalTime, hourFormat: Int, onClick: () -> Unit) {
     Column(
         modifier = Modifier.clickable {
             onClick()
         },
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
-            )
+                fontSize = 16.sp,
+            ),
         )
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = CenterVertically
+            verticalAlignment = CenterVertically,
         ) {
             Text(
                 text = time.formattedTimeBasedOnTimeFormat(hourFormat),
                 style = MaterialTheme.typography.titleSmall.copy(
-                    fontSize = 16.sp
-                )
+                    fontSize = 16.sp,
+                ),
             )
 
             Icon(
@@ -566,7 +558,7 @@ private fun TimeComponent(
                     .size(iconSize.dp),
                 painter = painterResource(icon),
                 contentDescription = title,
-                tint = iconColor
+                tint = iconColor,
             )
         }
     }
@@ -574,12 +566,7 @@ private fun TimeComponent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimerInputDialog(
-    title: String,
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    state: TimePickerState
-) {
+fun TimerInputDialog(title: String, modifier: Modifier = Modifier, onDismiss: () -> Unit, state: TimePickerState) {
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = true),
         modifier = modifier,
@@ -587,13 +574,13 @@ fun TimerInputDialog(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
         },
         text = {
             TimeInput(
                 modifier = Modifier.fillMaxWidth(),
-                state = state
+                state = state,
             )
         },
         dismissButton = {
@@ -601,7 +588,7 @@ fun TimerInputDialog(
                 onClick = onDismiss,
                 content = {
                     Text(text = "Cancel")
-                }
+                },
             )
         },
         confirmButton = {
@@ -609,9 +596,9 @@ fun TimerInputDialog(
                 onClick = onDismiss,
                 content = {
                     Text(text = "OK")
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -631,26 +618,20 @@ fun TaskDatePicker(datePickerState: DatePickerState, dismiss: () -> Unit) {
                     datePickerState
                         .selectedDateMillis
                     dismiss()
-                }
+                },
             ) {
                 Text(text = "OK")
             }
-        }
+        },
     ) {
         DatePicker(state = datePickerState)
     }
 }
 
 @Composable
-fun DashedDivider(
-    thickness: Dp,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    phase: Float = 10f,
-    intervals: FloatArray = floatArrayOf(10f, 10f),
-    modifier: Modifier
-) {
+fun DashedDivider(thickness: Dp, color: Color = MaterialTheme.colorScheme.onSurfaceVariant, phase: Float = 10f, intervals: FloatArray = floatArrayOf(10f, 10f), modifier: Modifier) {
     Canvas(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val dividerHeight = thickness.toPx()
         drawRoundRect(
@@ -659,9 +640,9 @@ fun DashedDivider(
                 width = dividerHeight,
                 pathEffect = PathEffect.dashPathEffect(
                     intervals = intervals,
-                    phase = phase
-                )
-            )
+                    phase = phase,
+                ),
+            ),
         )
     }
 }

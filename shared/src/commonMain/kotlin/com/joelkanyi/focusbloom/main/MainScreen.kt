@@ -56,7 +56,7 @@ class MainScreen : Screen {
         val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
 
         TabNavigator(
-            BloomTab.HomeTab
+            BloomTab.HomeTab,
         ) {
             val tabNavigator = LocalTabNavigator.current
 
@@ -69,8 +69,8 @@ class MainScreen : Screen {
                             BloomTab.CalendarTab,
                             BloomTab.AddTaskTab,
                             BloomTab.StatisticsTab,
-                            BloomTab.SettingsTab
-                        )
+                            BloomTab.SettingsTab,
+                        ),
                     )
                     CurrentScreen()
                 }
@@ -79,7 +79,7 @@ class MainScreen : Screen {
                     content = { innerPadding ->
                         Box(
                             modifier = Modifier
-                                .padding(innerPadding)
+                                .padding(innerPadding),
                         ) {
                             CurrentScreen()
                         }
@@ -95,28 +95,28 @@ class MainScreen : Screen {
                                 tabNavigator.current = BloomTab.AddTaskTab
                             },
                             elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 0.dp
+                                defaultElevation = 0.dp,
                             ),
-                            shape = CircleShape
+                            shape = CircleShape,
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
                             )
                         }
                     },
                     bottomBar = {
                         BottomNavigation(
-                            backgroundColor = MaterialTheme.colorScheme.background
+                            backgroundColor = MaterialTheme.colorScheme.background,
                         ) {
                             TabNavigationItem(BloomTab.HomeTab)
                             TabNavigationItem(BloomTab.CalendarTab)
                             TabNavigationItem(BloomTab.StatisticsTab)
                             TabNavigationItem(BloomTab.SettingsTab)
                         }
-                    }
+                    },
                 )
             }
         }
@@ -136,7 +136,7 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                 (2u).toUShort() -> 24.dp
                 (3u).toUShort() -> 0.dp
                 else -> 0.dp
-            }
+            },
         ),
         selected = tabNavigator.current == tab,
         onClick = { tabNavigator.current = tab },
@@ -148,9 +148,9 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     } else {
                         it
                     },
-                    contentDescription = tab.options.title
+                    contentDescription = tab.options.title,
                 )
             }
-        }
+        },
     )
 }

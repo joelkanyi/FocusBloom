@@ -1,3 +1,7 @@
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.KtlintPlugin
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -56,7 +60,7 @@ subprojects {
             ktlint().userData(mapOf("disabled_rules" to "filename"))
             licenseHeaderFile(
                 rootProject.file("${project.rootDir}/spotless/copyright.kt"),
-                "^(package|object|import|interface)"
+                "^(package|object|import|interface)",
             )
             trimTrailingWhitespace()
             endWithNewline()
@@ -71,6 +75,21 @@ subprojects {
             trimTrailingWhitespace()
             indentWithTabs()
             endWithNewline()
+        }
+    }
+
+    apply<KtlintPlugin>()
+    configure<KtlintExtension> {
+        android.set(true)
+        outputToConsole.set(true)
+        enableExperimentalRules.set(true)
+        additionalEditorconfigFile.set(file("${project.rootDir}/.editorconfig"))
+        reporters {
+            reporter(ReporterType.HTML)
+        }
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
         }
     }
 }

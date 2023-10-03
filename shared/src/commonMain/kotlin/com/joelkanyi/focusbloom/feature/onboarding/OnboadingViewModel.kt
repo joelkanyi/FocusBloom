@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class OnboadingViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
 ) : ScreenModel {
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
@@ -57,6 +57,6 @@ class OnboadingViewModel(
         "be disciplined",
         "be motivated",
         "be consistent",
-        "be mindful"
+        "be mindful",
     )
 }

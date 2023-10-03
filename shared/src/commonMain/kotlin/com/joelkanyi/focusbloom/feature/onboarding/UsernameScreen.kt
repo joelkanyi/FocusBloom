@@ -88,27 +88,22 @@ class UsernameScreen : Screen, KoinComponent {
             onClickContinue = {
                 keyboardController?.hide()
                 onboadingViewModel.saveUsername()
-            }
+            },
         )
     }
 }
 
 @Composable
-fun UsernameScreenContent(
-    username: String,
-    typeWriterTextParts: List<String>,
-    onUsernameChange: (String) -> Unit,
-    onClickContinue: () -> Unit
-) {
+fun UsernameScreenContent(username: String, typeWriterTextParts: List<String>, onUsernameChange: (String) -> Unit, onClickContinue: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         item {
             TypewriterText(
                 baseText = "Focus Bloom app is what you need to",
-                parts = typeWriterTextParts
+                parts = typeWriterTextParts,
             )
         }
 
@@ -117,8 +112,8 @@ fun UsernameScreenContent(
             Text(
                 text = "What's your username?",
                 style = MaterialTheme.typography.labelLarge.copy(
-                    fontSize = 18.sp
-                )
+                    fontSize = 18.sp,
+                ),
             )
         }
 
@@ -137,13 +132,13 @@ fun UsernameScreenContent(
                 },
                 onClickDone = {
                     onClickContinue()
-                }
+                },
             )
         }
 
         item {
             AnimatedVisibility(
-                username.isNotEmpty()
+                username.isNotEmpty(),
             ) {
                 Column {
                     Spacer(modifier = Modifier.height(56.dp))
@@ -152,13 +147,13 @@ fun UsernameScreenContent(
                             .fillMaxWidth()
                             .height(56.dp),
                         shape = MaterialTheme.shapes.medium,
-                        onClick = onClickContinue
+                        onClick = onClickContinue,
                     ) {
                         Text(
                             text = "Continue",
                             style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                fontWeight = FontWeight.SemiBold,
+                            ),
                         )
                     }
                 }
@@ -168,12 +163,7 @@ fun UsernameScreenContent(
 }
 
 @Composable
-private fun UsernameTextField(
-    modifier: Modifier,
-    name: String,
-    onNameChange: (String) -> Unit,
-    onClickDone: () -> Unit
-) {
+private fun UsernameTextField(modifier: Modifier, name: String, onNameChange: (String) -> Unit, onClickDone: () -> Unit) {
     TextField(
         modifier = modifier,
         value = name,
@@ -187,8 +177,8 @@ private fun UsernameTextField(
                     fontWeight = FontWeight.ExtraLight,
                     fontSize = 18.sp,
                     letterSpacing = -(1.6).sp,
-                    lineHeight = 32.sp
-                )
+                    lineHeight = 32.sp,
+                ),
             )
         },
         colors = TextFieldDefaults.colors(
@@ -196,22 +186,22 @@ private fun UsernameTextField(
             focusedContainerColor = MaterialTheme.colorScheme.background,
             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
             unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-            disabledIndicatorColor = MaterialTheme.colorScheme.primary
+            disabledIndicatorColor = MaterialTheme.colorScheme.primary,
         ),
         textStyle = MaterialTheme.typography.labelLarge.copy(
             fontWeight = FontWeight.SemiBold,
-            fontSize = 18.sp
+            fontSize = 18.sp,
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Text,
-            capitalization = KeyboardCapitalization.Words
+            capitalization = KeyboardCapitalization.Words,
         ),
         keyboardActions = KeyboardActions(
             onDone = {
                 onClickDone()
-            }
-        )
+            },
+        ),
     )
 }
 
@@ -227,8 +217,8 @@ private fun TypewriterText(modifier: Modifier = Modifier, baseText: String, part
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             letterSpacing = -(1.6).sp,
-            lineHeight = 32.sp
-        )
+            lineHeight = 32.sp,
+        ),
     )
 
     LaunchedEffect(key1 = parts) {

@@ -99,7 +99,7 @@ fun SettingsScreen() {
     }
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
-        navBarColor = MaterialTheme.colorScheme.background
+        navBarColor = MaterialTheme.colorScheme.background,
     )
 
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
@@ -196,7 +196,7 @@ fun SettingsScreen() {
                     screenModel.setLongBreakColor(it)
                 }
             }
-        }
+        },
     )
 }
 
@@ -223,23 +223,23 @@ fun SettingsScreenContent(
     currentShortBreakColor: Long,
     currentLongBreakColor: Long,
     currentSessionColor: Long,
-    onSelectColor: (Long) -> Unit
+    onSelectColor: (Long) -> Unit,
 ) {
     Scaffold(
         topBar = {
             BloomTopAppBar(
-                hasBackNavigation = false
+                hasBackNavigation = false,
             ) {
                 Text(text = "Settings")
             }
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
                 FocusSessionsSetting(
@@ -254,7 +254,7 @@ fun SettingsScreenContent(
                     },
                     onExpand = { title ->
                         openOptions(title)
-                    }
+                    },
                 )
             }
             item {
@@ -267,7 +267,7 @@ fun SettingsScreenContent(
                     },
                     hourFormats = hourFormats,
                     selectedHourFormat = selectedHourFormat,
-                    onHourFormatChange = onHourFormatChange
+                    onHourFormatChange = onHourFormatChange,
                 )
             }
             item {
@@ -277,7 +277,7 @@ fun SettingsScreenContent(
                     },
                     onExpand = { title ->
                         openOptions(title)
-                    }
+                    },
                 )
             }
             item {
@@ -297,7 +297,7 @@ fun SettingsScreenContent(
                     currentShortBreakColor = currentShortBreakColor,
                     currentLongBreakColor = currentLongBreakColor,
                     currentSessionColor = currentSessionColor,
-                    onSelectColor = onSelectColor
+                    onSelectColor = onSelectColor,
                 )
             }
             item {
@@ -307,7 +307,7 @@ fun SettingsScreenContent(
                     },
                     onExpand = { title ->
                         openOptions(title)
-                    }
+                    },
                 )
             }
         }
@@ -315,16 +315,7 @@ fun SettingsScreenContent(
 }
 
 @Composable
-fun FocusSessionsSetting(
-    focusSessionMinutes: Int,
-    onFocusSessionMinutesChange: (String) -> Unit,
-    shortBreakMinutes: Int,
-    onShortBreakMinutesChange: (String) -> Unit,
-    longBreakMinutes: Int,
-    onLongBreakMinutesChange: (String) -> Unit,
-    onExpand: (String) -> Unit,
-    expanded: (String) -> Boolean
-) {
+fun FocusSessionsSetting(focusSessionMinutes: Int, onFocusSessionMinutesChange: (String) -> Unit, shortBreakMinutes: Int, onShortBreakMinutesChange: (String) -> Unit, longBreakMinutes: Int, onLongBreakMinutesChange: (String) -> Unit, onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
     SettingCard(
         onExpand = {
             onExpand("Focus Sessions")
@@ -337,7 +328,7 @@ fun FocusSessionsSetting(
             var autoStartFocusSession by remember { mutableStateOf(false) }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SessionTime(
                     modifier = Modifier.weight(1f),
@@ -345,7 +336,7 @@ fun FocusSessionsSetting(
                     currentValue = focusSessionMinutes.toString(),
                     onValueChange = {
                         onFocusSessionMinutesChange(it)
-                    }
+                    },
                 )
                 SessionTime(
                     modifier = Modifier.weight(1f),
@@ -353,7 +344,7 @@ fun FocusSessionsSetting(
                     currentValue = shortBreakMinutes.toString(),
                     onValueChange = {
                         onShortBreakMinutesChange(it)
-                    }
+                    },
                 )
                 SessionTime(
                     modifier = Modifier.weight(1f),
@@ -361,7 +352,7 @@ fun FocusSessionsSetting(
                     currentValue = longBreakMinutes.toString(),
                     onValueChange = {
                         onLongBreakMinutesChange(it)
-                    }
+                    },
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -370,7 +361,7 @@ fun FocusSessionsSetting(
                 checked = autoStartBreaks,
                 onCheckedChange = {
                     autoStartBreaks = it
-                }
+                },
             )
             Spacer(modifier = Modifier.height(12.dp))
             AutoStartSession(
@@ -378,20 +369,14 @@ fun FocusSessionsSetting(
                 checked = autoStartFocusSession,
                 onCheckedChange = {
                     autoStartFocusSession = it
-                }
+                },
             )
-        }
+        },
     )
 }
 
 @Composable
-fun TimeSetting(
-    onExpand: (String) -> Unit,
-    expanded: (String) -> Boolean,
-    hourFormats: List<String>,
-    selectedHourFormat: Int,
-    onHourFormatChange: (Int) -> Unit
-) {
+fun TimeSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean, hourFormats: List<String>, selectedHourFormat: Int, onHourFormatChange: (Int) -> Unit) {
     SettingCard(
         onExpand = {
             onExpand("Time")
@@ -407,9 +392,9 @@ fun TimeSetting(
                 onSelectOption = {
                     onHourFormatChange(it.timeFormat())
                     onExpand("Time")
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -437,7 +422,7 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
                 selectedOption = selectedAlarmSound,
                 onSelectOption = {
                     selectedAlarmSound = it
-                }
+                },
             )
             Slider(
                 value = alarmSliderPosition,
@@ -445,8 +430,8 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
                 onValueChange = { alarmSliderPosition = it },
                 colors = SliderDefaults.colors(
                     inactiveTickColor = MaterialTheme.colorScheme.secondary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.secondary
-                )
+                    inactiveTrackColor = MaterialTheme.colorScheme.secondary,
+                ),
             )
             Spacer(modifier = Modifier.height(16.dp))
             SoundSelection(
@@ -455,7 +440,7 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
                 selectedOption = selectedTickingSound,
                 onSelectOption = {
                     selectedTickingSound = it
-                }
+                },
             )
             Slider(
                 value = tickingSliderPosition,
@@ -463,10 +448,10 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
                 onValueChange = { tickingSliderPosition = it },
                 colors = SliderDefaults.colors(
                     inactiveTickColor = MaterialTheme.colorScheme.secondary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.secondary
-                )
+                    inactiveTrackColor = MaterialTheme.colorScheme.secondary,
+                ),
             )
-        }
+        },
     )
 }
 
@@ -483,7 +468,7 @@ fun ThemeSetting(
     currentShortBreakColor: Long,
     currentLongBreakColor: Long,
     currentSessionColor: Long,
-    onSelectColor: (Long) -> Unit
+    onSelectColor: (Long) -> Unit,
 ) {
     SettingCard(
         onExpand = {
@@ -502,13 +487,13 @@ fun ThemeSetting(
                     onSelectColor = {
                         onShowColorDialog(false)
                         onSelectColor(it)
-                    }
+                    },
                 )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = "Sessions Color Scheme")
                 ColorsSelection(
@@ -526,7 +511,7 @@ fun ThemeSetting(
                     },
                     currentSessionColor = currentSessionColor,
                     currentShortBreakColor = currentShortBreakColor,
-                    currentLongBreakColor = currentLongBreakColor
+                    currentLongBreakColor = currentLongBreakColor,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -541,9 +526,9 @@ fun ThemeSetting(
                 checked = darkTheme,
                 onCheckedChange = {
                     onDarkThemeChange(it)
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -566,56 +551,51 @@ fun NotificationsSetting(onExpand: (String) -> Unit, expanded: (String) -> Boole
             Row {
                 Text(
                     modifier = Modifier.fillMaxWidth(.4f),
-                    text = "Reminder"
+                    text = "Reminder",
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.End
+                    horizontalAlignment = Alignment.End,
                 ) {
                     BloomDropDown(
                         options = listOf("Focus Session", "Break", "Both", "None"),
                         selectedOption = TextFieldState(selectedReminderType),
                         onOptionSelected = {
                             selectedReminderType = it
-                        }
+                        },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         BloomInputTextField(
                             modifier = Modifier.weight(1f),
                             value = TextFieldState(text = howManyMinutesToReminder),
                             onValueChange = {
                                 howManyMinutesToReminder = it
-                            }
+                            },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = "min")
                     }
                 }
             }
-        }
+        },
     )
 }
 
 @Composable
-private fun SoundSelection(
-    options: List<String>,
-    title: String,
-    selectedOption: String,
-    onSelectOption: (String) -> Unit
-) {
+private fun SoundSelection(options: List<String>, title: String, selectedOption: String, onSelectOption: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(.5f),
-            text = title
+            text = title,
         )
         BloomDropDown(
             modifier = Modifier
@@ -624,7 +604,7 @@ private fun SoundSelection(
             selectedOption = TextFieldState(text = selectedOption),
             onOptionSelected = {
                 onSelectOption(it)
-            }
+            },
         )
     }
 }
@@ -634,73 +614,61 @@ fun AutoStartSession(title: String, checked: Boolean, onCheckedChange: (Boolean)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = title)
         Switch(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
         )
     }
 }
 
 @Composable
-fun SessionTime(
-    modifier: Modifier = Modifier,
-    title: String,
-    currentValue: String,
-    onValueChange: (String) -> Unit
-) {
+fun SessionTime(modifier: Modifier = Modifier, title: String, currentValue: String, onValueChange: (String) -> Unit) {
     BloomInputTextField(
         modifier = modifier,
         textStyle = MaterialTheme.typography.bodyMedium.copy(
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
         ),
         label = {
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelLarge.copy(
-                    fontWeight = FontWeight.SemiBold
-                )
+                    fontWeight = FontWeight.SemiBold,
+                ),
             )
         },
         value = TextFieldState(currentValue),
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        )
+            keyboardType = KeyboardType.Number,
+        ),
     )
 }
 
 @Composable
-fun SettingCard(
-    title: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-    onExpand: () -> Unit,
-    expanded: Boolean
-) {
+fun SettingCard(title: String, icon: ImageVector, modifier: Modifier = Modifier, content: @Composable () -> Unit, onExpand: () -> Unit, expanded: Boolean) {
     Card(modifier = modifier) {
         Column(
-            modifier = modifier.padding(16.dp)
+            modifier = modifier.padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = title
+                        contentDescription = title,
                     )
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
 
@@ -711,7 +679,7 @@ fun SettingCard(
                         } else {
                             Icons.Rounded.KeyboardArrowDown
                         },
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
@@ -726,29 +694,22 @@ fun SettingCard(
 }
 
 @Composable
-fun ColorsSelection(
-    onSelectSessionColor: (Long) -> Unit,
-    onSelectShortBreakColor: (Long) -> Unit,
-    onSelectLongBreakColor: (Long) -> Unit,
-    currentSessionColor: Long,
-    currentShortBreakColor: Long,
-    currentLongBreakColor: Long
-) {
+fun ColorsSelection(onSelectSessionColor: (Long) -> Unit, onSelectShortBreakColor: (Long) -> Unit, onSelectLongBreakColor: (Long) -> Unit, currentSessionColor: Long, currentShortBreakColor: Long, currentLongBreakColor: Long) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ColorCard(
             color = currentSessionColor,
-            onClick = onSelectSessionColor
+            onClick = onSelectSessionColor,
         )
         ColorCard(
             color = currentShortBreakColor,
-            onClick = onSelectShortBreakColor
+            onClick = onSelectShortBreakColor,
         )
         ColorCard(
             color = currentLongBreakColor,
-            onClick = onSelectLongBreakColor
+            onClick = onSelectLongBreakColor,
         )
     }
 }
@@ -762,17 +723,12 @@ fun ColorCard(modifier: Modifier = Modifier, color: Long, onClick: (Long) -> Uni
             .background(Color(color))
             .clickable {
                 onClick(color)
-            }
+            },
     )
 }
 
 @Composable
-fun ColorsDialog(
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    onSelectColor: (Long) -> Unit,
-    title: String
-) {
+fun ColorsDialog(modifier: Modifier = Modifier, onDismiss: () -> Unit, onSelectColor: (Long) -> Unit, title: String) {
     AlertDialog(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -784,14 +740,14 @@ fun ColorsDialog(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    textAlign = TextAlign.Center
-                )
+                    textAlign = TextAlign.Center,
+                ),
             )
         },
         text = {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(sessionColors) {
                     ColorCard(
@@ -799,13 +755,13 @@ fun ColorsDialog(
                             .padding(horizontal = 4.dp)
                             .size(48.dp),
                         color = it,
-                        onClick = onSelectColor
+                        onClick = onSelectColor,
                     )
                 }
             }
         },
         dismissButton = {},
-        confirmButton = {}
+        confirmButton = {},
     )
 }
 
@@ -821,7 +777,7 @@ private val sessionColors = listOf(
     LightGreen,
     Yellow,
     LightBlue,
-    Pink
+    Pink,
 )
 
 /**

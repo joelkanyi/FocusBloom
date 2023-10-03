@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 class AddTaskScreenModel(
     settingsRepository: SettingsRepository,
-    private val tasksRepository: TasksRepository
+    private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
@@ -48,28 +48,28 @@ class AddTaskScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
 
     private val _focusSessions = MutableStateFlow(0)

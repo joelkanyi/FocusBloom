@@ -40,7 +40,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 0u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -63,7 +63,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 1u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -86,7 +86,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 2u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -109,7 +109,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 3u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -132,7 +132,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 4u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }

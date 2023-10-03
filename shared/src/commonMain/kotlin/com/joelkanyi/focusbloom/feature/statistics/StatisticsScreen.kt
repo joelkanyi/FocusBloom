@@ -95,7 +95,7 @@ fun StatisticsScreen() {
 
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
-        navBarColor = MaterialTheme.colorScheme.background
+        navBarColor = MaterialTheme.colorScheme.background,
     )
     val navigator = LocalAppNavigator.currentOrThrow
     val tasksHistory = screenModel.tasks.collectAsState().value
@@ -110,18 +110,18 @@ fun StatisticsScreen() {
         initialPageOffsetFraction = 0f,
         pageCount = {
             lastFiftyTwoWeeks.size
-        }
+        },
     )
     val selectedWeek = lastFiftyTwoWeeks[pagerState.currentPage].first
     val selectedWeekTasks = tasksHistory.completedTasks(
-        lastFiftyTwoWeeks[pagerState.currentPage].second
+        lastFiftyTwoWeeks[pagerState.currentPage].second,
     ).map { it.toFloat() }
     val tickPositionState by remember {
         mutableStateOf(
             TickPositionState(
                 TickPosition.Outside,
-                TickPosition.Outside
-            )
+                TickPosition.Outside,
+            ),
         )
     }
 
@@ -164,7 +164,7 @@ fun StatisticsScreen() {
         },
         onClickCancel = {
             screenModel.openTaskOptions(it)
-        }
+        },
     )
 }
 
@@ -172,7 +172,7 @@ fun StatisticsScreen() {
     ExperimentalKoalaPlotApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalResourceApi::class
+    ExperimentalResourceApi::class,
 )
 @Composable
 fun StatisticsScreenContent(
@@ -192,7 +192,7 @@ fun StatisticsScreenContent(
     onClickDelete: (task: Task) -> Unit,
     onClickCancel: (task: Task) -> Unit,
     showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -204,64 +204,64 @@ fun StatisticsScreenContent(
                         text = "Your Statistics",
                         style = MaterialTheme.typography.displaySmall.copy(
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
                 },
                 actions = {
                     AnimatedVisibility(selectedWeek != "This Week") {
                         TextButton(
-                            onClick = onClickThisWeek
+                            onClick = onClickThisWeek,
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
                                     painter = painterResource("redo.xml"),
-                                    contentDescription = "This Week"
+                                    contentDescription = "This Week",
                                 )
                                 Text(
                                     text = "This Week",
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.primary,
-                                        textDecoration = TextDecoration.Underline
-                                    )
+                                        textDecoration = TextDecoration.Underline,
+                                    ),
                                 )
                             }
                         }
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             item {
                 WeeksController(
                     onClickPreviousWeek = onClickPreviousWeek,
                     selectedWeek = selectedWeek,
-                    onClickNextWeek = onClickNextWeek
+                    onClickNextWeek = onClickNextWeek,
                 )
             }
             item {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 ) {
                     ChartLayout(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .sizeIn(maxHeight = 300.dp)
+                            .sizeIn(maxHeight = 300.dp),
                     ) {
                         BarChart(
                             tickPositionState = tickPositionState,
-                            entries = selectedWeekTasks
+                            entries = selectedWeekTasks,
                         )
                     }
                 }
@@ -272,13 +272,13 @@ fun StatisticsScreenContent(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = "Your History",
                         style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
                     if (tasksHistory.values.size > 3) {
                         TextButton(onClick = onClickSeeAllTasks) {
@@ -287,8 +287,8 @@ fun StatisticsScreenContent(
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.primary,
-                                    fontSize = 16.sp
-                                )
+                                    fontSize = 16.sp,
+                                ),
                             )
                         }
                     }
@@ -305,8 +305,8 @@ fun StatisticsScreenContent(
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            textAlign = TextAlign.End
-                        )
+                            textAlign = TextAlign.End,
+                        ),
                     )
                 }
                 items(tasks) {
@@ -322,7 +322,7 @@ fun StatisticsScreenContent(
                         onClickDelete = onClickDelete,
                         onClickCancel = onClickCancel,
                         showTaskOption = showTaskOption,
-                        onShowTaskOption = onShowTaskOption
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }
@@ -331,31 +331,27 @@ fun StatisticsScreenContent(
 }
 
 @Composable
-private fun WeeksController(
-    onClickPreviousWeek: () -> Unit,
-    selectedWeek: String,
-    onClickNextWeek: () -> Unit
-) {
+private fun WeeksController(onClickPreviousWeek: () -> Unit, selectedWeek: String, onClickNextWeek: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
             modifier = Modifier.size(24.dp),
-            onClick = onClickPreviousWeek
+            onClick = onClickPreviousWeek,
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardDoubleArrowLeft,
-                contentDescription = "Previous Week"
+                contentDescription = "Previous Week",
             )
         }
         Text(
             text = selectedWeek,
             style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.SemiBold
-            )
+                fontWeight = FontWeight.SemiBold,
+            ),
         )
         IconButton(
             modifier = Modifier.size(24.dp),
@@ -363,7 +359,7 @@ private fun WeeksController(
                 if (selectedWeek != "This Week") {
                     onClickNextWeek()
                 }
-            }
+            },
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardDoubleArrowRight,
@@ -372,7 +368,7 @@ private fun WeeksController(
                     MaterialTheme.colorScheme.onBackground
                 } else {
                     MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                }
+                },
             )
         }
     }
@@ -380,26 +376,15 @@ private fun WeeksController(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun HistoryCard(
-    task: Task,
-    modifier: Modifier = Modifier,
-    hourFormat: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
-    onClickCancel: (task: Task) -> Unit,
-    onClickDelete: (task: Task) -> Unit,
-    showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit
-) {
+fun HistoryCard(task: Task, modifier: Modifier = Modifier, hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickCancel: (task: Task) -> Unit, onClickDelete: (task: Task) -> Unit, showTaskOption: (task: Task) -> Boolean, onShowTaskOption: (task: Task) -> Unit) {
     Column {
         Card(
-            modifier = modifier
+            modifier = modifier,
         ) {
             Row(
                 modifier = Modifier.padding(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier = Modifier
@@ -407,9 +392,9 @@ fun HistoryCard(
                         .clip(MaterialTheme.shapes.large)
                         .background(
                             color = Color(task.type.taskColor()),
-                            shape = MaterialTheme.shapes.medium
+                            shape = MaterialTheme.shapes.medium,
                         ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         modifier = Modifier
@@ -417,27 +402,27 @@ fun HistoryCard(
                             .size(24.dp),
                         painter = painterResource(task.type.taskIcon()),
                         contentDescription = "Task Icon",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             modifier = Modifier.fillMaxWidth(.8f),
                             text = task.name,
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
                             ),
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                         Icon(
                             modifier = Modifier
@@ -446,7 +431,7 @@ fun HistoryCard(
                                     onShowTaskOption(task)
                                 },
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More Options"
+                            contentDescription = "More Options",
                         )
                     }
                     if (task.description != null) {
@@ -454,13 +439,13 @@ fun HistoryCard(
                             text = task.description,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             text = "${
@@ -468,13 +453,13 @@ fun HistoryCard(
                                 focusSessions = task.focusSessions,
                                 sessionTime = sessionTime,
                                 shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime
+                                longBreakTime = longBreakTime,
                             )
                             } minutes",
                             style = MaterialTheme.typography.displaySmall.copy(
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                fontWeight = FontWeight.SemiBold,
+                            ),
                         )
                         Text(
                             prettyTimeDifference(
@@ -483,14 +468,14 @@ fun HistoryCard(
                                     focusSessions = task.focusSessions,
                                     sessionTime = sessionTime,
                                     shortBreakTime = shortBreakTime,
-                                    longBreakTime = longBreakTime
+                                    longBreakTime = longBreakTime,
                                 ),
-                                timeFormat = hourFormat
+                                timeFormat = hourFormat,
                             ),
                             style = MaterialTheme.typography.displaySmall.copy(
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                fontWeight = FontWeight.SemiBold,
+                            ),
                         )
                     }
                 }
@@ -502,30 +487,30 @@ fun HistoryCard(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TextButton(onClick = {
                             onClickCancel(task)
-                        }) {
-                            Text(
-                                text = "Cancel",
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                        }
+                        },) {
+                        Text(
+                            text = "Cancel",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        )
+                    }
                         Spacer(modifier = Modifier.width(16.dp))
                         TextButton(onClick = {
                             onClickDelete(task)
-                        }) {
-                            Text(
-                                text = "Delete",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontWeight = FontWeight.ExtraBold
-                                )
-                            )
-                        }
+                        },) {
+                        Text(
+                            text = "Delete",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                            ),
+                        )
+                    }
                     }
                 }
             }
