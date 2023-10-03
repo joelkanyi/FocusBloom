@@ -3,6 +3,10 @@
 # FocusBloom
 FocusBloom is a Kotlin Multiplatform Pomodoro app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
 
+> Please note that this project is still under development and some features may not work as expected.
+
+> If you find any bugs or have any suggestions, feel free to open an issue or a pull request.
+
 ## Platforms
 ![](https://img.shields.io/badge/Android-black.svg?style=for-the-badge&logo=android) | ![](https://img.shields.io/badge/iOS-black.svg?style=for-the-badge&logo=apple) | ![](https://img.shields.io/badge/Desktop-black.svg?style=for-the-badge&logo=windows) | ![](https://img.shields.io/badge/Web-black.svg?style=for-the-badge&logo=google-chrome)
 :----: | :----: | :----: | :----:
@@ -11,28 +15,21 @@ FocusBloom is a Kotlin Multiplatform Pomodoro app that helps users enhance their
 
 ## Screenshots
 ### Android
-<img src="art/app_screen1.jpeg"  width="250"/> <img src="art/app_screen2.jpeg"  width="250"/> <img src="art/app_screen3.jpeg"  width="250/">  <img src="art/app_screen4.jpeg"  width="250"/> <img src="art/app_screen5.jpeg"  width="250"/> 
+<img src="art/android_screen1.jpeg"  width="250"/> <img src="art/android_screen2.jpeg"  width="250"/> <img src="art/android_screen3.jpeg" width="250"/>
 
 ### iOS
-<img src="art/ios_screen1.png"  width="250"/> <img src="art/ios_screen2.png"  width="250"/> <img src="art/ios_screen3.png"  width="250"/> <img src="art/ios_screen4.png"  width="250"/> <img src="art/ios_screen5.png"  width="250"/> <img src="art/ios_screen6.png"  width="250"/> <img src="art/ios_screen7.png"  width="250"/> <img src="art/ios_screen8.png"  width="250"/> <img src="art/ios_screen9.png"  width="250"/>
+<img src="art/ios_screen1.png"  width="250"/> <img src="art/ios_screen2.png"  width="250"/> <img src="art/ios_screen3.png"  width="250"/> 
 
 ### Desktop
 <img src="art/dsk_screen1.png"/>
 <img src="art/dsk_screen2.png"/>
 <img src="art/dsk_screen3.png"/>
-<img src="art/dsk_screen4.png"/>
-<img src="art/dsk_screen5.png"/>
+
 ## Architecture
-The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. The shared code is compiled to Kotlin/JVM for Android and Kotlin/Native for iOS and Desktop.
-
-
+The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. Shared code, written in Kotlin, is compiled to JVM bytecode for Android with Kotlin/JVM and to native binaries for iOS and Desktop with Kotlin/Native.
 ### Modules
 - shared:
   - contains all the shared code between the platforms
-  - contains the business logic and data layer
-  - contains the UI layer
-  - contains the database layer
-  - contains the repository layer
 - android: contains the android app
   - contains the android app
 - ios: contains the ios app
@@ -63,10 +60,6 @@ The app is shared between Android, iOS and Desktop. The shared code is written i
 To run the application on android device/emulator:
 - open project in Android Studio and run imported android run configuration
 
-To build the application bundle:
-- run `./gradlew :composeApp:assembleDebug`
-- find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
-
 ### Desktop
 Run the desktop application: `./gradlew :desktop:run`
 
@@ -78,9 +71,12 @@ To run the application on iPhone device/simulator:
 ## Todo
 - [ ] Work on Notifications: To remind you of upcoming and overdue tasks
 - [ ] Reminders: Sounds for breaks and work sessions
-- [ ] 
-## Credits
-- 
+- [ ] Fix Calendar: it is not working as expected
+- [ ] Add sound effects: for breaks and work sessions
+- [ ] Add web platform: to enable users to use the app on the web
+- [ ] Implement device synchronization: to enable users to sync their data across devices(Desktop, Android and iOS)
+
+
 ## License
 ```xml
 Copyright 2023 JoelKanyi

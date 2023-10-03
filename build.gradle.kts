@@ -1,6 +1,4 @@
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
-import org.jlleitschuh.gradle.ktlint.KtlintPlugin
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -75,21 +73,6 @@ subprojects {
             trimTrailingWhitespace()
             indentWithTabs()
             endWithNewline()
-        }
-    }
-
-    apply<KtlintPlugin>()
-    configure<KtlintExtension> {
-        android.set(true)
-        outputToConsole.set(true)
-        enableExperimentalRules.set(true)
-        additionalEditorconfigFile.set(file("${project.rootDir}/.editorconfig"))
-        reporters {
-            reporter(ReporterType.HTML)
-        }
-        filter {
-            exclude("**/generated/**")
-            include("**/kotlin/**")
         }
     }
 }
