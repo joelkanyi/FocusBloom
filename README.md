@@ -3,6 +3,7 @@
 # FocusBloom
 FocusBloom is a Kotlin Multiplatform app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
 
+## 🛠️ WIP 🛠️
 > Please note that this project is still under development and some features may not work as expected.
 
 > If you find any bugs or have any suggestions, feel free to open an issue or a pull request.
