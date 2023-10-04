@@ -83,7 +83,6 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
@@ -134,7 +133,7 @@ fun StatisticsScreen() {
         pagerState = pagerState,
         selectedWeek = selectedWeek,
         selectedWeekTasks = selectedWeekTasks,
-        tasksHistory = tasksHistory.groupBy { it.date.date },
+        tasksHistory = tasksHistory,
         onClickSeeAllTasks = {
             navigator.push(AllStatisticsScreen())
         },
@@ -183,7 +182,7 @@ fun StatisticsScreenContent(
     longBreakTime: Int,
     selectedWeekTasks: List<Float>,
     tickPositionState: TickPositionState,
-    tasksHistory: Map<LocalDate, List<Task>>,
+    tasksHistory: List<Task>,
     onClickSeeAllTasks: () -> Unit,
     pagerState: PagerState,
     onClickNextWeek: () -> Unit,
@@ -280,7 +279,7 @@ fun StatisticsScreenContent(
                             fontWeight = FontWeight.Bold,
                         ),
                     )
-                    if (tasksHistory.values.size > 3) {
+                    if (tasksHistory.size > 3) {
                         TextButton(onClick = onClickSeeAllTasks) {
                             Text(
                                 text = "See All",
@@ -294,8 +293,8 @@ fun StatisticsScreenContent(
                     }
                 }
             }
-
-            tasksHistory.forEach { (date, tasks) ->
+            val grouped = tasksHistory.take(3).groupBy { it.date.date }
+            grouped.forEach { (date, tasks) ->
                 item {
                     Text(
                         modifier = Modifier
