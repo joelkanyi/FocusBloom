@@ -77,7 +77,6 @@ import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -151,7 +150,6 @@ data class TaskProgressScreen(
                     }
                 }
             }
-
         }
 
         if (task?.completed == true) {

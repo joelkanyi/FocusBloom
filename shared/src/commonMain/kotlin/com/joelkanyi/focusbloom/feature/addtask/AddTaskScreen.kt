@@ -94,7 +94,6 @@ import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -173,7 +172,6 @@ fun AddTaskScreen() {
                 }
             }
         }
-
     }
 
     if (showStartTimeInputDialog) {

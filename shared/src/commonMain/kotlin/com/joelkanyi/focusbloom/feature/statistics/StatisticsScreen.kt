@@ -491,25 +491,25 @@ fun HistoryCard(task: Task, modifier: Modifier = Modifier, hourFormat: Int, sess
                         TextButton(onClick = {
                             onClickCancel(task)
                         },) {
-                        Text(
-                            text = "Cancel",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
-                        )
-                    }
+                            Text(
+                                text = "Cancel",
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                ),
+                            )
+                        }
                         Spacer(modifier = Modifier.width(16.dp))
                         TextButton(onClick = {
                             onClickDelete(task)
                         },) {
-                        Text(
-                            text = "Delete",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                            ),
-                        )
-                    }
+                            Text(
+                                text = "Delete",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.ExtraBold,
+                                ),
+                            )
+                        }
                     }
                 }
             }

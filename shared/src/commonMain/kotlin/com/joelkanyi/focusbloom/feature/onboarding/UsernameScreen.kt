@@ -55,7 +55,6 @@ import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.main.MainScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
