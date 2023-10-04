@@ -92,7 +92,10 @@ import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -150,24 +153,27 @@ fun AddTaskScreen() {
     }
 
     LaunchedEffect(key1 = true) {
-        screenModel.eventsFlow.collectLatest { event ->
-            when (event) {
-                is UiEvents.ShowSnackbar -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.message,
-                    )
-                    datePickerState.setSelection(
-                        Clock.System.now().toEpochMilliseconds(),
-                    )
-                }
+        withContext(Dispatchers.Main.immediate) {
+            screenModel.eventsFlow.collect { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                        )
+                        datePickerState.setSelection(
+                            Clock.System.now().toEpochMilliseconds(),
+                        )
+                    }
 
-                UiEvents.NavigateBack -> {
-                    navigator.pop()
-                }
+                    UiEvents.NavigateBack -> {
+                        navigator.pop()
+                    }
 
-                else -> {}
+                    else -> {}
+                }
             }
         }
+
     }
 
     if (showStartTimeInputDialog) {

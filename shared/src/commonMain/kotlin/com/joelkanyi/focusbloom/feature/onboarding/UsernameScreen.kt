@@ -53,8 +53,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.main.MainScreen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -69,13 +71,15 @@ class UsernameScreen : Screen, KoinComponent {
         val keyboardController = LocalSoftwareKeyboardController.current
 
         LaunchedEffect(Unit) {
-            onboadingViewModel.eventsFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvents.Navigation -> {
-                        navigator.replaceAll(MainScreen())
-                    }
+            withContext(Dispatchers.Main.immediate) {
+                onboadingViewModel.eventsFlow.collect { event ->
+                    when (event) {
+                        is UiEvents.Navigation -> {
+                            navigator.replaceAll(MainScreen())
+                        }
 
-                    else -> {}
+                        else -> {}
+                    }
                 }
             }
         }
