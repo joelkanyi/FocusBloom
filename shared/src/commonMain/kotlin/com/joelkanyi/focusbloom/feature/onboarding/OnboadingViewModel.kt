@@ -19,17 +19,19 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class OnboadingViewModel(
     private val settingsRepository: SettingsRepository,
 ) : ScreenModel {
-    private val _eventsFlow = MutableSharedFlow<UiEvents>()
-    val eventsFlow = _eventsFlow.asSharedFlow()
+    private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
+    val eventsFlow = _eventsFlow.receiveAsFlow()
 
     private val _username = MutableStateFlow("")
     val username = _username.asStateFlow()
@@ -40,7 +42,7 @@ class OnboadingViewModel(
     fun saveUsername() {
         coroutineScope.launch {
             settingsRepository.saveUsername(username.value.trim())
-            _eventsFlow.emit(UiEvents.Navigation)
+            _eventsFlow.send(UiEvents.Navigation)
         }
     }
 

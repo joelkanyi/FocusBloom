@@ -25,12 +25,14 @@ import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -38,8 +40,8 @@ class AddTaskScreenModel(
     settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
 ) : ScreenModel {
-    private val _eventsFlow = MutableSharedFlow<UiEvents>()
-    val eventsFlow = _eventsFlow.asSharedFlow()
+    private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
+    val eventsFlow = _eventsFlow.receiveAsFlow()
 
     val sessionTime = settingsRepository.getSessionTime()
         .map {
@@ -122,7 +124,7 @@ class AddTaskScreenModel(
             _taskDescription.value = ""
             _selectedOption.value = taskTypes.last()
             _showStartTimeInputDialog.value = false
-            _eventsFlow.emit(UiEvents.ShowSnackbar("Task added!"))
+            _eventsFlow.trySend(UiEvents.ShowSnackbar("Task added!"))
         }
     }
 }

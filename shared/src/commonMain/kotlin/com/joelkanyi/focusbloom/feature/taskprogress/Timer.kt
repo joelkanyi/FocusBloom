@@ -21,17 +21,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlin.native.concurrent.ThreadLocal
 
+@ThreadLocal
 object Timer {
-    private val _eventsFlow = MutableSharedFlow<UiEvents>()
-    val eventsFlow = _eventsFlow.asSharedFlow()
+    private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
+    val eventsFlow = _eventsFlow.receiveAsFlow()
 
     private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
