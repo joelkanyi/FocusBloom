@@ -57,10 +57,10 @@ fun BloomInputTextField(
     onValueChange: (String) -> Unit,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
     shape: CornerBasedShape = MaterialTheme.shapes.small,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
     ) {
         if (label != null) {
             label()
@@ -79,14 +79,14 @@ fun BloomInputTextField(
             maxLines = maxLines,
             singleLine = maxLines == 1,
             keyboardOptions = keyboardOptions,
-            readOnly = !editable,
+            readOnly = !editable
         )
         if (!value.error.isNullOrEmpty()) {
             Text(
                 text = value.error,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.error,
-                ),
+                    color = MaterialTheme.colorScheme.error
+                )
             )
         }
     }
@@ -109,27 +109,27 @@ fun BloomDateBoxField(modifier: Modifier = Modifier, label: (@Composable () -> U
                     } else {
                         MaterialTheme.colorScheme.onBackground.copy(alpha = .4f)
                     },
-                    shape = shape,
+                    shape = shape
                 )
                 .clip(shape)
                 .clickable {
                     onClick()
                 },
-            contentAlignment = Alignment.CenterStart,
+            contentAlignment = Alignment.CenterStart
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         vertical = 8.dp,
-                        horizontal = 12.dp,
+                        horizontal = 12.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = currentTextState.text,
-                    style = textStyle,
+                    style = textStyle
                 )
                 if (enabled) {
                     Icon(
@@ -137,7 +137,7 @@ fun BloomDateBoxField(modifier: Modifier = Modifier, label: (@Composable () -> U
                             .padding(start = 8.dp)
                             .size(24.dp),
                         imageVector = Icons.Default.DateRange,
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
             }
@@ -148,7 +148,7 @@ fun BloomDateBoxField(modifier: Modifier = Modifier, label: (@Composable () -> U
                 text = currentTextState.error,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.End
             )
         }
     }

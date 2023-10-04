@@ -37,7 +37,7 @@ fun BloomCircleButton(modifier: Modifier = Modifier, icon: @Composable () -> Uni
             .clickable {
                 onClick()
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         icon()
     }

@@ -30,8 +30,8 @@ fun BloomButton(modifier: Modifier = Modifier, onClick: () -> Unit, shape: Shape
         onClick = onClick,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-        ),
+            containerColor = backgroundColor
+        )
     ) {
         content()
     }

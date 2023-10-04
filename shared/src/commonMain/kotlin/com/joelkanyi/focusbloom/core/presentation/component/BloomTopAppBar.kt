@@ -31,9 +31,9 @@ fun BloomTopAppBar(
     actions: (@Composable () -> Unit)? = null,
     navigationIcon: (@Composable () -> Unit)? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background
     ),
-    title: @Composable () -> Unit = {},
+    title: @Composable () -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,
@@ -50,6 +50,6 @@ fun BloomTopAppBar(
                 }
             }
         },
-        colors = colors,
+        colors = colors
     )
 }

@@ -38,17 +38,17 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: Task) -> Unit, onClickDelete: (task: Task) -> Unit, onClickPushToTomorrow: (task: Task) -> Unit, task: Task, onDismissRequest: () -> Unit, onClickMarkAsCompleted: (task: Task) -> Unit) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = bottomSheetState,
+        sheetState = bottomSheetState
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Option(
                 icon = Icons.Default.Edit,
                 text = "Edit Task",
                 onClick = {
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.EditCalendar,
@@ -56,7 +56,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickPushToTomorrow(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Done,
@@ -64,7 +64,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickMarkAsCompleted(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Delete,
@@ -72,7 +72,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickDelete(task)
                     onDismissRequest()
-                },
+                }
             )
             Option(
                 icon = Icons.Outlined.Close,
@@ -80,7 +80,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickCancel(task)
                     onDismissRequest()
-                },
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
         }

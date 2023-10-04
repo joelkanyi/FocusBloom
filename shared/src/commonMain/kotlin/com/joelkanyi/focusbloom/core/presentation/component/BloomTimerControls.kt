@@ -37,14 +37,14 @@ fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClick
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         IconButton(onClick = onClickReset) {
             Icon(
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.Replay,
                 contentDescription = "Reset Timer",
-                tint = MaterialTheme.colorScheme.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
 
@@ -68,13 +68,13 @@ fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClick
                         }
                     },
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             onClick = {
                 onClickAction(state)
             },
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary
         )
 
         IconButton(onClick = onClickNext) {
@@ -82,7 +82,7 @@ fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClick
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.SkipNext,
                 contentDescription = "Next Timer",
-                tint = MaterialTheme.colorScheme.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

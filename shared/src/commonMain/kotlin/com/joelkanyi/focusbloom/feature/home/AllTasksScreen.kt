@@ -57,7 +57,7 @@ class AllTasksScreen : Screen, KoinComponent {
         val screenModel = get<HomeScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background
         )
         val navigator = LocalNavigator.currentOrThrow
         val tasksState = screenModel.tasks.collectAsState().value
@@ -89,7 +89,7 @@ class AllTasksScreen : Screen, KoinComponent {
                     onClickMarkAsCompleted = {
                         screenModel.markAsCompleted(it)
                     },
-                    task = selectedTask,
+                    task = selectedTask
                 )
             }
         }
@@ -109,7 +109,7 @@ class AllTasksScreen : Screen, KoinComponent {
             },
             onClickTask = {
                 navigator.push(TaskProgressScreen(taskId = it.id))
-            },
+            }
         )
     }
 }
@@ -118,12 +118,12 @@ class AllTasksScreen : Screen, KoinComponent {
 @Composable
 fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickNavigateBack: () -> Unit, onClickTaskOptions: (task: Task) -> Unit, onClickTask: (task: Task) -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
     ) {
         when (tasksState) {
             is TasksState.Loading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
@@ -137,21 +137,21 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 IconButton(onClick = onClickNavigateBack) {
                                     Icon(
                                         imageVector = Icons.Outlined.ArrowBack,
-                                        contentDescription = "Back",
+                                        contentDescription = "Back"
                                     )
                                 }
-                            },
+                            }
                         ) {
                             Text(text = "Today's Tasks (${tasks.size})")
                         }
-                    },
+                    }
                 ) { paddingValues ->
                     LazyColumn(
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(tasks) {
                             TaskCard(
@@ -162,7 +162,7 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 focusSessions = it.focusSessions,
                                 sessionTime = sessionTime,
                                 shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime,
+                                longBreakTime = longBreakTime
                             )
                         }
                     }

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class TasksRepositoryImpl(
-    bloomDatabase: BloomDatabase,
+    bloomDatabase: BloomDatabase
 ) : TasksRepository {
     private val dbQuery = bloomDatabase.taskQueries
     override fun getTasks(): Flow<List<Task>> {
@@ -73,7 +73,7 @@ class TasksRepositoryImpl(
                 consumedLongBreakTime = it.consumedLongBreakTime,
                 inProgressTask = it.inProgressTask,
                 currentCycle = it.currentCycle,
-                active = it.active,
+                active = it.active
             )
         }
     }
@@ -94,7 +94,7 @@ class TasksRepositoryImpl(
 /*                focusTime = it.focusTime,
                 shortBreakTime = it.shortBreakTime,
                 longBreakTime = it.longBreakTime,*/
-                active = it.active,
+                active = it.active
             )
         }
     }

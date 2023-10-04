@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class StatisticsScreenModel(
     private val tasksRepository: TasksRepository,
-    settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository
 ) : ScreenModel {
     val hourFormat = settingsRepository.getHourFormat()
         .map {
@@ -37,7 +37,7 @@ class StatisticsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     val sessionTime = settingsRepository.getSessionTime()
@@ -47,21 +47,21 @@ class StatisticsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
+            initialValue = null
         )
 
     val tasks = tasksRepository.getTasks()
@@ -74,7 +74,7 @@ class StatisticsScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
+            initialValue = emptyList()
         )
 
     fun deleteTask(task: Task) {

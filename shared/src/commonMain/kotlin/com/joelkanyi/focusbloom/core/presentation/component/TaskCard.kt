@@ -66,8 +66,8 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                 focusSessions = focusSessions,
                 sessionTime = sessionTime,
                 shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime,
-            ),
+                longBreakTime = longBreakTime
+            )
         )
     }
     Card(
@@ -75,38 +75,38 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
             .fillMaxWidth(),
         onClick = {
             onClick(task)
-        },
+        }
     ) {
         Column(
             modifier = Modifier
                 .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(.85f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
                         text = task.name,
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
+                            fontSize = 16.sp
                         ),
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                     if (task.description != null) {
                         Text(
                             text = task.description,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -116,7 +116,7 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                             onShowTaskOption(task)
                         },
                     imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "Task Options",
+                    contentDescription = "Task Options"
                 )
             }
 
@@ -124,7 +124,7 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Text(
@@ -132,13 +132,13 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                             withStyle(
                                 style = SpanStyle(
                                     fontWeight = FontWeight.SemiBold,
-                                    fontSize = 18.sp,
-                                ),
+                                    fontSize = 18.sp
+                                )
                             ) {
                                 append("${task.currentCycle}")
                             }
                             append("/${task.focusSessions}")
-                        },
+                        }
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -147,19 +147,19 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                             focusSessions = focusSessions,
                             sessionTime = sessionTime,
                             shortBreakTime = shortBreakTime,
-                            longBreakTime = longBreakTime,
+                            longBreakTime = longBreakTime
                         )
                         } minutes",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = prettyTimeDifference(
                             start = task.start,
                             end = end,
-                            timeFormat = hourFormat,
+                            timeFormat = hourFormat
                         ),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
                 if (task.completed) {
@@ -167,7 +167,7 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                         modifier = Modifier
                             .size(48.dp),
                         painter = painterResource("ic_complete.xml"),
-                        contentDescription = "Task Options",
+                        contentDescription = "Task Options"
                     )
                 } else {
                     Box(
@@ -175,12 +175,12 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                             .size(48.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center,
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Filled.PlayArrow,
                             contentDescription = "Task Options",
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }

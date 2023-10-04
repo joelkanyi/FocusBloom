@@ -107,7 +107,7 @@ data class PositionedTask(
     val end: LocalTime,
     val col: Int = 0,
     val colSpan: Int = 1,
-    val colTotal: Int = 1,
+    val colTotal: Int = 1
 )
 
 sealed class ScheduleSize {
@@ -118,7 +118,7 @@ sealed class ScheduleSize {
 }
 
 class TaskDataModifier(
-    private val positionedTask: PositionedTask,
+    private val positionedTask: PositionedTask
 ) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?) = positionedTask
 }
@@ -132,7 +132,7 @@ fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBre
                 focusSessions = task.focusSessions,
                 sessionTime = sessionTime,
                 shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime,
+                longBreakTime = longBreakTime
             )
             val startDate = task.start.date
             val endDate = end.date
@@ -143,8 +143,8 @@ fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBre
                         SplitType.None,
                         task.start.date,
                         task.start.time,
-                        end.time,
-                    ),
+                        end.time
+                    )
                 )
             } else {
                 val days = differenceBetweenDays(startDate, endDate)
@@ -164,7 +164,7 @@ fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBre
                             end.time
                         } else {
                             max()
-                        },
+                        }
                     )
                 }
                 splitTasks
@@ -268,7 +268,7 @@ fun LocalDateTime.dateTimeToString(): String {
 fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
     return LocalDateTime(
         date,
-        LocalTime(hour, minute),
+        LocalTime(hour, minute)
     )
 }
 
@@ -371,13 +371,13 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
         weeks += "${
         week.first().month.name.lowercase().capitalize(Locale.current).substring(
             0,
-            3,
+            3
         )
         } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
             " - ${
             week.last().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
-                3,
+                3
             )
             } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
@@ -483,7 +483,7 @@ fun Task.durationInMinutes(focusSessions: Int, sessionTime: Int, shortBreakTime:
         focusSessions = focusSessions,
         sessionTime = sessionTime,
         shortBreakTime = shortBreakTime,
-        longBreakTime = longBreakTime,
+        longBreakTime = longBreakTime
     )
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }

@@ -1,5 +1,3 @@
-
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -58,7 +56,7 @@ subprojects {
             ktlint().userData(mapOf("disabled_rules" to "filename"))
             licenseHeaderFile(
                 rootProject.file("${project.rootDir}/spotless/copyright.kt"),
-                "^(package|object|import|interface)",
+                "^(package|object|import|interface)"
             )
             trimTrailingWhitespace()
             endWithNewline()

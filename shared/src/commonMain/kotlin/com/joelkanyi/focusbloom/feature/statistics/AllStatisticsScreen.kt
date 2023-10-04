@@ -55,7 +55,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
         val screenModel = get<StatisticsScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background,
+            navBarColor = MaterialTheme.colorScheme.background
         )
         val navigator = LocalNavigator.currentOrThrow
         val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
@@ -84,7 +84,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
             },
             onClickCancel = {
                 screenModel.openTaskOptions(it)
-            },
+            }
         )
     }
 }
@@ -101,7 +101,7 @@ fun AllStatisticsScreenContent(
     onClickDelete: (task: Task) -> Unit,
     onClickCancel: (task: Task) -> Unit,
     showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit,
+    onShowTaskOption: (task: Task) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -111,20 +111,20 @@ fun AllStatisticsScreenContent(
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = "Back"
                         )
                     }
-                },
+                }
             ) {
                 Text(text = "Tasks History")
             }
-        },
+        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             tasks.forEach { (date, tasks) ->
                 stickyHeader {
@@ -136,8 +136,8 @@ fun AllStatisticsScreenContent(
                         text = date.prettyFormat(),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                        ),
+                            fontSize = 16.sp
+                        )
                     )
                 }
                 items(tasks) {
@@ -153,7 +153,7 @@ fun AllStatisticsScreenContent(
                         onClickDelete = onClickDelete,
                         onClickCancel = onClickCancel,
                         showTaskOption = showTaskOption,
-                        onShowTaskOption = onShowTaskOption,
+                        onShowTaskOption = onShowTaskOption
                     )
                 }
             }

@@ -39,21 +39,21 @@ fun Option(icon: ImageVector, text: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(
             modifier = Modifier,
             imageVector = icon,
             contentDescription = text,
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
         Text(
             modifier = Modifier,
             text = text,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-            ),
+                fontSize = 16.sp
+            )
         )
     }
 }
