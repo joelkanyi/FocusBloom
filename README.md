@@ -73,7 +73,6 @@ To run the application on iPhone device/simulator:
 - [ ] Work on Notifications: To remind you of upcoming and overdue tasks
 - [ ] Reminders: Sounds for breaks and work sessions
 - [ ] Fix Calendar: it is not working as expected
-- [ ] Add sound effects: for breaks and work sessions
 - [ ] Add web platform: to enable users to use the app on the web
 - [ ] Implement device synchronization: to enable users to sync their data across devices(Desktop, Android and iOS)
 - [ ] Write tests
