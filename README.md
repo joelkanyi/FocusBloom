@@ -31,11 +31,11 @@ The app is shared between Android, iOS and Desktop. The shared code is written i
 ### Modules
 - shared:
   - contains all the shared code between the platforms
-- android: contains the android app
+- android:
   - contains the android app
-- ios: contains the ios app
+- ios:
   - contains the ios app 
-- desktop: contains the desktop app
+- desktop:
   - contains the desktop app 
 
 ## Built with
