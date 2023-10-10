@@ -27,7 +27,7 @@ FocusBloom is a Kotlin Multiplatform app that helps users enhance their producti
 <img src="art/dsk_screen3.png"/>
 
 ## Architecture
-The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. Shared code, written in Kotlin, is compiled to JVM bytecode for Android with Kotlin/JVM and to native binaries for iOS and Desktop with Kotlin/Native.
+The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. Shared code, written in Kotlin, is compiled to JVM bytecode for Android and Desktop with Kotlin/JVM and to native binaries for iOS with Kotlin/Native.
 ### Modules
 - shared:
   - contains all the shared code between the platforms
