@@ -22,7 +22,7 @@ voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
 spotless = "5.17.1"
-ktlint = "11.6.0"
+ktlint = "11.6.1"
 accompanist-systemUIController = "0.30.1"
 
 [plugins]
