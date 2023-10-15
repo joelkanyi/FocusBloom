@@ -45,7 +45,6 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.joelkanyi.focusbloom.core.presentation.component.BloomNavigationRailBar
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
-import com.joelkanyi.focusbloom.core.presentation.theme.PrimaryColor
 import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
 
 class MainScreen : Screen {
@@ -154,7 +153,7 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onBackground
-                    },
+                    }
                 )
             }
         }
