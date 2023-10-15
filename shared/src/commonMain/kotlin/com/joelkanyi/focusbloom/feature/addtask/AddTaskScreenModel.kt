@@ -25,14 +25,19 @@ import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
+import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
+import com.joelkanyi.focusbloom.core.utils.today
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 
 class AddTaskScreenModel(
     settingsRepository: SettingsRepository,
@@ -76,12 +81,46 @@ class AddTaskScreenModel(
     val focusSessions = _focusSessions.asStateFlow()
     fun incrementFocusSessions() {
         _focusSessions.value++
+        setEndTime(
+            calculateFromFocusSessions(
+                focusSessions = focusSessions.value,
+                sessionTime = sessionTime.value ?: 25,
+                shortBreakTime = shortBreakTime.value ?: 5,
+                longBreakTime = longBreakTime.value ?: 15,
+                currentLocalDateTime = LocalDateTime(
+                    year = taskDate.value.year,
+                    month = taskDate.value.month,
+                    dayOfMonth = taskDate.value.dayOfMonth,
+                    hour = startTime.value.hour,
+                    minute = startTime.value.minute
+                )
+            )
+        )
     }
 
     fun decrementFocusSessions() {
         if (_focusSessions.value > 0) {
             _focusSessions.value--
+            setEndTime(
+                calculateFromFocusSessions(
+                    focusSessions = focusSessions.value,
+                    sessionTime = sessionTime.value ?: 25,
+                    shortBreakTime = shortBreakTime.value ?: 5,
+                    longBreakTime = longBreakTime.value ?: 15,
+                    currentLocalDateTime = LocalDateTime(
+                        year = taskDate.value.year,
+                        month = taskDate.value.month,
+                        dayOfMonth = taskDate.value.dayOfMonth,
+                        hour = startTime.value.hour,
+                        minute = startTime.value.minute
+                    )
+                )
+            )
         }
+    }
+
+    fun setFocusSessions(sessions: Int) {
+        _focusSessions.value = sessions
     }
 
     private val _taskName = mutableStateOf("")
@@ -102,6 +141,24 @@ class AddTaskScreenModel(
         _selectedOption.value = option
     }
 
+    private val _taskDate = MutableStateFlow(today())
+    val taskDate = _taskDate.asStateFlow()
+    fun setTaskDate(date: LocalDateTime) {
+        _taskDate.value = date
+    }
+
+    private val _startTime = MutableStateFlow(today().time)
+    val startTime = _startTime.asStateFlow()
+    fun setStartTime(time: LocalTime) {
+        _startTime.value = time
+    }
+
+    private val _endTime = MutableStateFlow(today().time)
+    val endTime = _endTime.asStateFlow()
+    fun setEndTime(time: LocalTime) {
+        _endTime.value = time
+    }
+
     private val _showStartTimeInputDialog = MutableStateFlow(false)
     val showStartTimeInputDialog = _showStartTimeInputDialog.asStateFlow()
     fun setShowStartTimeInputDialog(show: Boolean) {
@@ -117,12 +174,75 @@ class AddTaskScreenModel(
     fun addTask(task: Task) {
         coroutineScope.launch {
             tasksRepository.addTask(task)
-            _focusSessions.value = 0
-            _taskName.value = ""
-            _taskDescription.value = ""
-            _selectedOption.value = taskTypes.last()
-            _showStartTimeInputDialog.value = false
+            reset()
             _eventsFlow.trySend(UiEvents.ShowSnackbar("Task added!"))
+        }
+    }
+
+    private fun reset() {
+        setFocusSessions(1)
+        setTaskName("")
+        setTaskDescription("")
+        setSelectedOption(taskTypes.last())
+        setTaskDate(today())
+        setStartTime(today().time)
+        setEndTime(today().time)
+        setTask(null)
+        _showStartTimeInputDialog.value = false
+    }
+
+    private fun setTask(task: Task?) {
+        _task.value = task
+    }
+
+    private val _task = MutableStateFlow<Task?>(null)
+    val task = _task.asStateFlow()
+    fun getTask(taskId: Int?) {
+        coroutineScope.launch {
+            if (taskId != null) {
+                tasksRepository.getTask(taskId).collectLatest {
+                    _task.value = it
+                    prefillFields(it)
+                }
+            } else {
+                reset()
+            }
+        }
+    }
+
+    private fun prefillFields(it: Task?) {
+        setTaskName(it?.name ?: "")
+        setTaskDescription(it?.description ?: "")
+        setSelectedOption(
+            taskTypes.firstOrNull { taskType ->
+                taskType.name == it?.type
+            } ?: taskTypes.last()
+        )
+        setFocusSessions(it?.focusSessions ?: 1)
+        setTaskDate(it?.date ?: today())
+        setStartTime(it?.start?.time ?: today().time)
+        setEndTime(
+            calculateFromFocusSessions(
+                focusSessions = it?.focusSessions ?: 1,
+                sessionTime = sessionTime.value ?: 25,
+                shortBreakTime = shortBreakTime.value ?: 5,
+                longBreakTime = longBreakTime.value ?: 15,
+                currentLocalDateTime = LocalDateTime(
+                    year = it?.date?.year ?: today().year,
+                    month = it?.date?.month ?: today().month,
+                    dayOfMonth = it?.date?.dayOfMonth ?: today().dayOfMonth,
+                    hour = it?.start?.time?.hour ?: today().time.hour,
+                    minute = it?.start?.time?.minute ?: today().time.minute
+                )
+            )
+        )
+    }
+
+    fun updateTask(task: Task) {
+        coroutineScope.launch {
+            tasksRepository.updateTask(task)
+            reset()
+            _eventsFlow.trySend(UiEvents.NavigateBack)
         }
     }
 }
