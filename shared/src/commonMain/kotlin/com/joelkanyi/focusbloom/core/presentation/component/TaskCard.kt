@@ -59,16 +59,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
-fun TaskCard(
-    task: Task,
-    focusSessions: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
-    hourFormat: Int,
-    onClick: (task: Task) -> Unit,
-    onShowTaskOption: (task: Task) -> Unit
-) {
+fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, hourFormat: Int, onClick: (task: Task) -> Unit, onShowTaskOption: (task: Task) -> Unit) {
     val end by remember {
         mutableStateOf(
             task.start.calculateEndTime(

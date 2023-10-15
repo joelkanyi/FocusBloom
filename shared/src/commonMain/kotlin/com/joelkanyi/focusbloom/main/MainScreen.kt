@@ -67,7 +67,7 @@ class MainScreen : Screen {
                         navRailItems = listOf(
                             BloomTab.HomeTab,
                             BloomTab.CalendarTab,
-                            BloomTab.AddTaskTab,
+                            BloomTab.AddTaskTab(),
                             BloomTab.StatisticsTab,
                             BloomTab.SettingsTab
                         )
@@ -92,7 +92,7 @@ class MainScreen : Screen {
                                 .size(42.dp),
                             containerColor = MaterialTheme.colorScheme.primary,
                             onClick = {
-                                tabNavigator.current = BloomTab.AddTaskTab
+                                tabNavigator.current = BloomTab.AddTaskTab()
                             },
                             elevation = FloatingActionButtonDefaults.elevation(
                                 defaultElevation = 0.dp
@@ -148,7 +148,12 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     } else {
                         it
                     },
-                    contentDescription = tab.options.title
+                    contentDescription = tab.options.title,
+                    tint = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    }
                 )
             }
         }

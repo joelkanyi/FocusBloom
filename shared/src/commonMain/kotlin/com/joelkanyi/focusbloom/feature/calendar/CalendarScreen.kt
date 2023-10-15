@@ -312,14 +312,7 @@ fun CalendarScreenContent(
 }
 
 @Composable
-fun BasicTask(
-    hourFormat: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
-    positionedTask: PositionedTask,
-    modifier: Modifier = Modifier
-) {
+fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, positionedTask: PositionedTask, modifier: Modifier = Modifier) {
     val task = positionedTask.task
     val end by remember {
         mutableStateOf(

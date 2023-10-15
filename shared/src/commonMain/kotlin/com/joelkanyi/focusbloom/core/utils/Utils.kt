@@ -51,10 +51,7 @@ fun differenceBetweenMinutes(minTime: LocalTime, maxTime: LocalTime): Int {
     return (maxTime.hour - minTime.hour) * 60
 }
 
-fun differenceBetweenDays(
-    minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-): Int {
+fun differenceBetweenDays(minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date, maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date): Int {
     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
     return (maxDate.dayOfMonth - minDate.dayOfMonth)
 }
@@ -128,12 +125,7 @@ class TaskDataModifier(
 
 fun Modifier.taskData(positionedTask: PositionedTask) = this.then(TaskDataModifier(positionedTask))
 
-fun splitTasks(
-    tasks: List<Task>,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int
-): List<PositionedTask> {
+fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): List<PositionedTask> {
     return tasks
         .map { task ->
             val end = task.start.calculateEndTime(
@@ -248,13 +240,7 @@ fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
         .toLocalDateTime(TimeZone.currentSystemDefault())
 }
 
-fun calculateFromFocusSessions(
-    focusSessions: Int,
-    sessionTime: Int = 25,
-    shortBreakTime: Int = 5,
-    longBreakTime: Int = 15,
-    currentLocalDateTime: LocalDateTime
-): LocalTime {
+fun calculateFromFocusSessions(focusSessions: Int, sessionTime: Int = 25, shortBreakTime: Int = 5, longBreakTime: Int = 15, currentLocalDateTime: LocalDateTime): LocalTime {
     return if (focusSessions <= 0) {
         currentLocalDateTime.time
     } else {
@@ -346,10 +332,7 @@ fun getThisWeek(): List<LocalDate> {
     return dates
 }
 
-fun getPreviousWeek(
-    firstDateOfNextWeek: LocalDate = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).date
-): List<LocalDate> {
+fun getPreviousWeek(firstDateOfNextWeek: LocalDate = today().date): List<LocalDate> {
     /**
      * From Monday to Sunday
      */
@@ -495,12 +478,7 @@ fun Int.timeFormat(): String {
     }
 }
 
-fun Task.durationInMinutes(
-    focusSessions: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int
-): Int {
+fun Task.durationInMinutes(focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): Int {
     val end = start.calculateEndTime(
         focusSessions = focusSessions,
         sessionTime = sessionTime,
@@ -603,12 +581,7 @@ fun String.pickFirstName(): String {
     return this.split(" ").first()
 }
 
-fun LocalDateTime.calculateEndTime(
-    focusSessions: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int
-): LocalDateTime {
+fun LocalDateTime.calculateEndTime(focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): LocalDateTime {
     val totalSessionTimeMinutes = sessionTime * focusSessions
     val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)
     val totalLongBreakTimeMinutes = longBreakTime * (focusSessions / 4)

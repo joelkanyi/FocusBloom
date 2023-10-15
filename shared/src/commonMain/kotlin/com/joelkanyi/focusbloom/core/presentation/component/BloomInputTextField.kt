@@ -93,15 +93,7 @@ fun BloomInputTextField(
 }
 
 @Composable
-fun BloomDateBoxField(
-    modifier: Modifier = Modifier,
-    label: (@Composable () -> Unit)? = null,
-    enabled: Boolean = true,
-    currentTextState: TextFieldState,
-    onClick: () -> Unit,
-    textStyle: TextStyle = MaterialTheme.typography.titleSmall,
-    shape: CornerBasedShape = MaterialTheme.shapes.small
-) {
+fun BloomDateBoxField(modifier: Modifier = Modifier, label: (@Composable () -> Unit)? = null, enabled: Boolean = true, currentTextState: TextFieldState, onClick: () -> Unit, textStyle: TextStyle = MaterialTheme.typography.titleSmall, shape: CornerBasedShape = MaterialTheme.shapes.small) {
     Column {
         if (label != null) {
             label()

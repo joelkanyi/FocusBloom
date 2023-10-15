@@ -76,7 +76,8 @@ import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -138,13 +139,15 @@ data class TaskProgressScreen(
         )
         LaunchedEffect(key1 = Unit) {
             screenModel.getTask(taskId)
-            Timer.eventsFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvents.ShowSnackbar -> {
-                        snackbarHostState.showSnackbar(event.message)
-                    }
+            withContext(Dispatchers.Main.immediate) {
+                Timer.eventsFlow.collect { event ->
+                    when (event) {
+                        is UiEvents.ShowSnackbar -> {
+                            snackbarHostState.showSnackbar(event.message)
+                        }
 
-                    else -> {}
+                        else -> {}
+                    }
                 }
             }
         }
@@ -385,12 +388,7 @@ fun FocusTimeScreenContent(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SuccessfulCompletionOfTask(
-    modifier: Modifier = Modifier,
-    title: String,
-    message: String,
-    onConfirm: () -> Unit
-) {
+fun SuccessfulCompletionOfTask(modifier: Modifier = Modifier, title: String, message: String, onConfirm: () -> Unit) {
     AlertDialog(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,

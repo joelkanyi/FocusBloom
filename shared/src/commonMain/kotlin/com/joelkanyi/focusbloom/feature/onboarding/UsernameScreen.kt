@@ -53,8 +53,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.main.MainScreen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -69,13 +70,15 @@ class UsernameScreen : Screen, KoinComponent {
         val keyboardController = LocalSoftwareKeyboardController.current
 
         LaunchedEffect(Unit) {
-            onboadingViewModel.eventsFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvents.Navigation -> {
-                        navigator.replaceAll(MainScreen())
-                    }
+            withContext(Dispatchers.Main.immediate) {
+                onboadingViewModel.eventsFlow.collect { event ->
+                    when (event) {
+                        is UiEvents.Navigation -> {
+                            navigator.replaceAll(MainScreen())
+                        }
 
-                    else -> {}
+                        else -> {}
+                    }
                 }
             }
         }
@@ -94,12 +97,7 @@ class UsernameScreen : Screen, KoinComponent {
 }
 
 @Composable
-fun UsernameScreenContent(
-    username: String,
-    typeWriterTextParts: List<String>,
-    onUsernameChange: (String) -> Unit,
-    onClickContinue: () -> Unit
-) {
+fun UsernameScreenContent(username: String, typeWriterTextParts: List<String>, onUsernameChange: (String) -> Unit, onClickContinue: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(16.dp)
@@ -168,12 +166,7 @@ fun UsernameScreenContent(
 }
 
 @Composable
-private fun UsernameTextField(
-    modifier: Modifier,
-    name: String,
-    onNameChange: (String) -> Unit,
-    onClickDone: () -> Unit
-) {
+private fun UsernameTextField(modifier: Modifier, name: String, onNameChange: (String) -> Unit, onClickDone: () -> Unit) {
     TextField(
         modifier = modifier,
         value = name,

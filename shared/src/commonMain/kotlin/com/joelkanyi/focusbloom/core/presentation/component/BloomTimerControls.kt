@@ -33,13 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 
 @Composable
-fun BloomTimerControls(
-    modifier: Modifier = Modifier,
-    state: TimerState,
-    onClickReset: () -> Unit,
-    onClickNext: () -> Unit,
-    onClickAction: (state: TimerState) -> Unit
-) {
+fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClickReset: () -> Unit, onClickNext: () -> Unit, onClickAction: (state: TimerState) -> Unit) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

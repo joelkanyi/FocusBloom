@@ -28,12 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BloomCircleButton(
-    modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit,
-    onClick: () -> Unit,
-    color: Color
-) {
+fun BloomCircleButton(modifier: Modifier = Modifier, icon: @Composable () -> Unit, onClick: () -> Unit, color: Color) {
     Box(
         modifier = modifier
             .size(48.dp)

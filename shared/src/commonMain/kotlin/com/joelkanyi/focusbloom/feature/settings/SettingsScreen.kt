@@ -315,16 +315,7 @@ fun SettingsScreenContent(
 }
 
 @Composable
-fun FocusSessionsSetting(
-    focusSessionMinutes: Int,
-    onFocusSessionMinutesChange: (String) -> Unit,
-    shortBreakMinutes: Int,
-    onShortBreakMinutesChange: (String) -> Unit,
-    longBreakMinutes: Int,
-    onLongBreakMinutesChange: (String) -> Unit,
-    onExpand: (String) -> Unit,
-    expanded: (String) -> Boolean
-) {
+fun FocusSessionsSetting(focusSessionMinutes: Int, onFocusSessionMinutesChange: (String) -> Unit, shortBreakMinutes: Int, onShortBreakMinutesChange: (String) -> Unit, longBreakMinutes: Int, onLongBreakMinutesChange: (String) -> Unit, onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
     SettingCard(
         onExpand = {
             onExpand("Focus Sessions")
@@ -385,13 +376,7 @@ fun FocusSessionsSetting(
 }
 
 @Composable
-fun TimeSetting(
-    onExpand: (String) -> Unit,
-    expanded: (String) -> Boolean,
-    hourFormats: List<String>,
-    selectedHourFormat: Int,
-    onHourFormatChange: (Int) -> Unit
-) {
+fun TimeSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean, hourFormats: List<String>, selectedHourFormat: Int, onHourFormatChange: (Int) -> Unit) {
     SettingCard(
         onExpand = {
             onExpand("Time")
@@ -602,12 +587,7 @@ fun NotificationsSetting(onExpand: (String) -> Unit, expanded: (String) -> Boole
 }
 
 @Composable
-private fun SoundSelection(
-    options: List<String>,
-    title: String,
-    selectedOption: String,
-    onSelectOption: (String) -> Unit
-) {
+private fun SoundSelection(options: List<String>, title: String, selectedOption: String, onSelectOption: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -645,12 +625,7 @@ fun AutoStartSession(title: String, checked: Boolean, onCheckedChange: (Boolean)
 }
 
 @Composable
-fun SessionTime(
-    modifier: Modifier = Modifier,
-    title: String,
-    currentValue: String,
-    onValueChange: (String) -> Unit
-) {
+fun SessionTime(modifier: Modifier = Modifier, title: String, currentValue: String, onValueChange: (String) -> Unit) {
     BloomInputTextField(
         modifier = modifier,
         textStyle = MaterialTheme.typography.bodyMedium.copy(
@@ -673,14 +648,7 @@ fun SessionTime(
 }
 
 @Composable
-fun SettingCard(
-    title: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-    onExpand: () -> Unit,
-    expanded: Boolean
-) {
+fun SettingCard(title: String, icon: ImageVector, modifier: Modifier = Modifier, content: @Composable () -> Unit, onExpand: () -> Unit, expanded: Boolean) {
     Card(modifier = modifier) {
         Column(
             modifier = modifier.padding(16.dp)
@@ -726,14 +694,7 @@ fun SettingCard(
 }
 
 @Composable
-fun ColorsSelection(
-    onSelectSessionColor: (Long) -> Unit,
-    onSelectShortBreakColor: (Long) -> Unit,
-    onSelectLongBreakColor: (Long) -> Unit,
-    currentSessionColor: Long,
-    currentShortBreakColor: Long,
-    currentLongBreakColor: Long
-) {
+fun ColorsSelection(onSelectSessionColor: (Long) -> Unit, onSelectShortBreakColor: (Long) -> Unit, onSelectLongBreakColor: (Long) -> Unit, currentSessionColor: Long, currentShortBreakColor: Long, currentLongBreakColor: Long) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -767,12 +728,7 @@ fun ColorCard(modifier: Modifier = Modifier, color: Long, onClick: (Long) -> Uni
 }
 
 @Composable
-fun ColorsDialog(
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    onSelectColor: (Long) -> Unit,
-    title: String
-) {
+fun ColorsDialog(modifier: Modifier = Modifier, onDismiss: () -> Unit, onSelectColor: (Long) -> Unit, title: String) {
     AlertDialog(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,

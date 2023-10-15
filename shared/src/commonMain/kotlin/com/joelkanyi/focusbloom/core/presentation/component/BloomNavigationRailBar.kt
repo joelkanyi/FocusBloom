@@ -31,11 +31,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
 
 @Composable
-fun BloomNavigationRailBar(
-    modifier: Modifier = Modifier,
-    tabNavigator: TabNavigator,
-    navRailItems: List<Tab>
-) {
+fun BloomNavigationRailBar(modifier: Modifier = Modifier, tabNavigator: TabNavigator, navRailItems: List<Tab>) {
     NavigationRail(
         modifier = modifier.fillMaxHeight().alpha(0.95F),
         containerColor = MaterialTheme.colorScheme.surface,

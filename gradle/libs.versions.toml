@@ -3,7 +3,7 @@ componentsResources = "1.5.1"
 koalaplotCore = "0.4.0-dev1"
 korau = "4.0.6"
 kotlin = "1.9.10"
-gradle = "8.1.1"
+gradle = "8.1.2"
 kotlinxCoroutinesSwing = "1.7.3"
 detekt = "1.19.0"
 gradleVersionUpdate = "0.46.0"
@@ -22,7 +22,7 @@ voyager = "1.0.0-rc07"
 compose-activity = "1.7.2"
 koin-compose = "1.0.4"
 spotless = "5.17.1"
-ktlint = "11.3.1"
+ktlint = "11.6.1"
 accompanist-systemUIController = "0.30.1"
 
 [plugins]
@@ -68,3 +68,4 @@ voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", v
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }
+lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version = "2.6.2" }

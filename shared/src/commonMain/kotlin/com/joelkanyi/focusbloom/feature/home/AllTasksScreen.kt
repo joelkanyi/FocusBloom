@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
@@ -68,6 +70,7 @@ class AllTasksScreen : Screen, KoinComponent {
         val selectedTask = screenModel.selectedTask.collectAsState().value
         val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
         val bottomSheetState = rememberModalBottomSheetState()
+        val tabNavigator = LocalTabNavigator.current
 
         if (openBottomSheet) {
             if (selectedTask != null) {
@@ -88,6 +91,9 @@ class AllTasksScreen : Screen, KoinComponent {
                     },
                     onClickMarkAsCompleted = {
                         screenModel.markAsCompleted(it)
+                    },
+                    onClickEditTask = {
+                        tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
                     },
                     task = selectedTask
                 )
@@ -116,16 +122,7 @@ class AllTasksScreen : Screen, KoinComponent {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllTasksScreenContent(
-    tasksState: TasksState,
-    timeFormat: Int,
-    sessionTime: Int,
-    shortBreakTime: Int,
-    longBreakTime: Int,
-    onClickNavigateBack: () -> Unit,
-    onClickTaskOptions: (task: Task) -> Unit,
-    onClickTask: (task: Task) -> Unit
-) {
+fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickNavigateBack: () -> Unit, onClickTaskOptions: (task: Task) -> Unit, onClickTask: (task: Task) -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

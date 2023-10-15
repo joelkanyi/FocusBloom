@@ -55,8 +55,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
@@ -101,6 +103,7 @@ fun HomeScreen() {
     val timerState = Timer.timerState.collectAsState().value
     val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
+    val tabNavigator = LocalTabNavigator.current
 
     if (openBottomSheet) {
         if (selectedTask != null) {
@@ -121,6 +124,9 @@ fun HomeScreen() {
                 },
                 onClickMarkAsCompleted = {
                     screenModel.markAsCompleted(it)
+                },
+                onClickEditTask = {
+                    tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
                 },
                 task = selectedTask
             )
@@ -366,14 +372,7 @@ private fun HomeScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActiveTaskCard(
-    task: Task,
-    timerState: TimerState,
-    tickingTime: Long,
-    onClick: (task: Task) -> Unit,
-    onClickTaskOptions: (task: Task) -> Unit,
-    containerColor: Color
-) {
+fun ActiveTaskCard(task: Task, timerState: TimerState, tickingTime: Long, onClick: (task: Task) -> Unit, onClickTaskOptions: (task: Task) -> Unit, containerColor: Color) {
     Card(
         onClick = {
             onClick(task)

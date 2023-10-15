@@ -43,16 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TaskProgress(
-    content: String? = null,
-    percentage: Float,
-    radius: Dp = 20.dp,
-    mainColor: Color,
-    counterColor: Color,
-    strokeWidth: Dp = 8.dp,
-    animationDuration: Int = 800,
-    animDelay: Int = 0
-) {
+fun TaskProgress(content: String? = null, percentage: Float, radius: Dp = 20.dp, mainColor: Color, counterColor: Color, strokeWidth: Dp = 8.dp, animationDuration: Int = 800, animDelay: Int = 0) {
     var animationPlayed by remember {
         mutableStateOf(false)
     }

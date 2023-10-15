@@ -61,10 +61,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-internal fun FocusBloomTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+internal fun FocusBloomTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val autoColors = if (useDarkTheme) DarkColors else LightColors
 
     MaterialTheme(

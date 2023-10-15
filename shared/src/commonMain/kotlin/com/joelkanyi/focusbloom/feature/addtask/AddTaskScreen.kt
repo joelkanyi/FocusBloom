@@ -72,8 +72,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.TaskType
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
@@ -83,6 +82,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDateBoxField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomIncrementer
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
+import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.theme.SuccessColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
@@ -92,7 +92,9 @@ import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -102,7 +104,9 @@ import org.koin.compose.rememberKoinInject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun AddTaskScreen() {
+fun AddTaskScreen(
+    taskId: Int? = null
+) {
     val screenModel: AddTaskScreenModel = rememberKoinInject()
 
     StatusBarColors(
@@ -111,7 +115,6 @@ fun AddTaskScreen() {
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val navigator = LocalNavigator.currentOrThrow
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
     val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
@@ -122,6 +125,11 @@ fun AddTaskScreen() {
     val selectedTaskType = screenModel.selectedOption.collectAsState().value
     val taskName = screenModel.taskName.value
     val taskDescription = screenModel.taskDescription.value
+    val taskToUpdate = screenModel.task.collectAsState().value
+    val taskDate = screenModel.taskDate.collectAsState().value
+    val startTime = screenModel.startTime.collectAsState().value
+    val endTime = screenModel.endTime.collectAsState().value
+    val tabNavigator = LocalTabNavigator.current
 
     val startTimeState = rememberTimePickerState(
         initialHour = today().hour,
@@ -139,33 +147,48 @@ fun AddTaskScreen() {
                 shortBreakTime = shortBreakTime,
                 longBreakTime = longBreakTime,
                 currentLocalDateTime = LocalDateTime(
-                    year = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().year,
-                    month = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().month,
-                    dayOfMonth = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().dayOfMonth,
-                    hour = startTimeState.hour,
-                    minute = startTimeState.minute
+                    year = taskDate.year,
+                    month = taskDate.month,
+                    dayOfMonth = taskDate.dayOfMonth,
+                    hour = startTime.hour,
+                    minute = startTime.minute
                 )
             )
         )
     }
 
     LaunchedEffect(key1 = true) {
-        screenModel.eventsFlow.collectLatest { event ->
-            when (event) {
-                is UiEvents.ShowSnackbar -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.message
-                    )
-                    datePickerState.setSelection(
-                        Clock.System.now().toEpochMilliseconds()
-                    )
-                }
+        screenModel.getTask(taskId)
+        screenModel.setEndTime(
+            calculateFromFocusSessions(
+                focusSessions = focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+                currentLocalDateTime = LocalDateTime(
+                    year = taskDate.year,
+                    month = taskDate.month,
+                    dayOfMonth = taskDate.dayOfMonth,
+                    hour = startTime.hour,
+                    minute = startTime.minute
+                )
+            )
+        )
+        withContext(Dispatchers.Main.immediate) {
+            screenModel.eventsFlow.collect { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message
+                        )
+                    }
 
-                UiEvents.NavigateBack -> {
-                    navigator.pop()
-                }
+                    UiEvents.NavigateBack -> {
+                        tabNavigator.current = BloomTab.HomeTab
+                    }
 
-                else -> {}
+                    else -> {}
+                }
             }
         }
     }
@@ -176,6 +199,25 @@ fun AddTaskScreen() {
             state = startTimeState,
             onDismiss = {
                 screenModel.setShowStartTimeInputDialog(false)
+            },
+            onConfirmStartTime = {
+                screenModel.setStartTime(it)
+                screenModel.setEndTime(
+                    calculateFromFocusSessions(
+                        focusSessions = focusSessions,
+                        sessionTime = sessionTime,
+                        shortBreakTime = shortBreakTime,
+                        longBreakTime = longBreakTime,
+                        currentLocalDateTime = LocalDateTime(
+                            year = taskDate.year,
+                            month = taskDate.month,
+                            dayOfMonth = taskDate.dayOfMonth,
+                            hour = it.hour,
+                            minute = it.minute
+                        )
+                    )
+                )
+                screenModel.setShowStartTimeInputDialog(false)
             }
         )
     }
@@ -184,6 +226,10 @@ fun AddTaskScreen() {
         TaskDatePicker(
             datePickerState = datePickerState,
             dismiss = {
+                screenModel.setShowTaskDatePickerDialog(false)
+            },
+            onConfirmDate = {
+                screenModel.setTaskDate(it)
                 screenModel.setShowTaskDatePickerDialog(false)
             }
         )
@@ -197,9 +243,10 @@ fun AddTaskScreen() {
         selectedTaskType = selectedTaskType,
         taskName = taskName,
         taskDescription = taskDescription,
-        datePickerState = datePickerState,
+        taskDate = taskDate,
+        startTime = startTime,
+        endTime = endTime,
         focusSessions = focusSessions,
-        startTimePickerState = startTimeState,
         onTaskNameChange = {
             screenModel.setTaskName(it)
         },
@@ -223,37 +270,56 @@ fun AddTaskScreen() {
         },
         onClickAddTask = {
             keyboardController?.hide()
-            screenModel.addTask(
-                task = Task(
-                    name = taskName,
-                    description = taskDescription,
-                    start = toLocalDateTime(
-                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                        hour = startTimeState.hour,
-                        minute = startTimeState.minute
-                    ),
-                    /*end = toLocalDateTime(
-                        date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date,
-                        hour = calculatedFocusTime.hour,
-                        minute = calculatedFocusTime.minute,
-                    ),*/
-                    color = selectedTaskType.color,
-                    current = "Focus",
-                    date = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime(),
-                    focusSessions = focusSessions,
-                    completed = false,
-                    /*focusTime = sessionTime.toMillis(),
-                    shortBreakTime = shortBreakTime.toMillis(),
-                    longBreakTime = longBreakTime.toMillis(),*/
-                    type = selectedTaskType.name,
-                    consumedFocusTime = 0L,
-                    consumedShortBreakTime = 0L,
-                    consumedLongBreakTime = 0L,
-                    inProgressTask = false,
-                    currentCycle = 0,
-                    active = false
+            if (taskToUpdate != null) {
+                screenModel.updateTask(
+                    task = Task(
+                        id = taskToUpdate.id,
+                        name = taskName,
+                        description = taskDescription,
+                        start = toLocalDateTime(
+                            date = taskDate.date,
+                            hour = startTime.hour,
+                            minute = startTime.minute
+                        ),
+                        color = selectedTaskType.color,
+                        current = "Focus",
+                        date = taskDate,
+                        focusSessions = focusSessions,
+                        completed = false,
+                        type = selectedTaskType.name,
+                        consumedFocusTime = 0L,
+                        consumedShortBreakTime = 0L,
+                        consumedLongBreakTime = 0L,
+                        inProgressTask = false,
+                        currentCycle = 0,
+                        active = false
+                    )
                 )
-            )
+            } else {
+                screenModel.addTask(
+                    task = Task(
+                        name = taskName,
+                        description = taskDescription,
+                        start = toLocalDateTime(
+                            date = taskDate.date,
+                            hour = startTime.hour,
+                            minute = startTime.minute
+                        ),
+                        color = selectedTaskType.color,
+                        current = "Focus",
+                        date = taskDate,
+                        focusSessions = focusSessions,
+                        completed = false,
+                        type = selectedTaskType.name,
+                        consumedFocusTime = 0L,
+                        consumedShortBreakTime = 0L,
+                        consumedLongBreakTime = 0L,
+                        inProgressTask = false,
+                        currentCycle = 0,
+                        active = false
+                    )
+                )
+            }
         }
     )
 }
@@ -277,8 +343,11 @@ private fun AddTaskScreenContent(
     onClickAddTask: () -> Unit,
     onClickPickStartTime: () -> Unit,
     onClickPickDate: () -> Unit,
-    startTimePickerState: TimePickerState,
-    datePickerState: DatePickerState
+    // startTimePickerState: TimePickerState,
+    // datePickerState: DatePickerState,
+    taskDate: LocalDateTime,
+    startTime: LocalTime,
+    endTime: LocalTime
 ) {
     Scaffold(
         snackbarHost = {
@@ -412,7 +481,7 @@ private fun AddTaskScreenContent(
                         )
                     },
                     currentTextState = TextFieldState(
-                        text = datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime().date.toString()
+                        text = taskDate.date.toString()
                     ),
                     onClick = onClickPickDate,
                     textStyle = MaterialTheme.typography.titleSmall.copy(
@@ -450,10 +519,7 @@ private fun AddTaskScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TimeComponent(
-                        time = LocalTime(
-                            startTimePickerState.hour,
-                            startTimePickerState.minute
-                        ),
+                        time = startTime,
                         hourFormat = hourFormat,
                         title = "Start Time",
                         icon = "start_time.xml",
@@ -471,7 +537,7 @@ private fun AddTaskScreenContent(
                     )
 
                     TimeComponent(
-                        time = calculatedFocusTime,
+                        time = endTime,
                         hourFormat = hourFormat,
                         title = "End Time",
                         icon = "end_time.xml",
@@ -527,15 +593,7 @@ private fun AddTaskScreenContent(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun TimeComponent(
-    title: String,
-    icon: String,
-    iconColor: Color,
-    iconSize: Int = 32,
-    time: LocalTime,
-    hourFormat: Int,
-    onClick: () -> Unit
-) {
+private fun TimeComponent(title: String, icon: String, iconColor: Color, iconSize: Int = 32, time: LocalTime, hourFormat: Int, onClick: () -> Unit) {
     Column(
         modifier = Modifier.clickable {
             onClick()
@@ -574,12 +632,7 @@ private fun TimeComponent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimerInputDialog(
-    title: String,
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    state: TimePickerState
-) {
+fun TimerInputDialog(title: String, modifier: Modifier = Modifier, onDismiss: () -> Unit, state: TimePickerState, onConfirmStartTime: (LocalTime) -> Unit) {
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = true),
         modifier = modifier,
@@ -606,7 +659,15 @@ fun TimerInputDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = onDismiss,
+                onClick = {
+                    onConfirmStartTime(
+                        LocalTime(
+                            hour = state.hour,
+                            minute = state.minute
+                        )
+                    )
+                    onDismiss()
+                },
                 content = {
                     Text(text = "OK")
                 }
@@ -617,7 +678,7 @@ fun TimerInputDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDatePicker(datePickerState: DatePickerState, dismiss: () -> Unit) {
+fun TaskDatePicker(datePickerState: DatePickerState, dismiss: () -> Unit, onConfirmDate: (LocalDateTime) -> Unit) {
     DatePickerDialog(
         onDismissRequest = { dismiss() },
         dismissButton = {
@@ -628,8 +689,7 @@ fun TaskDatePicker(datePickerState: DatePickerState, dismiss: () -> Unit) {
         confirmButton = {
             TextButton(
                 onClick = {
-                    datePickerState
-                        .selectedDateMillis
+                    onConfirmDate(datePickerState.selectedDateMillis.selectedDateMillisToLocalDateTime())
                     dismiss()
                 }
             ) {
@@ -642,13 +702,7 @@ fun TaskDatePicker(datePickerState: DatePickerState, dismiss: () -> Unit) {
 }
 
 @Composable
-fun DashedDivider(
-    thickness: Dp,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    phase: Float = 10f,
-    intervals: FloatArray = floatArrayOf(10f, 10f),
-    modifier: Modifier
-) {
+fun DashedDivider(thickness: Dp, color: Color = MaterialTheme.colorScheme.onSurfaceVariant, phase: Float = 10f, intervals: FloatArray = floatArrayOf(10f, 10f), modifier: Modifier) {
     Canvas(
         modifier = modifier
     ) {

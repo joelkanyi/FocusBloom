@@ -31,12 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BloomIncrementer(
-    modifier: Modifier = Modifier,
-    onClickRemove: () -> Unit,
-    onClickAdd: () -> Unit,
-    currentValue: Int
-) {
+fun BloomIncrementer(modifier: Modifier = Modifier, onClickRemove: () -> Unit, onClickAdd: () -> Unit, currentValue: Int) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
