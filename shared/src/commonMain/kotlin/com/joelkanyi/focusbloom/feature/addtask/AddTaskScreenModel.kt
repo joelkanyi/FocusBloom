@@ -175,6 +175,7 @@ class AddTaskScreenModel(
         coroutineScope.launch {
             tasksRepository.addTask(task)
             reset()
+            setEndTime(today().time)
             _eventsFlow.trySend(UiEvents.ShowSnackbar("Task added!"))
         }
     }
@@ -186,7 +187,7 @@ class AddTaskScreenModel(
         setSelectedOption(taskTypes.last())
         setTaskDate(today())
         setStartTime(today().time)
-        setEndTime(today().time)
+        // setEndTime(today().time)
         setTask(null)
         _showStartTimeInputDialog.value = false
     }
@@ -242,6 +243,7 @@ class AddTaskScreenModel(
         coroutineScope.launch {
             tasksRepository.updateTask(task)
             reset()
+            setEndTime(today().time)
             _eventsFlow.trySend(UiEvents.NavigateBack)
         }
     }
