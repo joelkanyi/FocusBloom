@@ -158,8 +158,22 @@ fun AddTaskScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        println("Task ID: $taskId")
         screenModel.getTask(taskId)
+        screenModel.setEndTime(
+            calculateFromFocusSessions(
+                focusSessions = focusSessions,
+                sessionTime = sessionTime,
+                shortBreakTime = shortBreakTime,
+                longBreakTime = longBreakTime,
+                currentLocalDateTime = LocalDateTime(
+                    year = taskDate.year,
+                    month = taskDate.month,
+                    dayOfMonth = taskDate.dayOfMonth,
+                    hour = startTime.hour,
+                    minute = startTime.minute
+                )
+            )
+        )
         withContext(Dispatchers.Main.immediate) {
             screenModel.eventsFlow.collect { event ->
                 when (event) {

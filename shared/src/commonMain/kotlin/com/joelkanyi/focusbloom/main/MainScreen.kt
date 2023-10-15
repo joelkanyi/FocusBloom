@@ -148,7 +148,12 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     } else {
                         it
                     },
-                    contentDescription = tab.options.title
+                    contentDescription = tab.options.title,
+                    tint = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    }
                 )
             }
         }
