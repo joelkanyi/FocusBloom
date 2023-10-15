@@ -35,7 +35,7 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: Task) -> Unit, onClickDelete: (task: Task) -> Unit, onClickPushToTomorrow: (task: Task) -> Unit, task: Task, onDismissRequest: () -> Unit, onClickMarkAsCompleted: (task: Task) -> Unit) {
+fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: Task) -> Unit, onClickDelete: (task: Task) -> Unit, onClickPushToTomorrow: (task: Task) -> Unit, task: Task, onDismissRequest: () -> Unit, onClickMarkAsCompleted: (task: Task) -> Unit, onClickEditTask: (task: Task) -> Unit) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState
@@ -47,6 +47,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 icon = Icons.Default.Edit,
                 text = "Edit Task",
                 onClick = {
+                    onClickEditTask(task)
                     onDismissRequest()
                 }
             )

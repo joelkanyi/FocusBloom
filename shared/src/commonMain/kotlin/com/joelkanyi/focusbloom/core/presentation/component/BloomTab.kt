@@ -120,7 +120,9 @@ internal sealed class BloomTab {
         }
     }
 
-    internal object AddTaskTab : Tab {
+    internal data class AddTaskTab(
+        val taskId: Int? = null
+    ) : Tab {
         @OptIn(ExperimentalResourceApi::class)
         override val options: TabOptions
             @Composable
@@ -139,7 +141,7 @@ internal sealed class BloomTab {
 
         @Composable
         override fun Content() {
-            AddTaskScreen()
+            AddTaskScreen(taskId)
         }
     }
 }

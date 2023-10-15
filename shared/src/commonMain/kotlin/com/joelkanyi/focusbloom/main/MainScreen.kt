@@ -67,7 +67,7 @@ class MainScreen : Screen {
                         navRailItems = listOf(
                             BloomTab.HomeTab,
                             BloomTab.CalendarTab,
-                            BloomTab.AddTaskTab,
+                            BloomTab.AddTaskTab(),
                             BloomTab.StatisticsTab,
                             BloomTab.SettingsTab
                         )
@@ -92,7 +92,7 @@ class MainScreen : Screen {
                                 .size(42.dp),
                             containerColor = MaterialTheme.colorScheme.primary,
                             onClick = {
-                                tabNavigator.current = BloomTab.AddTaskTab
+                                tabNavigator.current = BloomTab.AddTaskTab()
                             },
                             elevation = FloatingActionButtonDefaults.elevation(
                                 defaultElevation = 0.dp
