@@ -72,7 +72,7 @@ class AddTaskScreenModel(
             initialValue = null
         )
 
-    private val _focusSessions = MutableStateFlow(0)
+    private val _focusSessions = MutableStateFlow(1)
     val focusSessions = _focusSessions.asStateFlow()
     fun incrementFocusSessions() {
         _focusSessions.value++
