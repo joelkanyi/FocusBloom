@@ -15,6 +15,14 @@
  */
 package com.joelkanyi.focusbloom.di
 
+import com.joelkanyi.focusbloom.core.data.adapter.colorAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.consumedFocusTimeAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.consumedLongBreakTimeAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.consumedShortBreakTimeAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.currentAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.currentCycleAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.focusSessionsAdapter
+import com.joelkanyi.focusbloom.core.data.adapter.idAdapter
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
@@ -31,6 +39,7 @@ import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreenModel
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
 import com.russhwolf.settings.ExperimentalSettingsApi
+import database.TaskEntity
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -41,7 +50,17 @@ fun commonModule() = module {
      */
     single<BloomDatabase> {
         BloomDatabase(
-            driver = get<DatabaseDriverFactory>().createDriver()
+            driver = get<DatabaseDriverFactory>().createDriver(),
+            taskEntityAdapter = TaskEntity.Adapter(
+                idAdapter = idAdapter,
+                colorAdapter = colorAdapter,
+                consumedFocusTimeAdapter = consumedFocusTimeAdapter,
+                consumedLongBreakTimeAdapter = consumedLongBreakTimeAdapter,
+                consumedShortBreakTimeAdapter = consumedShortBreakTimeAdapter,
+                currentAdapter = currentAdapter,
+                currentCycleAdapter = currentCycleAdapter,
+                focusSessionsAdapter = focusSessionsAdapter
+            )
         )
     }
     /**

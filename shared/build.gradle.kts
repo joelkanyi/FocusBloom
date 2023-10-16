@@ -139,8 +139,9 @@ kotlin {
 }
 
 sqldelight {
-    database("BloomDatabase") {
-        packageName = "com.joelkanyi.focusbloom.database"
-        sourceFolders = listOf("sqldelight")
+    databases {
+        create("BloomDatabase") {
+            packageName.set("com.joelkanyi.focusbloom.database")
+        }
     }
 }
