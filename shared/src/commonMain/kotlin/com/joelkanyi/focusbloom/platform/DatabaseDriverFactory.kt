@@ -15,7 +15,7 @@
  */
 package com.joelkanyi.focusbloom.platform
 
-import com.squareup.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlDriver
 
 expect class DatabaseDriverFactory {
     fun createDriver(): SqlDriver

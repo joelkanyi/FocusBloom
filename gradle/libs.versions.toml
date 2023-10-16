@@ -13,8 +13,7 @@ kotlinxSerializationJson = "1.6.0"
 kotlinxDateTime = "0.4.1"
 material3WindowSizeClassMultiplatform = "0.3.1"
 napier = "2.6.1"
-primitiveAdapters = "2.0.0"
-sqlDelight = "1.5.5"
+sqlDelight = "2.0.0"
 multiplatformSettings = "0.8.1"
 compose = "1.5.10-beta01"
 core-library-desugaring = "2.0.3"
@@ -36,7 +35,7 @@ android-library = { id = "com.android.library", version.ref = "gradle" }
 android-application = { id = "com.android.application", version.ref = "gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-sqlDelight-plugin = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
@@ -49,12 +48,13 @@ korau = { module = "com.soywiz.korlibs.korau:korau", version.ref = "korau" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "primitiveAdapters" }
-sqlDelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqlDelight" }
-sqlDelight-coroutine = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sqlDelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqlDelight" }
-sqlDelight-native = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqlDelight" }
-sqlDelight-JVM = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }
+sqlDelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+sqlDelight-coroutine = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqlDelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqlDelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
+sqlDelight-JVM = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+sqlDelight-driver-sqljs = { module = "app.cash.sqldelight:sqljs-driver", version = "2.0.0-alpha05" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinX-dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
 multiplatformSettings-noArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }

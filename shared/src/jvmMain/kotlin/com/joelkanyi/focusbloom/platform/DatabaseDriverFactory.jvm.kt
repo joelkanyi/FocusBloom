@@ -15,9 +15,9 @@
  */
 package com.joelkanyi.focusbloom.platform
 
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.joelkanyi.focusbloom.database.BloomDatabase
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 
 actual class DatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
