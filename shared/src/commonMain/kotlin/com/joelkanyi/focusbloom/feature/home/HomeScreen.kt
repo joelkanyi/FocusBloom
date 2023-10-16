@@ -349,7 +349,7 @@ private fun HomeScreenContent(
                                             .padding(horizontal = 24.dp)
                                             .fillMaxWidth(),
                                         text = if (tasks.isEmpty()) {
-                                            "To add a task, simply tap the '+' button at the bottom of the screen. Fill in the task details and tap 'Save'."
+                                            "To add a task, simply tap the '+' button on the screen. Fill in the task details and tap 'Save'."
                                         } else if (tasks.all { it.completed }) {
                                             "Now, take some time to have fun, recharge, maybe do some exercise, and consider opening your calendar to plan for tomorrow's tasks. Keep up the fantastic work!"
                                         } else {
