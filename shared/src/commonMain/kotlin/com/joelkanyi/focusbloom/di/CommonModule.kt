@@ -67,7 +67,7 @@ fun commonModule() = module {
      * Multiplatform-Settings
      */
     single<PreferenceManager> {
-        PreferenceManager(observableSettings = get())
+        PreferenceManager(settings = get())
     }
 
     /**
