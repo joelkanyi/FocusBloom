@@ -16,15 +16,13 @@
 package com.joelkanyi.focusbloom.platform
 
 import android.content.Context
-import com.russhwolf.settings.AndroidSettings
-import com.russhwolf.settings.ExperimentalSettingsApi
-import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.SharedPreferencesSettings
 
 actual class MultiplatformSettingsWrapper(private val context: Context) {
-    @OptIn(ExperimentalSettingsApi::class)
-    actual fun createSettings(): ObservableSettings {
-        val sharedPreferences =
-            context.getSharedPreferences("bloom_preferences", Context.MODE_PRIVATE)
-        return AndroidSettings(delegate = sharedPreferences)
+
+    actual fun createSettings(): Settings {
+        val delegate = context.getSharedPreferences("bloom_preferences", Context.MODE_PRIVATE)
+        return SharedPreferencesSettings(delegate)
     }
 }
