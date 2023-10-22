@@ -53,13 +53,14 @@ import androidx.compose.ui.unit.sp
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
+import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
-fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, hourFormat: Int, onClick: (task: Task) -> Unit, onShowTaskOption: (task: Task) -> Unit) {
+fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, hourFormat: Int, onClick: (task: Task) -> Unit, onShowTaskOption: (task: Task) -> Unit, type: String) {
     val end by remember {
         mutableStateOf(
             task.start.calculateEndTime(
@@ -161,6 +162,15 @@ fun TaskCard(task: Task, focusSessions: Int, sessionTime: Int, shortBreakTime: I
                         ),
                         style = MaterialTheme.typography.bodySmall
                     )
+                    if (type == "overdue") {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = task.date.date.prettyFormat(),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    }
                 }
                 if (task.completed) {
                     Image(

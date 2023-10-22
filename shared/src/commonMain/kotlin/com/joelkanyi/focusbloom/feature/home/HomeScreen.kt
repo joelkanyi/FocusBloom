@@ -16,6 +16,7 @@
 package com.joelkanyi.focusbloom.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +71,7 @@ import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
 import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
+import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.feature.taskprogress.Timer
@@ -121,6 +122,11 @@ fun HomeScreen() {
     if (openBottomSheet) {
         if (selectedTask != null) {
             TaskOptionsBottomSheet(
+                type = if (selectedTask.date < today()) {
+                    "overdue"
+                } else {
+                    "today"
+                },
                 bottomSheetState = bottomSheetState,
                 onClickCancel = {
                     screenModel.openBottomSheet(false)
@@ -134,6 +140,9 @@ fun HomeScreen() {
                 },
                 onClickPushToTomorrow = {
                     screenModel.pushToTomorrow(it)
+                },
+                onClickPushToToday = {
+                    screenModel.pushToToday(it)
                 },
                 onClickMarkAsCompleted = {
                     screenModel.markAsCompleted(it)
@@ -159,10 +168,15 @@ fun HomeScreen() {
         longBreakTime = longBreakTime,
         username = username,
         onClickTask = {
-            navigator.push(TaskProgressScreen(taskId = it.id))
+            if (it.date < today()) {
+                screenModel.selectTask(it)
+                screenModel.openBottomSheet(true)
+            } else {
+                navigator.push(TaskProgressScreen(taskId = it.id))
+            }
         },
         onClickSeeAllTasks = {
-            navigator.push(AllTasksScreen())
+            navigator.push(AllTasksScreen(it))
         },
         onClickTaskOptions = {
             screenModel.selectTask(it)
@@ -196,7 +210,7 @@ private fun HomeScreenContent(
     longBreakTime: Int,
     username: String,
     onClickTask: (task: Task) -> Unit,
-    onClickSeeAllTasks: () -> Unit,
+    onClickSeeAllTasks: (type: String) -> Unit,
     onClickTaskOptions: (task: Task) -> Unit,
     focusTimeColor: Long?,
     shortBreakColor: Long?,
@@ -218,9 +232,10 @@ private fun HomeScreenContent(
 
                 is TasksState.Success -> {
                     val tasks = tasksState.tasks.sortedByDescending { it.completed.not() }
+                    val overdueTasks = tasksState.overdueTasks
                     val activeTask = tasks.firstOrNull { it.active }
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item {
@@ -277,6 +292,53 @@ private fun HomeScreenContent(
                                 TodayTaskProgressCard(tasks = tasks)
                             }
                         }
+                        if (overdueTasks.isNotEmpty()) {
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "Overdue Tasks (${overdueTasks.size})",
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    )
+                                    if (overdueTasks.size > 3) {
+                                        Text(
+                                            modifier = Modifier.clickable {
+                                                onClickSeeAllTasks("overdue")
+                                            },
+                                            text = "See All",
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = MaterialTheme.colorScheme.error,
+                                                fontSize = 16.sp
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
+                            items(
+                                items = tasksState.overdueTasks.take(3),
+                                key = { it.id }
+                            ) {
+                                TaskCard(
+                                    type = "overdue",
+                                    task = it,
+                                    onClick = onClickTask,
+                                    onShowTaskOption = onClickTaskOptions,
+                                    hourFormat = hourFormat,
+                                    focusSessions = it.focusSessions,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime
+                                )
+                            }
+                        }
                         if (tasks.isNotEmpty()) {
                             item {
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -292,23 +354,28 @@ private fun HomeScreenContent(
                                         )
                                     )
                                     if (tasks.size > 3) {
-                                        TextButton(onClick = onClickSeeAllTasks) {
-                                            Text(
-                                                text = "See All",
-                                                style = MaterialTheme.typography.labelLarge.copy(
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    fontSize = 16.sp
-                                                )
+                                        Text(
+                                            modifier = Modifier.clickable {
+                                                onClickSeeAllTasks("today")
+                                            },
+                                            text = "See All",
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                fontSize = 16.sp
                                             )
-                                        }
+                                        )
                                     }
                                 }
                             }
                         }
                         if (tasks.all { it.completed }.not()) {
-                            items(tasks.take(3)) {
+                            items(
+                                items = tasks.take(3),
+                                key = { it.id }
+                            ) {
                                 TaskCard(
+                                    type = "today",
                                     task = it,
                                     onClick = onClickTask,
                                     onShowTaskOption = onClickTaskOptions,
