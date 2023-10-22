@@ -44,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -104,6 +105,18 @@ fun HomeScreen() {
     val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
     val tabNavigator = LocalTabNavigator.current
+    val remindersOn = screenModel.remindersOn.collectAsState().value
+
+    LaunchedEffect(Unit) {
+        when (remindersOn) {
+            ReminderState.Loading -> {}
+            is ReminderState.Success -> {
+                if (remindersOn.reminderOn == null) {
+                    screenModel.toggleReminder(1)
+                }
+            }
+        }
+    }
 
     if (openBottomSheet) {
         if (selectedTask != null) {

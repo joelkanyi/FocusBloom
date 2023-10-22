@@ -42,7 +42,6 @@ kotlin {
             }
         }
     }
-
     jvm()
 
     iosX64()
@@ -105,6 +104,7 @@ kotlin {
                 implementation(libs.koalaplot.core)
 
                 implementation(libs.korau)
+                implementation(libs.stdlib)
             }
         }
 
@@ -112,13 +112,29 @@ kotlin {
             dependencies {
                 implementation(libs.sqlDelight.android)
                 implementation(libs.accompanist.systemUIController)
+                implementation(libs.core)
+                implementation(libs.compose.activity)
             }
+        }
+
+        val nativeMain by creating {
+            dependsOn(commonMain)
         }
 
         val jvmMain by getting {
             dependencies {
                 implementation(libs.sqlDelight.jvm)
                 implementation(libs.kotlinx.coroutines.swing)
+
+                // Toaster for Windows
+                implementation(libs.toast4j)
+
+                // JNA for Linux
+                implementation("de.jangassen:jfa:1.2.0") {
+                    // not excluding this leads to a strange error during build:
+                    // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
+                    exclude(group = "net.java.dev.jna", module = "jna")
+                }
             }
         }
 

@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.joelkanyi.focusbloom.di
+package com.joelkanyi.focusbloom.platform
 
-import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import com.joelkanyi.focusbloom.platform.MultiplatformSettingsWrapper
-import com.joelkanyi.focusbloom.platform.NotificationsManager
-import com.russhwolf.settings.ExperimentalSettingsApi
-import org.koin.core.module.Module
-import org.koin.dsl.module
-
-@OptIn(ExperimentalSettingsApi::class)
-actual fun platformModule(): Module = module {
-    single { MultiplatformSettingsWrapper().createSettings() }
-    single { DatabaseDriverFactory() }
-    single { NotificationsManager() }
+expect class NotificationsManager {
+    fun showNotification(
+        title: String,
+        description: String
+    )
 }

@@ -138,6 +138,7 @@ data class TaskProgressScreen(
             navBarColor = containerColor
         )
         LaunchedEffect(key1 = Unit) {
+            screenModel.getRemindersStatus()
             screenModel.getTask(taskId)
             withContext(Dispatchers.Main.immediate) {
                 Timer.eventsFlow.collect { event ->

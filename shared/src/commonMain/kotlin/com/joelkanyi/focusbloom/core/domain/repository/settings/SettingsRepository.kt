@@ -37,4 +37,6 @@ interface SettingsRepository {
     fun saveFocusColor(color: Long)
     fun saveUsername(value: String)
     fun getUsername(): Flow<String?>
+    fun remindersOn(): Flow<Int?>
+    fun toggleReminder(value: Int)
 }

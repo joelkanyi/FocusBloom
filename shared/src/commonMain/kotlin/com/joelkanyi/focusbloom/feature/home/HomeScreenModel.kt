@@ -33,7 +33,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class HomeScreenModel(
     private val tasksRepository: TasksRepository,
-    settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository
 ) : ScreenModel {
     private val _openBottomSheet = MutableStateFlow(false)
     val openBottomSheet = _openBottomSheet.asStateFlow()
@@ -71,6 +71,16 @@ class HomeScreenModel(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null
+        )
+
+    val remindersOn = settingsRepository.remindersOn()
+        .map {
+            ReminderState.Success(it)
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ReminderState.Loading
         )
 
     fun deleteTask(task: Task) {
@@ -167,9 +177,20 @@ class HomeScreenModel(
             started = SharingStarted.WhileSubscribed(),
             initialValue = null
         )
+
+    fun toggleReminder(value: Int) {
+        coroutineScope.launch {
+            settingsRepository.toggleReminder(value)
+        }
+    }
 }
 
 sealed class TasksState {
     data object Loading : TasksState()
     data class Success(val tasks: List<Task>) : TasksState()
+}
+
+sealed class ReminderState {
+    data object Loading : ReminderState()
+    data class Success(val reminderOn: Int?) : ReminderState()
 }

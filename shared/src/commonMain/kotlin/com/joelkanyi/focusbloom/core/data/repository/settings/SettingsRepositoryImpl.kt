@@ -97,4 +97,12 @@ class SettingsRepositoryImpl(
     override fun getUsername(): Flow<String?> {
         return preferenceManager.getString(key = PreferenceManager.USERNAME)
     }
+
+    override fun remindersOn(): Flow<Int?> {
+        return preferenceManager.getInt(key = PreferenceManager.NOTIFICATION_OPTION)
+    }
+
+    override fun toggleReminder(value: Int) {
+        preferenceManager.setInt(key = PreferenceManager.NOTIFICATION_OPTION, value = value)
+    }
 }

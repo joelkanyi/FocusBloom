@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.joelkanyi.focusbloom.di
+package com.joelkanyi.focusbloom.notification
 
-import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import com.joelkanyi.focusbloom.platform.MultiplatformSettingsWrapper
-import com.joelkanyi.focusbloom.platform.NotificationsManager
-import com.russhwolf.settings.ExperimentalSettingsApi
-import org.koin.core.module.Module
-import org.koin.dsl.module
+interface NotificationProvider {
+    /**
+     * true, if the [NotificationProvider] has been successfully initialized
+     * and is ready to show notifications. false otherwise
+     */
+    val available: Boolean
 
-@OptIn(ExperimentalSettingsApi::class)
-actual fun platformModule(): Module = module {
-    single { MultiplatformSettingsWrapper().createSettings() }
-    single { DatabaseDriverFactory() }
-    single { NotificationsManager() }
+    /**
+     * if [available] is false, contains a message explaining the problem
+     * as shown to the user
+     */
+    val errorMessage: String
+
+    fun init()
+    fun uninit()
+
+    fun sendNotification(title: String, description: String)
 }

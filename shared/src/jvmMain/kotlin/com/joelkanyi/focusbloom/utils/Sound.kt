@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.joelkanyi.focusbloom.di
+package com.joelkanyi.focusbloom.utils
 
-import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import com.joelkanyi.focusbloom.platform.MultiplatformSettingsWrapper
-import com.joelkanyi.focusbloom.platform.NotificationsManager
-import com.russhwolf.settings.ExperimentalSettingsApi
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.joelkanyi.focusbloom.utils.AudioUtils.play
 
-@OptIn(ExperimentalSettingsApi::class)
-actual fun platformModule(): Module = module {
-    single { MultiplatformSettingsWrapper().createSettings() }
-    single { DatabaseDriverFactory() }
-    single { NotificationsManager() }
+object Sound {
+    fun playSound(soundFile: String = "alarm.wav") {
+        try {
+            val sound = AudioUtils.loadAudioFromResource("/sound/$soundFile")
+                ?: throw Exception()
+            sound.play()
+        } catch (ex: Exception) {
+            println("Error while loading notification sound")
+        }
+    }
 }
