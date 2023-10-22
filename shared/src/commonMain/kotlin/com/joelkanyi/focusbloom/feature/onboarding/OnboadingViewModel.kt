@@ -40,6 +40,7 @@ class OnboadingViewModel(
     fun saveUsername() {
         coroutineScope.launch {
             settingsRepository.saveUsername(username.value.trim())
+            settingsRepository.toggleReminder(1)
             _eventsFlow.send(UiEvents.Navigation)
         }
     }

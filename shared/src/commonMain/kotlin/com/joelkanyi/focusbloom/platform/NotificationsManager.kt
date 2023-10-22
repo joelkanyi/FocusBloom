@@ -16,7 +16,7 @@
 package com.joelkanyi.focusbloom.platform
 
 expect class NotificationsManager {
-    fun showUpdateNotification(
+    fun showNotification(
         title: String,
         description: String
     )

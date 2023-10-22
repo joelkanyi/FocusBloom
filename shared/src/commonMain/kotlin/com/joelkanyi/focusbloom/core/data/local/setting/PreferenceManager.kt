@@ -56,6 +56,7 @@ class PreferenceManager constructor(private val settings: Settings) {
     fun getIntFlow(key: String) = observableSettings.getIntFlow(key = key, defaultValue = 0)
 
     companion object {
+        const val NOTIFICATION_OPTION = "notification_option_key"
         const val USERNAME = "username_key"
         const val SHORT_BREAK_COLOR = "short_break_color_key"
         const val LONG_BREAK_COLOR = "long_break_color_key"

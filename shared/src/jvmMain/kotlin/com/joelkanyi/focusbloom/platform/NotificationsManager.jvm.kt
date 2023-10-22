@@ -21,7 +21,7 @@ import com.joelkanyi.focusbloom.notification.windows.Toast4jNotificationProvider
 import com.joelkanyi.focusbloom.utils.Sound
 
 actual class NotificationsManager {
-    actual fun showUpdateNotification(title: String, description: String) {
+    actual fun showNotification(title: String, description: String) {
         Sound.playSound()
         val hostOs = System.getProperty("os.name")
         when {

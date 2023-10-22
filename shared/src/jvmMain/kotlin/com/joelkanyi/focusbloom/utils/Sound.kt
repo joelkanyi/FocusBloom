@@ -18,9 +18,9 @@ package com.joelkanyi.focusbloom.utils
 import com.joelkanyi.focusbloom.utils.AudioUtils.play
 
 object Sound {
-    fun playSound(soundFile: String = "simple_notification.wav") {
+    fun playSound(soundFile: String = "alarm.wav") {
         try {
-            val sound = AudioUtils.loadAudioFromResource("/audio/$soundFile")
+            val sound = AudioUtils.loadAudioFromResource("/sound/$soundFile")
                 ?: throw Exception()
             sound.play()
         } catch (ex: Exception) {

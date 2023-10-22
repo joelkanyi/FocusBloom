@@ -168,4 +168,18 @@ class SettingsScreenModel(
             started = SharingStarted.WhileSubscribed(),
             initialValue = null
         )
+
+    val remindersOn = settingsRepository.remindersOn()
+        .map { it }
+        .stateIn(
+            coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false
+        )
+
+    fun setReminders(value: Int) {
+        coroutineScope.launch {
+            settingsRepository.toggleReminder(value)
+        }
+    }
 }

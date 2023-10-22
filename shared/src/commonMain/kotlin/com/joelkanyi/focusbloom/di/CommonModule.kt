@@ -121,7 +121,8 @@ fun commonModule() = module {
     single<TaskProgressScreenModel> {
         TaskProgressScreenModel(
             settingsRepository = get(),
-            tasksRepository = get()
+            tasksRepository = get(),
+            notificationManager = get()
         )
     }
 

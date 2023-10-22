@@ -22,17 +22,20 @@ import platform.UserNotifications.UNNotificationPresentationOptionAlert
 import platform.UserNotifications.UNNotificationPresentationOptions
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationResponse
-import platform.UserNotifications.UNNotificationSound
 import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 import platform.darwin.NSObject
 
 actual class NotificationsManager {
-    actual fun showUpdateNotification(title: String, description: String) {
+    actual fun showNotification(title: String, description: String) {
         val content = UNMutableNotificationContent()
         content.setTitle(title)
         content.setBody(description)
-        content.setSound(UNNotificationSound.defaultSound())
+        /*content.setSound(
+            sound = UNNotificationSound.soundNamed(
+                "/sound/alarm.wav"
+            ),
+        )*/
 
         val uuid = NSUUID.UUID().UUIDString()
         val request = UNNotificationRequest.requestWithIdentifier(uuid, content, null)
