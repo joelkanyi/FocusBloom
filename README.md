@@ -69,15 +69,6 @@ To run the application on iPhone device/simulator:
 - Open `ios/iosApp.xcworkspace` in Xcode and run standard configuration
 - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
 
-## Todo
-- [ ] Work on Notifications: To remind you of upcoming and overdue tasks
-- [ ] Reminders: Sounds for breaks and work sessions
-- [ ] Fix Calendar: it is not working as expected
-- [ ] Add web platform: to enable users to use the app on the web
-- [ ] Implement device synchronization: to enable users to sync their data across devices(Desktop, Android and iOS)
-- [ ] Write tests
-
-
 ## License
 ```xml
 Copyright 2023 JoelKanyi

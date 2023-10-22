@@ -626,9 +626,15 @@ fun SessionTime(modifier: Modifier = Modifier, title: String, currentValue: Stri
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingCard(title: String, icon: ImageVector, modifier: Modifier = Modifier, content: @Composable () -> Unit, onExpand: () -> Unit, expanded: Boolean) {
-    Card(modifier = modifier) {
+    Card(
+        modifier = modifier,
+        onClick = {
+            onExpand()
+        }
+    ) {
         Column(
             modifier = modifier.padding(16.dp)
         ) {

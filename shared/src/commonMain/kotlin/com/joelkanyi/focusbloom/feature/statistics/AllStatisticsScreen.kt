@@ -140,7 +140,10 @@ fun AllStatisticsScreenContent(
                         )
                     )
                 }
-                items(tasks) {
+                items(
+                    items = tasks,
+                    key = { it.id }
+                ) {
                     HistoryCard(
                         modifier = Modifier
                             .fillMaxWidth()

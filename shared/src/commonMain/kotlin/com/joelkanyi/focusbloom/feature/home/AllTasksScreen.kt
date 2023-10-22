@@ -49,7 +49,9 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-class AllTasksScreen : Screen, KoinComponent {
+data class AllTasksScreen(
+    val type: String
+) : Screen, KoinComponent {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -73,6 +75,7 @@ class AllTasksScreen : Screen, KoinComponent {
         if (openBottomSheet) {
             if (selectedTask != null) {
                 TaskOptionsBottomSheet(
+                    type = type,
                     bottomSheetState = bottomSheetState,
                     onClickCancel = {
                         screenModel.openBottomSheet(false)
@@ -86,6 +89,9 @@ class AllTasksScreen : Screen, KoinComponent {
                     },
                     onClickPushToTomorrow = {
                         screenModel.pushToTomorrow(it)
+                    },
+                    onClickPushToToday = {
+                        screenModel.pushToToday(it)
                     },
                     onClickMarkAsCompleted = {
                         screenModel.markAsCompleted(it)
@@ -101,6 +107,7 @@ class AllTasksScreen : Screen, KoinComponent {
         }
 
         AllTasksScreenContent(
+            type = type,
             tasksState = tasksState,
             timeFormat = hourFormat,
             sessionTime = sessionTime,
@@ -122,7 +129,7 @@ class AllTasksScreen : Screen, KoinComponent {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickNavigateBack: () -> Unit, onClickTaskOptions: (task: Task) -> Unit, onClickTask: (task: Task) -> Unit) {
+fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickNavigateBack: () -> Unit, onClickTaskOptions: (task: Task) -> Unit, onClickTask: (task: Task) -> Unit, type: String) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -135,6 +142,7 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
 
             is TasksState.Success -> {
                 val tasks = tasksState.tasks
+                val overdueTasks = tasksState.overdueTasks
                 Scaffold(
                     topBar = {
                         BloomTopAppBar(
@@ -148,7 +156,14 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 }
                             }
                         ) {
-                            Text(text = "Today's Tasks (${tasks.size})")
+                            Text(
+                                text = "${
+                                if (type == "today") "Today's" else "Overdue"
+                                } Tasks (${
+                                if (type == "today") tasks.size else overdueTasks.size
+                                })",
+                                color = if (type == "today") MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.error
+                            )
                         }
                     }
                 ) { paddingValues ->
@@ -156,11 +171,15 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(tasks) {
+                        items(
+                            items = if (type == "today") tasks else overdueTasks,
+                            key = { it.id }
+                        ) {
                             TaskCard(
+                                type = type,
                                 task = it,
                                 hourFormat = timeFormat,
                                 onClick = onClickTask,

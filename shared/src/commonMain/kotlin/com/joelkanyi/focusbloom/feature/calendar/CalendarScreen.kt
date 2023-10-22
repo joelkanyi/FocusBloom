@@ -156,6 +156,7 @@ fun CalendarScreen() {
         if (openBottomSheet) {
             if (selectedTask != null) {
                 TaskOptionsBottomSheet(
+                    type = "calendar",
                     bottomSheetState = bottomSheetState,
                     onClickCancel = {
                         screenModel.openBottomSheet(false)
@@ -170,6 +171,7 @@ fun CalendarScreen() {
                     onClickPushToTomorrow = {
                         screenModel.pushToTomorrow(it)
                     },
+                    onClickPushToToday = {},
                     onClickMarkAsCompleted = {
                         screenModel.markAsCompleted(it)
                     },
@@ -357,6 +359,7 @@ fun CalendarScreenContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, positionedTask: PositionedTask, modifier: Modifier = Modifier, onShowTaskOption: (task: Task) -> Unit) {
     val task = positionedTask.task
@@ -392,7 +395,10 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
         ),
         colors = CardDefaults.cardColors(
             containerColor = Color(task.type.taskColor())
-        )
+        ),
+        onClick = {
+            onShowTaskOption(task)
+        }
     ) {
         Column(
             modifier = Modifier
