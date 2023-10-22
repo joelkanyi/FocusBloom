@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -111,6 +110,7 @@ fun SettingsScreen() {
     val currentLongBreakColor = screenModel.longBreakColor.collectAsState().value
     val currentSessionColor = screenModel.focusColor.collectAsState().value
     val showColorDialog = screenModel.showColorDialog.collectAsState().value
+    val remindersOn = screenModel.remindersOn.collectAsState().value
 
     SettingsScreenContent(
         darkTheme = darkTheme,
@@ -196,6 +196,16 @@ fun SettingsScreen() {
                     screenModel.setLongBreakColor(it)
                 }
             }
+        },
+        remindersOn = remindersOn == 1,
+        onRemindersChange = {
+            screenModel.setReminders(
+                if (it) {
+                    1
+                } else {
+                    0
+                }
+            )
         }
     )
 }
@@ -223,7 +233,9 @@ fun SettingsScreenContent(
     currentShortBreakColor: Long,
     currentLongBreakColor: Long,
     currentSessionColor: Long,
-    onSelectColor: (Long) -> Unit
+    onSelectColor: (Long) -> Unit,
+    remindersOn: Boolean,
+    onRemindersChange: (Boolean) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -270,7 +282,7 @@ fun SettingsScreenContent(
                     onHourFormatChange = onHourFormatChange
                 )
             }
-            item {
+            /*item {
                 SoundSetting(
                     expanded = { title ->
                         optionsOpened.contains(title)
@@ -279,7 +291,7 @@ fun SettingsScreenContent(
                         openOptions(title)
                     }
                 )
-            }
+            }*/
             item {
                 ThemeSetting(
                     expanded = { title ->
@@ -307,7 +319,9 @@ fun SettingsScreenContent(
                     },
                     onExpand = { title ->
                         openOptions(title)
-                    }
+                    },
+                    remindersOn = remindersOn,
+                    onRemindersChange = onRemindersChange
                 )
             }
         }
@@ -533,7 +547,7 @@ fun ThemeSetting(
 }
 
 @Composable
-fun NotificationsSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
+fun NotificationsSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean, remindersOn: Boolean, onRemindersChange: (Boolean) -> Unit) {
     SettingCard(
         onExpand = {
             onExpand("Notifications")
@@ -542,46 +556,11 @@ fun NotificationsSetting(onExpand: (String) -> Unit, expanded: (String) -> Boole
         title = "Notifications",
         icon = Icons.Outlined.Notifications,
         content = {
-            var selectedReminderType by remember {
-                mutableStateOf("Both")
-            }
-            var howManyMinutesToReminder by remember {
-                mutableStateOf("5")
-            }
-            Row {
-                Text(
-                    modifier = Modifier.fillMaxWidth(.4f),
-                    text = "Reminder"
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    BloomDropDown(
-                        options = listOf("Focus Session", "Break", "Both", "None"),
-                        selectedOption = TextFieldState(selectedReminderType),
-                        onOptionSelected = {
-                            selectedReminderType = it
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        BloomInputTextField(
-                            modifier = Modifier.weight(1f),
-                            value = TextFieldState(text = howManyMinutesToReminder),
-                            onValueChange = {
-                                howManyMinutesToReminder = it
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "min")
-                    }
-                }
-            }
+            AutoStartSession(
+                title = "Reminders",
+                checked = remindersOn,
+                onCheckedChange = onRemindersChange
+            )
         }
     )
 }
@@ -647,9 +626,15 @@ fun SessionTime(modifier: Modifier = Modifier, title: String, currentValue: Stri
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingCard(title: String, icon: ImageVector, modifier: Modifier = Modifier, content: @Composable () -> Unit, onExpand: () -> Unit, expanded: Boolean) {
-    Card(modifier = modifier) {
+    Card(
+        modifier = modifier,
+        onClick = {
+            onExpand()
+        }
+    ) {
         Column(
             modifier = modifier.padding(16.dp)
         ) {

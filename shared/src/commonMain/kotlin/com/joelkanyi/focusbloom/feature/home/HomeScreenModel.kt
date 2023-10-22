@@ -21,6 +21,7 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.core.utils.plusDays
+import com.joelkanyi.focusbloom.core.utils.today
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +34,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class HomeScreenModel(
     private val tasksRepository: TasksRepository,
-    settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository
 ) : ScreenModel {
     private val _openBottomSheet = MutableStateFlow(false)
     val openBottomSheet = _openBottomSheet.asStateFlow()
@@ -73,6 +74,16 @@ class HomeScreenModel(
             initialValue = null
         )
 
+    val remindersOn = settingsRepository.remindersOn()
+        .map {
+            ReminderState.Success(it)
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ReminderState.Loading
+        )
+
     fun deleteTask(task: Task) {
         coroutineScope.launch {
             tasksRepository.deleteTask(task.id)
@@ -102,6 +113,17 @@ class HomeScreenModel(
         }
     }
 
+    fun pushToToday(task: Task) {
+        coroutineScope.launch {
+            tasksRepository.updateTask(
+                task.copy(
+                    date = today(),
+                    start = today()
+                )
+            )
+        }
+    }
+
     fun markAsCompleted(task: Task) {
         coroutineScope.launch {
             tasksRepository.updateTaskCompleted(
@@ -122,11 +144,18 @@ class HomeScreenModel(
     val tasks = tasksRepository.getTasks()
         .map { tasks ->
             TasksState.Success(
-                tasks
+                tasks = tasks
                     .sortedBy { it.start }
                     .filter {
                         it.date.date == Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date // .minusDays(1)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                    },
+                overdueTasks = tasks
+                    .sortedBy { it.start }
+                    .filter {
+                        it.date.date < Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date &&
+                            !it.completed
                     }
             )
         }
@@ -167,9 +196,23 @@ class HomeScreenModel(
             started = SharingStarted.WhileSubscribed(),
             initialValue = null
         )
+
+    fun toggleReminder(value: Int) {
+        coroutineScope.launch {
+            settingsRepository.toggleReminder(value)
+        }
+    }
 }
 
 sealed class TasksState {
     data object Loading : TasksState()
-    data class Success(val tasks: List<Task>) : TasksState()
+    data class Success(
+        val tasks: List<Task>,
+        val overdueTasks: List<Task>
+    ) : TasksState()
+}
+
+sealed class ReminderState {
+    data object Loading : ReminderState()
+    data class Success(val reminderOn: Int?) : ReminderState()
 }

@@ -40,6 +40,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +50,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -76,7 +79,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.PositionedTask
 import com.joelkanyi.focusbloom.core.utils.ScheduleSize
@@ -100,6 +105,7 @@ import com.joelkanyi.focusbloom.core.utils.taskColor
 import com.joelkanyi.focusbloom.core.utils.taskData
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
+import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -112,7 +118,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen() {
     val screenModel: CalendarScreenModel = rememberKoinInject()
@@ -130,6 +136,11 @@ fun CalendarScreen() {
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
     val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
+    val selectedTask = screenModel.selectedTask.collectAsState().value
+    val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+    val bottomSheetState = rememberModalBottomSheetState()
+    val tabNavigator = LocalTabNavigator.current
+
     LaunchedEffect(key1 = tasks, block = {
         calendarPagerState.animateScrollToItem(
             index = calendarLocalDates().indexOf(selectedDay),
@@ -141,6 +152,37 @@ fun CalendarScreen() {
         val useDesktopSize = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
         val hourSize = if (useDesktopSize) 90.dp else 92.dp
         val daySize = if (useDesktopSize) this.maxWidth - 72.dp else this.maxWidth - 72.dp
+
+        if (openBottomSheet) {
+            if (selectedTask != null) {
+                TaskOptionsBottomSheet(
+                    type = "calendar",
+                    bottomSheetState = bottomSheetState,
+                    onClickCancel = {
+                        screenModel.openBottomSheet(false)
+                    },
+                    onClickDelete = {
+                        screenModel.deleteTask(it)
+                    },
+                    onDismissRequest = {
+                        screenModel.openBottomSheet(false)
+                        screenModel.selectTask(null)
+                    },
+                    onClickPushToTomorrow = {
+                        screenModel.pushToTomorrow(it)
+                    },
+                    onClickPushToToday = {},
+                    onClickMarkAsCompleted = {
+                        screenModel.markAsCompleted(it)
+                    },
+                    onClickEditTask = {
+                        tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
+                    },
+                    task = selectedTask
+                )
+            }
+        }
+
         CalendarScreenContent(
             selectedDay = selectedDay,
             hourFormat = hourFormat,
@@ -171,6 +213,10 @@ fun CalendarScreen() {
             },
             onSelectDay = {
                 screenModel.setSelectedDay(it)
+            },
+            onShowTaskOption = {
+                screenModel.selectTask(it)
+                screenModel.openBottomSheet(true)
             }
         )
     }
@@ -190,7 +236,8 @@ fun CalendarScreenContent(
     selectedDayTasks: List<Task>,
     selectedDay: LocalDate,
     onClickThisWeek: () -> Unit,
-    onSelectDay: (LocalDate) -> Unit
+    onSelectDay: (LocalDate) -> Unit,
+    onShowTaskOption: (task: Task) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -290,7 +337,8 @@ fun CalendarScreenContent(
                         daySize = daySize,
                         sessionTime = sessionTime,
                         shortBreakTime = shortBreakTime,
-                        longBreakTime = longBreakTime
+                        longBreakTime = longBreakTime,
+                        onShowTaskOption = onShowTaskOption
                     )
                 } else {
                     Text(
@@ -311,8 +359,9 @@ fun CalendarScreenContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, positionedTask: PositionedTask, modifier: Modifier = Modifier) {
+fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, positionedTask: PositionedTask, modifier: Modifier = Modifier, onShowTaskOption: (task: Task) -> Unit) {
     val task = positionedTask.task
     val end by remember {
         mutableStateOf(
@@ -346,24 +395,47 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
         ),
         colors = CardDefaults.cardColors(
             containerColor = Color(task.type.taskColor())
-        )
+        ),
+        onClick = {
+            onShowTaskOption(task)
+        }
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(
-                text = task.name,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 14.sp
-                ),
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(.85f),
+                    text = task.name,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 14.sp
+                    ),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            onShowTaskOption(task)
+                        },
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "Task Options",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
             if (task.description != null) {
                 Text(
                     text = task.description,
@@ -375,9 +447,10 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -471,6 +544,7 @@ fun Schedule(
     sessionTime: Int,
     shortBreakTime: Int,
     longBreakTime: Int,
+    onShowTaskOption: (task: Task) -> Unit,
     verticalScrollState: ScrollState,
     modifier: Modifier = Modifier,
     taskContent: @Composable (
@@ -481,7 +555,8 @@ fun Schedule(
             positionedTask = positionedTask,
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime
+            longBreakTime = longBreakTime,
+            onShowTaskOption = onShowTaskOption
         )
     },
     timeLabel: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { hrFormat, time ->
@@ -613,6 +688,7 @@ fun Schedule(
                     maxTime = maxTime,
                     dayWidth = dayWidth,
                     hourHeight = hourHeight,
+                    onShowTaskOption = onShowTaskOption,
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(verticalScrollState)
@@ -629,6 +705,7 @@ fun BasicSchedule(
     shortBreakTime: Int,
     longBreakTime: Int,
     tasks: List<Task>,
+    onShowTaskOption: (task: Task) -> Unit,
     modifier: Modifier = Modifier,
     taskContent: @Composable (positionedTask: PositionedTask) -> Unit = {
         BasicTask(
@@ -636,7 +713,8 @@ fun BasicSchedule(
             positionedTask = it,
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime
+            longBreakTime = longBreakTime,
+            onShowTaskOption = onShowTaskOption
         )
     },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()

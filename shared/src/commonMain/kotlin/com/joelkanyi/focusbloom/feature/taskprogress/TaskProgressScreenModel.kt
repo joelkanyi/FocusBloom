@@ -21,8 +21,10 @@ import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
+import com.joelkanyi.focusbloom.core.utils.formattedNumber
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.toMillis
+import com.joelkanyi.focusbloom.platform.NotificationsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +34,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TaskProgressScreenModel(
-    settingsRepository: SettingsRepository,
-    private val tasksRepository: TasksRepository
+    private val settingsRepository: SettingsRepository,
+    private val tasksRepository: TasksRepository,
+    private val notificationManager: NotificationsManager
 ) : ScreenModel {
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
@@ -84,6 +87,16 @@ class TaskProgressScreenModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null
         )
+
+    private val _remindersOn = MutableStateFlow<Boolean?>(null)
+    val remindersOn = _remindersOn.asStateFlow()
+    fun getRemindersStatus() {
+        coroutineScope.launch {
+            settingsRepository.remindersOn().collectLatest {
+                _remindersOn.value = it == 1
+            }
+        }
+    }
 
     private val _task = MutableStateFlow<Task?>(null)
     val task = _task.asStateFlow()
@@ -223,7 +236,15 @@ class TaskProgressScreenModel(
                 when (task.value?.current) {
                     "Focus" -> {
                         if (task.value?.currentCycle == task.value?.focusSessions) {
-                            println("executeTasks: going for a long break after a focus session")
+                            if (remindersOn.value == true) {
+                                notificationManager.showNotification(
+                                    title = "[TASK] ${task.value?.name}",
+                                    description = "${
+                                    task.value?.currentCycle?.formattedNumber()
+                                    } Focus Session Completed, going for a long break"
+                                )
+                            }
+
                             updateCurrentSession(task.value?.id ?: 0, "LongBreak")
                             updateInProgressTask(task.value?.id ?: 0, true)
                             Timer.setTickingTime(longBreakTime.value ?: 0L)
@@ -236,7 +257,13 @@ class TaskProgressScreenModel(
                                 }
                             )
                         } else {
-                            println("executeTasks: going for a short break after a focus session")
+                            if (remindersOn.value == true) {
+                                notificationManager.showNotification(
+                                    title = "[TASK] ${task.value?.name}",
+                                    description = "${task.value?.currentCycle?.formattedNumber()} focus session completed, going for a short break"
+                                )
+                            }
+
                             updateCurrentSession(task.value?.id ?: 0, "ShortBreak")
                             updateInProgressTask(task.value?.id ?: 0, true)
                             Timer.setTickingTime(shortBreakTime.value ?: 0L)
@@ -252,7 +279,17 @@ class TaskProgressScreenModel(
                     }
 
                     "ShortBreak" -> {
-                        println("executeTasks: going for a focus session after a short break")
+                        if (remindersOn.value == true) {
+                            notificationManager.showNotification(
+                                title = "[TASK] ${task.value?.name}",
+                                description = "Short Break Completed, going for the ${
+                                task.value?.currentCycle?.plus(
+                                    1
+                                )?.formattedNumber()
+                                } focus session"
+                            )
+                        }
+
                         updateCurrentSession(task.value?.id ?: 0, "Focus")
                         updateCurrentCycle(
                             task.value?.id ?: 0,
@@ -271,7 +308,13 @@ class TaskProgressScreenModel(
                     }
 
                     "LongBreak" -> {
-                        println("executeTasks: completed all cycles")
+                        if (remindersOn.value == true) {
+                            notificationManager.showNotification(
+                                title = "[TASK] ${task.value?.name}",
+                                description = "Good Job, you have completed this task \uD83C\uDF89\uD83C\uDF89"
+                            )
+                        }
+
                         val taskId = task.value?.id ?: 0
                         updateInProgressTask(taskId, false)
                         updateCompletedTask(taskId, true)
@@ -387,4 +430,9 @@ class TaskProgressScreenModel(
             }
         }
     }
+}
+
+sealed class ReminderState {
+    data object Loading : ReminderState()
+    data class Success(val reminderOn: Boolean) : ReminderState()
 }

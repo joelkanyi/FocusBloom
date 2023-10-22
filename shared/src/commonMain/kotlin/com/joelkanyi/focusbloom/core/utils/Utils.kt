@@ -591,3 +591,14 @@ fun LocalDateTime.calculateEndTime(focusSessions: Int, sessionTime: Int, shortBr
     return toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
         .plus(totalTaskTimeMillis).selectedDateMillisToLocalDateTime()
 }
+
+fun Int.formattedNumber(): String {
+    return "$this${
+    when (this) {
+        1, 21, 31 -> "st"
+        2, 22 -> "nd"
+        3, 23 -> "rd"
+        else -> "th"
+    }
+    }"
+}

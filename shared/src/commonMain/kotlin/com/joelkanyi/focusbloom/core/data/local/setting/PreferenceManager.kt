@@ -17,6 +17,7 @@ package com.joelkanyi.focusbloom.core.data.local.setting
 
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.Settings
 import com.russhwolf.settings.coroutines.getBooleanFlow
 import com.russhwolf.settings.coroutines.getIntFlow
 import com.russhwolf.settings.coroutines.getIntOrNullFlow
@@ -26,7 +27,8 @@ import com.russhwolf.settings.set
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-class PreferenceManager constructor(private val observableSettings: ObservableSettings) {
+class PreferenceManager constructor(private val settings: Settings) {
+    private val observableSettings: ObservableSettings by lazy { settings as ObservableSettings }
 
     @OptIn(ExperimentalSettingsApi::class)
     fun setString(key: String, value: String) {
@@ -51,9 +53,10 @@ class PreferenceManager constructor(private val observableSettings: ObservableSe
     fun getInt(key: String) = observableSettings.getIntOrNullFlow(key = key)
 
     @OptIn(ExperimentalSettingsApi::class, ExperimentalCoroutinesApi::class)
-    fun getIntFlow(key: String) = observableSettings.getIntFlow(key = key)
+    fun getIntFlow(key: String) = observableSettings.getIntFlow(key = key, defaultValue = 0)
 
     companion object {
+        const val NOTIFICATION_OPTION = "notification_option_key"
         const val USERNAME = "username_key"
         const val SHORT_BREAK_COLOR = "short_break_color_key"
         const val LONG_BREAK_COLOR = "long_break_color_key"
@@ -86,7 +89,8 @@ class PreferenceManager constructor(private val observableSettings: ObservableSe
     @OptIn(ExperimentalCoroutinesApi::class, ExperimentalSettingsApi::class)
     fun getLong(key: Any): Flow<Long?> {
         return observableSettings.getLongFlow(
-            key = key.toString()
+            key = key.toString(),
+            defaultValue = 0
         )
     }
 

@@ -15,14 +15,14 @@
  */
 package com.joelkanyi.focusbloom.core.data.repository.tasks
 
+import app.cash.sqldelight.coroutines.asFlow
 import com.joelkanyi.focusbloom.core.data.mapper.toTask
 import com.joelkanyi.focusbloom.core.data.mapper.toTaskEntity
+import com.joelkanyi.focusbloom.core.data.utils.mapToList
+import com.joelkanyi.focusbloom.core.data.utils.mapToOneOrNull
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
 import com.joelkanyi.focusbloom.database.BloomDatabase
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOneNotNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -46,9 +46,9 @@ class TasksRepositoryImpl(
         return dbQuery
             .getTaskById(id)
             .asFlow()
-            .mapToOneNotNull()
+            .mapToOneOrNull()
             .map { taskEntity ->
-                taskEntity.toTask()
+                taskEntity?.toTask()
             }
     }
 
@@ -58,15 +58,11 @@ class TasksRepositoryImpl(
                 name = it.name,
                 description = it.description,
                 start = it.start,
-                // end = it.end,
                 color = it.color,
                 current = it.current,
                 date = it.date,
                 focusSessions = it.focusSessions,
                 completed = it.completed,
-/*                focusTime = it.focusTime,
-                shortBreakTime = it.shortBreakTime,
-                longBreakTime = it.longBreakTime,*/
                 type = it.type,
                 consumedFocusTime = it.consumedFocusTime,
                 consumedShortBreakTime = it.consumedShortBreakTime,
@@ -85,15 +81,11 @@ class TasksRepositoryImpl(
                 name = it.name,
                 description = it.description,
                 start = it.start,
-                // end = it.end,
                 color = it.color,
                 current = it.current,
                 date = it.date,
                 focusSessions = it.focusSessions,
                 completed = it.completed,
-/*                focusTime = it.focusTime,
-                shortBreakTime = it.shortBreakTime,
-                longBreakTime = it.longBreakTime,*/
                 active = it.active
             )
         }
@@ -139,14 +131,13 @@ class TasksRepositoryImpl(
         return dbQuery
             .getActiveTask()
             .asFlow()
-            .mapToOneNotNull()
+            .mapToOneOrNull()
             .map { taskEntity ->
-                taskEntity.toTask()
+                taskEntity?.toTask()
             }
     }
 
     override suspend fun updateTaskActive(id: Int, active: Boolean) {
-        println("repo: updateTaskActive: $id, $active")
         dbQuery.updateTaskActiveStatus(id = id, active = active)
     }
 

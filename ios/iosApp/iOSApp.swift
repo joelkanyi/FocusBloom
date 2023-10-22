@@ -6,6 +6,7 @@ import UIKit
 struct iOSApp: App {
     init() {
         DiModule.koin
+        requestNotificationPermission()
     }
 	var body: some Scene {
 		WindowGroup {
@@ -21,4 +22,15 @@ struct ComposeView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+}
+
+func requestNotificationPermission() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                if success {
+                    print("Permission granted.")
+                } else if let error = error {
+                    print(error.localizedDescription)
+                    // Displaying information to enable notifications in the future
+                }
+            }
 }
