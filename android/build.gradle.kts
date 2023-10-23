@@ -27,8 +27,8 @@ android {
         applicationId = "com.joelkanyi.focusbloom.android"
         minSdk = 21
         targetSdk = compileSdk
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.0.3"
     }
     buildTypes {
         // debug
