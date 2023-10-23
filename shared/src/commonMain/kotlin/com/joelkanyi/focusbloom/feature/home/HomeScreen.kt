@@ -122,7 +122,7 @@ fun HomeScreen() {
     if (openBottomSheet) {
         if (selectedTask != null) {
             TaskOptionsBottomSheet(
-                type = if (selectedTask.date < today()) {
+                type = if (selectedTask.date.date < today().date) {
                     "overdue"
                 } else {
                     "today"
@@ -168,7 +168,7 @@ fun HomeScreen() {
         longBreakTime = longBreakTime,
         username = username,
         onClickTask = {
-            if (it.date < today()) {
+            if (it.date.date < today().date) {
                 screenModel.selectTask(it)
                 screenModel.openBottomSheet(true)
             } else {
