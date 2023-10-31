@@ -51,7 +51,10 @@ fun differenceBetweenMinutes(minTime: LocalTime, maxTime: LocalTime): Int {
     return (maxTime.hour - minTime.hour) * 60
 }
 
-fun differenceBetweenDays(minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date, maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date): Int {
+fun differenceBetweenDays(
+    minDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    maxDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+): Int {
     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
     return (maxDate.dayOfMonth - minDate.dayOfMonth)
 }
@@ -107,7 +110,7 @@ data class PositionedTask(
     val end: LocalTime,
     val col: Int = 0,
     val colSpan: Int = 1,
-    val colTotal: Int = 1
+    val colTotal: Int = 1,
 )
 
 sealed class ScheduleSize {
@@ -118,21 +121,26 @@ sealed class ScheduleSize {
 }
 
 class TaskDataModifier(
-    private val positionedTask: PositionedTask
+    private val positionedTask: PositionedTask,
 ) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?) = positionedTask
 }
 
 fun Modifier.taskData(positionedTask: PositionedTask) = this.then(TaskDataModifier(positionedTask))
 
-fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): List<PositionedTask> {
+fun splitTasks(
+    tasks: List<Task>,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): List<PositionedTask> {
     return tasks
         .map { task ->
             val end = task.start.calculateEndTime(
                 focusSessions = task.focusSessions,
                 sessionTime = sessionTime,
                 shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime
+                longBreakTime = longBreakTime,
             )
             val startDate = task.start.date
             val endDate = end.date
@@ -143,8 +151,8 @@ fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBre
                         SplitType.None,
                         task.start.date,
                         task.start.time,
-                        end.time
-                    )
+                        end.time,
+                    ),
                 )
             } else {
                 val days = differenceBetweenDays(startDate, endDate)
@@ -164,7 +172,7 @@ fun splitTasks(tasks: List<Task>, sessionTime: Int, shortBreakTime: Int, longBre
                             end.time
                         } else {
                             max()
-                        }
+                        },
                     )
                 }
                 splitTasks
@@ -240,7 +248,13 @@ fun Long?.selectedDateMillisToLocalDateTime(): LocalDateTime {
         .toLocalDateTime(TimeZone.currentSystemDefault())
 }
 
-fun calculateFromFocusSessions(focusSessions: Int, sessionTime: Int = 25, shortBreakTime: Int = 5, longBreakTime: Int = 15, currentLocalDateTime: LocalDateTime): LocalTime {
+fun calculateFromFocusSessions(
+    focusSessions: Int,
+    sessionTime: Int = 25,
+    shortBreakTime: Int = 5,
+    longBreakTime: Int = 15,
+    currentLocalDateTime: LocalDateTime,
+): LocalTime {
     return if (focusSessions <= 0) {
         currentLocalDateTime.time
     } else {
@@ -268,7 +282,7 @@ fun LocalDateTime.dateTimeToString(): String {
 fun toLocalDateTime(hour: Int, minute: Int, date: LocalDate): LocalDateTime {
     return LocalDateTime(
         date,
-        LocalTime(hour, minute)
+        LocalTime(hour, minute),
     )
 }
 
@@ -371,13 +385,13 @@ fun getLast52Weeks(): List<Pair<String, List<LocalDate>>> {
         weeks += "${
         week.first().month.name.lowercase().capitalize(Locale.current).substring(
             0,
-            3
+            3,
         )
         } ${week.first().dayOfMonth} ${if (week.first().year != thisYear) week.first().year else ""}" +
             " - ${
             week.last().month.name.lowercase().capitalize(Locale.current).substring(
                 0,
-                3
+                3,
             )
             } ${week.last().dayOfMonth} ${if (week.last().year != thisYear) week.last().year else ""}" to week
     }
@@ -478,12 +492,17 @@ fun Int.timeFormat(): String {
     }
 }
 
-fun Task.durationInMinutes(focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): Int {
+fun Task.durationInMinutes(
+    focusSessions: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): Int {
     val end = start.calculateEndTime(
         focusSessions = focusSessions,
         sessionTime = sessionTime,
         shortBreakTime = shortBreakTime,
-        longBreakTime = longBreakTime
+        longBreakTime = longBreakTime,
     )
     return (end.time.toSecondOfDay() - start.time.toSecondOfDay()) / 60
 }
@@ -581,7 +600,12 @@ fun String.pickFirstName(): String {
     return this.split(" ").first()
 }
 
-fun LocalDateTime.calculateEndTime(focusSessions: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int): LocalDateTime {
+fun LocalDateTime.calculateEndTime(
+    focusSessions: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+): LocalDateTime {
     val totalSessionTimeMinutes = sessionTime * focusSessions
     val totalShortBreakTimeMinutes = shortBreakTime * (focusSessions - 1)
     val totalLongBreakTimeMinutes = longBreakTime * (focusSessions / 4)

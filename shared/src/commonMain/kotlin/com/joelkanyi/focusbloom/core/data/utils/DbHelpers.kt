@@ -26,7 +26,7 @@ import kotlin.jvm.JvmOverloads
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToOne(
-    context: CoroutineContext = Dispatchers.Default
+    context: CoroutineContext = Dispatchers.Default,
 ): Flow<T> = map {
     withContext(context) {
         it.executeAsOne()
@@ -36,7 +36,7 @@ fun <T : Any> Flow<Query<T>>.mapToOne(
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToOneOrDefault(
     defaultValue: T,
-    context: CoroutineContext = Dispatchers.Default
+    context: CoroutineContext = Dispatchers.Default,
 ): Flow<T> = map {
     withContext(context) {
         it.executeAsOneOrNull() ?: defaultValue
@@ -45,7 +45,7 @@ fun <T : Any> Flow<Query<T>>.mapToOneOrDefault(
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToOneOrNull(
-    context: CoroutineContext = Dispatchers.Default
+    context: CoroutineContext = Dispatchers.Default,
 ): Flow<T?> = map {
     withContext(context) {
         it.executeAsOneOrNull()
@@ -54,7 +54,7 @@ fun <T : Any> Flow<Query<T>>.mapToOneOrNull(
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToOneNotNull(
-    context: CoroutineContext = Dispatchers.Default
+    context: CoroutineContext = Dispatchers.Default,
 ): Flow<T> = mapNotNull {
     withContext(context) {
         it.executeAsOneOrNull()
@@ -63,7 +63,7 @@ fun <T : Any> Flow<Query<T>>.mapToOneNotNull(
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToList(
-    context: CoroutineContext = Dispatchers.Default
+    context: CoroutineContext = Dispatchers.Default,
 ): Flow<List<T>> = map {
     withContext(context) {
         it.executeAsList()

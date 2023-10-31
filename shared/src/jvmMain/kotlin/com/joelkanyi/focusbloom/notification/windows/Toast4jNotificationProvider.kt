@@ -57,7 +57,7 @@ object Toast4jNotificationProvider : NotificationProvider {
             ToastBuilder(WinToastTemplate.WinToastTemplateType.ToastText01).setSilent()
                 .setLine1(title)
                 .setLine2(description)
-                .build()
+                .build(),
         )
     }
 }

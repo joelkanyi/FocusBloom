@@ -28,21 +28,21 @@ actual class NotificationsManager {
             hostOs.startsWith("Windows") -> {
                 Toast4jNotificationProvider.sendNotification(
                     title = title,
-                    description = description
+                    description = description,
                 )
             }
 
             hostOs.startsWith("Mac") -> {
                 MacOsNotificationProvider.sendNotification(
                     title = title,
-                    description = description
+                    description = description,
                 )
             }
 
             hostOs.startsWith("Linux") -> {
                 LinuxNotificationProvider.sendNotification(
                     title = title,
-                    description = description
+                    description = description,
                 )
             }
 

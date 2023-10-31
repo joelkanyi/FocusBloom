@@ -38,12 +38,10 @@ import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreenModel
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreenModel
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import com.russhwolf.settings.ExperimentalSettingsApi
 import database.TaskEntity
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-@OptIn(ExperimentalSettingsApi::class)
 fun commonModule() = module {
     /**
      * Database
@@ -59,8 +57,8 @@ fun commonModule() = module {
                 consumedShortBreakTimeAdapter = consumedShortBreakTimeAdapter,
                 currentAdapter = currentAdapter,
                 currentCycleAdapter = currentCycleAdapter,
-                focusSessionsAdapter = focusSessionsAdapter
-            )
+                focusSessionsAdapter = focusSessionsAdapter,
+            ),
         )
     }
     /**
@@ -75,13 +73,13 @@ fun commonModule() = module {
      */
     single<SettingsRepository> {
         SettingsRepositoryImpl(
-            preferenceManager = get()
+            preferenceManager = get(),
         )
     }
 
     single<TasksRepository> {
         TasksRepositoryImpl(
-            bloomDatabase = get()
+            bloomDatabase = get(),
         )
     }
 
@@ -90,31 +88,31 @@ fun commonModule() = module {
      */
     single<SettingsScreenModel> {
         SettingsScreenModel(
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
     single<AddTaskScreenModel> {
         AddTaskScreenModel(
             settingsRepository = get(),
-            tasksRepository = get()
+            tasksRepository = get(),
         )
     }
     single<HomeScreenModel> {
         HomeScreenModel(
             tasksRepository = get(),
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
     single<StatisticsScreenModel> {
         StatisticsScreenModel(
             tasksRepository = get(),
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
     single<CalendarScreenModel> {
         CalendarScreenModel(
             tasksRepository = get(),
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
 
@@ -122,19 +120,19 @@ fun commonModule() = module {
         TaskProgressScreenModel(
             settingsRepository = get(),
             tasksRepository = get(),
-            notificationManager = get()
+            notificationManager = get(),
         )
     }
 
     single<MainViewModel> {
         MainViewModel(
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
 
     single<OnboadingViewModel> {
         OnboadingViewModel(
-            settingsRepository = get()
+            settingsRepository = get(),
         )
     }
 }

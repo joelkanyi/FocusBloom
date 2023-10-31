@@ -33,18 +33,24 @@ import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 
 @Composable
-fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClickReset: () -> Unit, onClickNext: () -> Unit, onClickAction: (state: TimerState) -> Unit) {
+fun BloomTimerControls(
+    modifier: Modifier = Modifier,
+    state: TimerState,
+    onClickReset: () -> Unit,
+    onClickNext: () -> Unit,
+    onClickAction: (state: TimerState) -> Unit,
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround,
     ) {
         IconButton(onClick = onClickReset) {
             Icon(
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.Replay,
                 contentDescription = "Reset Timer",
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         }
 
@@ -57,24 +63,27 @@ fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClick
                         TimerState.Paused -> {
                             Icons.Filled.PlayArrow
                         }
+
                         TimerState.Ticking -> {
                             Icons.Filled.Pause
                         }
+
                         TimerState.Finished -> {
                             Icons.Filled.Replay
                         }
+
                         else -> {
                             Icons.Filled.PlayArrow
                         }
                     },
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             },
             onClick = {
                 onClickAction(state)
             },
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
         )
 
         IconButton(onClick = onClickNext) {
@@ -82,7 +91,7 @@ fun BloomTimerControls(modifier: Modifier = Modifier, state: TimerState, onClick
                 modifier = Modifier.size(120.dp),
                 imageVector = Icons.Filled.SkipNext,
                 contentDescription = "Next Timer",
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         }
     }

@@ -50,7 +50,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 data class AllTasksScreen(
-    val type: String
+    val type: String,
 ) : Screen, KoinComponent {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +59,7 @@ data class AllTasksScreen(
         val screenModel = get<HomeScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background
+            navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
         val tasksState = screenModel.tasks.collectAsState().value
@@ -97,11 +97,11 @@ data class AllTasksScreen(
                         screenModel.markAsCompleted(it)
                     },
                     onClickEditTask = {
-                       /*tabNavigator.current = BloomTab.AddTaskTab(
-                           taskId = it.id
-                       )*/
+                        /*tabNavigator.current = BloomTab.AddTaskTab(
+                            taskId = it.id
+                        )*/
                     },
-                    task = selectedTask
+                    task = selectedTask,
                 )
             }
         }
@@ -122,21 +122,31 @@ data class AllTasksScreen(
             },
             onClickTask = {
                 navigator.push(TaskProgressScreen(taskId = it.id))
-            }
+            },
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, onClickNavigateBack: () -> Unit, onClickTaskOptions: (task: Task) -> Unit, onClickTask: (task: Task) -> Unit, type: String) {
+fun AllTasksScreenContent(
+    tasksState: TasksState,
+    timeFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+    onClickNavigateBack: () -> Unit,
+    onClickTaskOptions: (task: Task) -> Unit,
+    onClickTask: (task: Task) -> Unit,
+    type: String,
+) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when (tasksState) {
             is TasksState.Loading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 )
             }
 
@@ -151,10 +161,10 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 IconButton(onClick = onClickNavigateBack) {
                                     Icon(
                                         imageVector = Icons.Outlined.ArrowBack,
-                                        contentDescription = "Back"
+                                        contentDescription = "Back",
                                     )
                                 }
-                            }
+                            },
                         ) {
                             Text(
                                 text = "${
@@ -162,21 +172,21 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 } Tasks (${
                                 if (type == "today") tasks.size else overdueTasks.size
                                 })",
-                                color = if (type == "today") MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.error
+                                color = if (type == "today") MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.error,
                             )
                         }
-                    }
+                    },
                 ) { paddingValues ->
                     LazyColumn(
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(
                             items = if (type == "today") tasks else overdueTasks,
-                            key = { it.id }
+                            key = { it.id },
                         ) {
                             TaskCard(
                                 type = type,
@@ -187,7 +197,7 @@ fun AllTasksScreenContent(tasksState: TasksState, timeFormat: Int, sessionTime: 
                                 focusSessions = it.focusSessions,
                                 sessionTime = sessionTime,
                                 shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime
+                                longBreakTime = longBreakTime,
                             )
                         }
                     }

@@ -134,6 +134,9 @@ kotlin {
                     // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
                     exclude(group = "net.java.dev.jna", module = "jna")
                 }
+
+                // JNA for Windows
+                implementation(libs.jna)
             }
         }
 

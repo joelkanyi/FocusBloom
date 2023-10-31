@@ -84,7 +84,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 data class TaskProgressScreen(
-    val taskId: Int
+    val taskId: Int,
 ) : Screen, KoinComponent {
 
     @Composable
@@ -108,7 +108,7 @@ data class TaskProgressScreen(
                     Color(SessionColor)
                 } else {
                     Color(
-                        focusColor
+                        focusColor,
                     )
                 }
             }
@@ -118,7 +118,7 @@ data class TaskProgressScreen(
                     Color(LongBreakColor)
                 } else {
                     Color(
-                        longBreakColor
+                        longBreakColor,
                     )
                 }
             }
@@ -128,14 +128,14 @@ data class TaskProgressScreen(
                     Color(ShortBreakColor)
                 } else {
                     Color(
-                        shortBreakColor
+                        shortBreakColor,
                     )
                 }
             }
         }
         StatusBarColors(
             statusBarColor = containerColor,
-            navBarColor = containerColor
+            navBarColor = containerColor,
         )
         LaunchedEffect(key1 = Unit) {
             screenModel.getRemindersStatus()
@@ -160,7 +160,7 @@ data class TaskProgressScreen(
                 onConfirm = {
                     Timer.reset()
                     navigator.pop()
-                }
+                },
             )
         }
 
@@ -203,7 +203,7 @@ data class TaskProgressScreen(
                             },
                             executeTasks = {
                                 screenModel.executeTasks()
-                            }
+                            },
                         )
                         screenModel.resetAllTasksToInactive()
                         screenModel.updateActiveTask(taskId, true)
@@ -213,7 +213,7 @@ data class TaskProgressScreen(
                         // screenModel.setTime(task?.focusTime ?: 20)
                     }
                 }
-            }
+            },
         )
     }
 }
@@ -232,7 +232,7 @@ fun FocusTimeScreenContent(
     onClickNavigateBack: () -> Unit,
     onClickAction: (state: TimerState) -> Unit,
     onClickNext: () -> Unit,
-    onClickReset: () -> Unit
+    onClickReset: () -> Unit,
 ) {
     Scaffold(
         containerColor = containerColor,
@@ -247,48 +247,48 @@ fun FocusTimeScreenContent(
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Add Task Back Button",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = containerColor
-                )
+                    containerColor = containerColor,
+                ),
             )
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier.padding(paddingValues).fillMaxSize()
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
         ) {
             if (task == null) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = "Task not found"
+                    text = "Task not found",
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier.padding(PaddingValues(horizontal = 16.dp))
+                    modifier = Modifier.padding(PaddingValues(horizontal = 16.dp)),
                 ) {
                     item {
                         Card(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(12.dp)
+                                    .padding(12.dp),
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
                                         modifier = Modifier.fillMaxWidth(.85f),
                                         text = task.name,
                                         style = MaterialTheme.typography.titleSmall,
                                         maxLines = 3,
-                                        overflow = TextOverflow.Ellipsis
+                                        overflow = TextOverflow.Ellipsis,
                                     )
 
                                     Text(
@@ -296,19 +296,19 @@ fun FocusTimeScreenContent(
                                             withStyle(
                                                 style = SpanStyle(
                                                     fontWeight = FontWeight.SemiBold,
-                                                    fontSize = 18.sp
-                                                )
+                                                    fontSize = 18.sp,
+                                                ),
                                             ) {
                                                 append("${task.currentCycle}")
                                             }
                                             append("/${task.focusSessions}")
-                                        }
+                                        },
                                     )
                                 }
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
                                         text = "Total: ${
@@ -316,17 +316,17 @@ fun FocusTimeScreenContent(
                                             sessionTime = focusTime.toMinutes(),
                                             shortBreakTime = shortBreakTime.toMinutes(),
                                             longBreakTime = longBreakTime.toMinutes(),
-                                            focusSessions = task.focusSessions
+                                            focusSessions = task.focusSessions,
                                         )
                                         } minutes",
-                                        style = MaterialTheme.typography.bodySmall
+                                        style = MaterialTheme.typography.bodySmall,
                                     )
                                     Text(
                                         text = when (task.current.sessionType()) {
                                             SessionType.Focus -> "${focusTime.toMinutes()} min"
                                             SessionType.ShortBreak -> "${shortBreakTime.toMinutes()} min"
                                             SessionType.LongBreak -> "${longBreakTime.toMinutes()} min"
-                                        }
+                                        },
                                     )
                                 }
                             }
@@ -337,7 +337,7 @@ fun FocusTimeScreenContent(
                         Spacer(modifier = Modifier.height(32.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+                            horizontalArrangement = Arrangement.Center,
                         ) {
                             TaskProgress(
                                 percentage = timerValue.toPercentage(
@@ -345,12 +345,12 @@ fun FocusTimeScreenContent(
                                         SessionType.Focus -> focusTime
                                         SessionType.ShortBreak -> shortBreakTime
                                         SessionType.LongBreak -> longBreakTime
-                                    }
+                                    },
                                 ),
                                 radius = 40.dp,
                                 content = timerValue.toTimer(),
                                 mainColor = MaterialTheme.colorScheme.primary,
-                                counterColor = MaterialTheme.colorScheme.onPrimary
+                                counterColor = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
                     }
@@ -365,9 +365,9 @@ fun FocusTimeScreenContent(
                                 SessionType.LongBreak -> "Long Break"
                             },
                             style = MaterialTheme.typography.displaySmall.copy(
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = MaterialTheme.colorScheme.onPrimary,
                             ),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
 
@@ -378,7 +378,7 @@ fun FocusTimeScreenContent(
                             state = timerState,
                             onClickReset = onClickReset,
                             onClickNext = onClickNext,
-                            onClickAction = onClickAction
+                            onClickAction = onClickAction,
                         )
                     }
                 }
@@ -389,7 +389,12 @@ fun FocusTimeScreenContent(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SuccessfulCompletionOfTask(modifier: Modifier = Modifier, title: String, message: String, onConfirm: () -> Unit) {
+fun SuccessfulCompletionOfTask(
+    modifier: Modifier = Modifier,
+    title: String,
+    message: String,
+    onConfirm: () -> Unit,
+) {
     AlertDialog(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -397,7 +402,7 @@ fun SuccessfulCompletionOfTask(modifier: Modifier = Modifier, title: String, mes
             Image(
                 modifier = Modifier.size(48.dp),
                 painter = painterResource("ic_complete.xml"),
-                contentDescription = "Task Completed"
+                contentDescription = "Task Completed",
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
@@ -407,8 +412,8 @@ fun SuccessfulCompletionOfTask(modifier: Modifier = Modifier, title: String, mes
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    textAlign = TextAlign.Center
-                )
+                    textAlign = TextAlign.Center,
+                ),
             )
         },
         text = {
@@ -416,21 +421,21 @@ fun SuccessfulCompletionOfTask(modifier: Modifier = Modifier, title: String, mes
                 modifier = Modifier.fillMaxWidth(),
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    textAlign = TextAlign.Center
-                )
+                    textAlign = TextAlign.Center,
+                ),
             )
         },
         dismissButton = {},
         confirmButton = {
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onConfirm
+                onClick = onConfirm,
             ) {
                 Text(
                     text = "OK",
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.titleSmall,
                 )
             }
-        }
+        },
     )
 }

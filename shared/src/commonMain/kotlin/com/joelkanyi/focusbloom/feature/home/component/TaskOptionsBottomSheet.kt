@@ -35,13 +35,24 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: Task) -> Unit, onClickDelete: (task: Task) -> Unit, onClickPushToTomorrow: (task: Task) -> Unit, task: Task, onDismissRequest: () -> Unit, onClickMarkAsCompleted: (task: Task) -> Unit, onClickEditTask: (task: Task) -> Unit, type: String, onClickPushToToday: (task: Task) -> Unit) {
+fun TaskOptionsBottomSheet(
+    bottomSheetState: SheetState,
+    onClickCancel: (task: Task) -> Unit,
+    onClickDelete: (task: Task) -> Unit,
+    onClickPushToTomorrow: (task: Task) -> Unit,
+    task: Task,
+    onDismissRequest: () -> Unit,
+    onClickMarkAsCompleted: (task: Task) -> Unit,
+    onClickEditTask: (task: Task) -> Unit,
+    type: String,
+    onClickPushToToday: (task: Task) -> Unit,
+) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = bottomSheetState
+        sheetState = bottomSheetState,
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             Option(
                 icon = Icons.Default.Edit,
@@ -49,7 +60,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickEditTask(task)
                     onDismissRequest()
-                }
+                },
             )
             Option(
                 icon = Icons.Outlined.EditCalendar,
@@ -57,7 +68,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     if (type == "overdue") onClickPushToToday(task) else onClickPushToTomorrow(task)
                     onDismissRequest()
-                }
+                },
             )
             Option(
                 icon = Icons.Outlined.Done,
@@ -65,7 +76,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickMarkAsCompleted(task)
                     onDismissRequest()
-                }
+                },
             )
             Option(
                 icon = Icons.Outlined.Delete,
@@ -73,7 +84,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickDelete(task)
                     onDismissRequest()
-                }
+                },
             )
             Option(
                 icon = Icons.Outlined.Close,
@@ -81,7 +92,7 @@ fun TaskOptionsBottomSheet(bottomSheetState: SheetState, onClickCancel: (task: T
                 onClick = {
                     onClickCancel(task)
                     onDismissRequest()
-                }
+                },
             )
             Spacer(modifier = Modifier.height(32.dp))
         }

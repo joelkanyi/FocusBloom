@@ -40,7 +40,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 0u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -63,7 +63,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 1u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -86,7 +86,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 2u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -109,7 +109,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 3u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -121,7 +121,7 @@ internal sealed class BloomTab {
     }
 
     internal data class AddTaskTab(
-        val taskId: Int? = null
+        val taskId: Int? = null,
     ) : Tab {
         @OptIn(ExperimentalResourceApi::class)
         override val options: TabOptions
@@ -134,7 +134,7 @@ internal sealed class BloomTab {
                     TabOptions(
                         index = 4u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }

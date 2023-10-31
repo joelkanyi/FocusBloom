@@ -57,7 +57,7 @@ fun <T> BloomDropDown(
     selectedOption: TextFieldState,
     onOptionSelected: (T) -> Unit,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
-    shape: CornerBasedShape = MaterialTheme.shapes.small
+    shape: CornerBasedShape = MaterialTheme.shapes.small,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column {
@@ -76,7 +76,7 @@ fun <T> BloomDropDown(
                     } else {
                         MaterialTheme.colorScheme.onBackground.copy(alpha = .4f)
                     },
-                    shape = shape
+                    shape = shape,
                 )
                 .clip(shape)
                 .clickable {
@@ -84,21 +84,21 @@ fun <T> BloomDropDown(
                         expanded = !expanded
                     }
                 },
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.CenterStart,
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         vertical = 8.dp,
-                        horizontal = 12.dp
+                        horizontal = 12.dp,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = selectedOption.text,
-                    style = textStyle
+                    style = textStyle,
                 )
                 if (enabled) {
                     Icon(
@@ -110,26 +110,26 @@ fun <T> BloomDropDown(
                         } else {
                             Icons.Filled.ArrowDropDown
                         },
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onDismissRequest = { expanded = false },
             ) {
                 options.forEach { selectionOption ->
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = selectionOption.toString(),
-                                style = MaterialTheme.typography.labelLarge
+                                style = MaterialTheme.typography.labelLarge,
                             )
                         },
                         onClick = {
                             onOptionSelected(selectionOption)
                             expanded = false
-                        }
+                        },
                     )
                 }
             }
@@ -140,7 +140,7 @@ fun <T> BloomDropDown(
                 text = selectedOption.error,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.End
+                textAlign = TextAlign.End,
             )
         }
     }

@@ -31,7 +31,7 @@ lateinit var koin: Koin
 fun main() {
     koin = KoinInit().init()
     koin.loadModules(
-        listOf()
+        listOf(),
     )
 
     return application {
@@ -41,8 +41,8 @@ fun main() {
             state = rememberWindowState(
                 position = WindowPosition.Aligned(Alignment.Center),
                 width = 1200.dp,
-                height = 700.dp
-            )
+                height = 700.dp,
+            ),
         ) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 FocusBloomApp()

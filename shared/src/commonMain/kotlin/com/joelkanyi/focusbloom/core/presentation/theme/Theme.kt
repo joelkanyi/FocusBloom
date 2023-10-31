@@ -38,7 +38,7 @@ private val LightColors = lightColorScheme(
     secondaryContainer = PrimaryColor,
     onSecondaryContainer = Color.White,
     error = ErrorColor,
-    onError = OnErrorColor
+    onError = OnErrorColor,
 )
 
 private val DarkColors = darkColorScheme(
@@ -57,17 +57,20 @@ private val DarkColors = darkColorScheme(
     secondaryContainer = PrimaryColor,
     onSecondaryContainer = Color.White,
     error = ErrorColor,
-    onError = OnErrorColor
+    onError = OnErrorColor,
 )
 
 @Composable
-internal fun FocusBloomTheme(useDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+internal fun FocusBloomTheme(
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
     val autoColors = if (useDarkTheme) DarkColors else LightColors
 
     MaterialTheme(
         colorScheme = autoColors,
         typography = getTypography(),
         shapes = Shapes,
-        content = content
+        content = content,
     )
 }

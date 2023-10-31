@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class OnboadingViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
 ) : ScreenModel {
     private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
     val eventsFlow = _eventsFlow.receiveAsFlow()
@@ -58,6 +58,6 @@ class OnboadingViewModel(
         "be disciplined",
         "be motivated",
         "be consistent",
-        "be mindful"
+        "be mindful",
     )
 }

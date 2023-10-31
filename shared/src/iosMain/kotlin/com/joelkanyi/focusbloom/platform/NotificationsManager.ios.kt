@@ -46,7 +46,7 @@ actual class NotificationsManager {
             override fun userNotificationCenter(
                 center: UNUserNotificationCenter,
                 didReceiveNotificationResponse: UNNotificationResponse,
-                withCompletionHandler: () -> Unit
+                withCompletionHandler: () -> Unit,
             ) {
                 withCompletionHandler()
             }
@@ -54,7 +54,7 @@ actual class NotificationsManager {
             override fun userNotificationCenter(
                 center: UNUserNotificationCenter,
                 willPresentNotification: UNNotification,
-                withCompletionHandler: (UNNotificationPresentationOptions) -> Unit
+                withCompletionHandler: (UNNotificationPresentationOptions) -> Unit,
             ) {
                 withCompletionHandler(UNNotificationPresentationOptionAlert)
             }

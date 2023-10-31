@@ -32,8 +32,8 @@ class BloomApp : Application() {
             androidContext(androidContext = this@BloomApp)
             modules(
                 listOf(
-                    androidModule
-                )
+                    androidModule,
+                ),
             )
         }
     }

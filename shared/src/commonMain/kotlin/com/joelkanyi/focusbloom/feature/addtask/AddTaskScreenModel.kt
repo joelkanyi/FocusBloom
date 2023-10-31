@@ -41,7 +41,7 @@ import kotlinx.datetime.LocalTime
 
 class AddTaskScreenModel(
     settingsRepository: SettingsRepository,
-    private val tasksRepository: TasksRepository
+    private val tasksRepository: TasksRepository,
 ) : ScreenModel {
     private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
     val eventsFlow = _eventsFlow.receiveAsFlow()
@@ -53,28 +53,28 @@ class AddTaskScreenModel(
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
 
     private val _focusSessions = MutableStateFlow(1)
@@ -92,9 +92,9 @@ class AddTaskScreenModel(
                     month = taskDate.value.month,
                     dayOfMonth = taskDate.value.dayOfMonth,
                     hour = startTime.value.hour,
-                    minute = startTime.value.minute
-                )
-            )
+                    minute = startTime.value.minute,
+                ),
+            ),
         )
     }
 
@@ -112,9 +112,9 @@ class AddTaskScreenModel(
                         month = taskDate.value.month,
                         dayOfMonth = taskDate.value.dayOfMonth,
                         hour = startTime.value.hour,
-                        minute = startTime.value.minute
-                    )
-                )
+                        minute = startTime.value.minute,
+                    ),
+                ),
             )
         }
     }
@@ -217,7 +217,7 @@ class AddTaskScreenModel(
         setSelectedOption(
             taskTypes.firstOrNull { taskType ->
                 taskType.name == it?.type
-            } ?: taskTypes.last()
+            } ?: taskTypes.last(),
         )
         setFocusSessions(it?.focusSessions ?: 1)
         setTaskDate(it?.date ?: today())
@@ -233,9 +233,9 @@ class AddTaskScreenModel(
                     month = it?.date?.month ?: today().month,
                     dayOfMonth = it?.date?.dayOfMonth ?: today().dayOfMonth,
                     hour = it?.start?.time?.hour ?: today().time.hour,
-                    minute = it?.start?.time?.minute ?: today().time.minute
-                )
-            )
+                    minute = it?.start?.time?.minute ?: today().time.minute,
+                ),
+            ),
         )
     }
 

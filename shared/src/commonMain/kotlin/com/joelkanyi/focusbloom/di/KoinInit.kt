@@ -25,8 +25,8 @@ class KoinInit {
             modules(
                 listOf(
                     platformModule(),
-                    commonModule()
-                )
+                    commonModule(),
+                ),
             )
             appDeclaration()
         }.koin

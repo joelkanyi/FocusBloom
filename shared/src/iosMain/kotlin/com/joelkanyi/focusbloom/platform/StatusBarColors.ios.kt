@@ -63,5 +63,5 @@ private fun Color.toUIColor(): UIColor = UIColor(
     red = this.red.toDouble(),
     green = this.green.toDouble(),
     blue = this.blue.toDouble(),
-    alpha = this.alpha.toDouble()
+    alpha = this.alpha.toDouble(),
 )

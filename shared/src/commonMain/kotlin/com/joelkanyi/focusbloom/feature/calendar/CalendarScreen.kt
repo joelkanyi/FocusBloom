@@ -125,7 +125,7 @@ fun CalendarScreen() {
 
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
-        navBarColor = MaterialTheme.colorScheme.background
+        navBarColor = MaterialTheme.colorScheme.background,
     )
     val coroutineScope = rememberCoroutineScope()
     val tasks = screenModel.tasks.collectAsState().value
@@ -144,7 +144,7 @@ fun CalendarScreen() {
     LaunchedEffect(key1 = tasks, block = {
         calendarPagerState.animateScrollToItem(
             index = calendarLocalDates().indexOf(selectedDay),
-            scrollOffset = 0
+            scrollOffset = 0,
         )
     })
     BoxWithConstraints {
@@ -178,7 +178,7 @@ fun CalendarScreen() {
                     onClickEditTask = {
                         tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
                     },
-                    task = selectedTask
+                    task = selectedTask,
                 )
             }
         }
@@ -201,13 +201,13 @@ fun CalendarScreen() {
                     calendarPagerState.animateScrollToItem(
                         index = calendarLocalDates().indexOf(
                             Clock.System.now()
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                         ),
-                        scrollOffset = 0
+                        scrollOffset = 0,
                     )
                     screenModel.setSelectedDay(
                         Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                     )
                 }
             },
@@ -217,7 +217,7 @@ fun CalendarScreen() {
             onShowTaskOption = {
                 screenModel.selectTask(it)
                 screenModel.openBottomSheet(true)
-            }
+            },
         )
     }
 }
@@ -237,7 +237,7 @@ fun CalendarScreenContent(
     selectedDay: LocalDate,
     onClickThisWeek: () -> Unit,
     onSelectDay: (LocalDate) -> Unit,
-    onShowTaskOption: (task: Task) -> Unit
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -249,37 +249,37 @@ fun CalendarScreenContent(
                 actions = {
                     AnimatedVisibility(selectedDay.insideThisWeek().not()) {
                         TextButton(
-                            onClick = onClickThisWeek
+                            onClick = onClickThisWeek,
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
                                     painter = painterResource("redo.xml"),
-                                    contentDescription = "Today"
+                                    contentDescription = "Today",
                                 )
                                 Text(
                                     text = "TODAY",
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.primary,
-                                        textDecoration = TextDecoration.Underline
-                                    )
+                                        textDecoration = TextDecoration.Underline,
+                                    ),
                                 )
                             }
                         }
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(PaddingValues(horizontal = 16.dp)),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -287,12 +287,12 @@ fun CalendarScreenContent(
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.End
-                )
+                    textAlign = TextAlign.End,
+                ),
             )
             LazyRow(
                 state = calendarPagerState,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(calendarLocalDates()) { date ->
                     Box(
@@ -301,27 +301,27 @@ fun CalendarScreenContent(
                             .clipToBounds()
                             .background(
                                 color = if (date == selectedDay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                                shape = RoundedCornerShape(4.dp)
+                                shape = RoundedCornerShape(4.dp),
                             )
                             .clickable {
                                 onSelectDay(date)
                             },
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Column {
                             Text(
                                 text = date.dayOfWeek.name.substring(0, 3),
                                 style = MaterialTheme.typography.labelMedium.copy(
-                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                             Text(
                                 text = date.dayOfMonth.toString(),
                                 style = MaterialTheme.typography.labelMedium.copy(
-                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                                    color = if (date == selectedDay) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                         }
                     }
@@ -338,7 +338,7 @@ fun CalendarScreenContent(
                         sessionTime = sessionTime,
                         shortBreakTime = shortBreakTime,
                         longBreakTime = longBreakTime,
-                        onShowTaskOption = onShowTaskOption
+                        onShowTaskOption = onShowTaskOption,
                     )
                 } else {
                     Text(
@@ -351,7 +351,7 @@ fun CalendarScreenContent(
                         }",
                         style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
             }
@@ -361,7 +361,15 @@ fun CalendarScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakTime: Int, positionedTask: PositionedTask, modifier: Modifier = Modifier, onShowTaskOption: (task: Task) -> Unit) {
+fun BasicTask(
+    hourFormat: Int,
+    sessionTime: Int,
+    shortBreakTime: Int,
+    longBreakTime: Int,
+    positionedTask: PositionedTask,
+    modifier: Modifier = Modifier,
+    onShowTaskOption: (task: Task) -> Unit,
+) {
     val task = positionedTask.task
     val end by remember {
         mutableStateOf(
@@ -369,8 +377,8 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                 focusSessions = task.focusSessions,
                 sessionTime = sessionTime,
                 shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime
-            )
+                longBreakTime = longBreakTime,
+            ),
         )
     }
     val topRadius =
@@ -383,7 +391,7 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
             .padding(
                 top = 2.dp,
                 end = 2.dp,
-                bottom = if (positionedTask.splitType == SplitType.End) 0.dp else 2.dp
+                bottom = if (positionedTask.splitType == SplitType.End) 0.dp else 2.dp,
             )
             .clipToBounds()
             .padding(4.dp),
@@ -391,26 +399,26 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
             topStart = topRadius,
             topEnd = topRadius,
             bottomEnd = bottomRadius,
-            bottomStart = bottomRadius
+            bottomStart = bottomRadius,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color(task.type.taskColor())
+            containerColor = Color(task.type.taskColor()),
         ),
         onClick = {
             onShowTaskOption(task)
-        }
+        },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     modifier = Modifier
@@ -418,11 +426,11 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                     text = task.name,
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     ),
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Icon(
@@ -433,7 +441,7 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                         },
                     imageVector = Icons.Filled.MoreVert,
                     contentDescription = "Task Options",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
             if (task.description != null) {
@@ -441,10 +449,10 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                     text = task.description,
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
                     ),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
@@ -452,7 +460,7 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "${
@@ -460,30 +468,30 @@ fun BasicTask(hourFormat: Int, sessionTime: Int, shortBreakTime: Int, longBreakT
                         focusSessions = task.focusSessions,
                         sessionTime = sessionTime,
                         shortBreakTime = shortBreakTime,
-                        longBreakTime = longBreakTime
+                        longBreakTime = longBreakTime,
                     )
                     } minutes",
                     style = MaterialTheme.typography.displaySmall.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 10.sp
-                    )
+                        fontSize = 10.sp,
+                    ),
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = prettyTimeDifference(
                         start = task.start,
                         end = end,
-                        timeFormat = hourFormat
+                        timeFormat = hourFormat,
                     ),
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 10.sp
+                        fontSize = 10.sp,
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.End,
                 )
             }
         }
@@ -498,8 +506,8 @@ fun BasicSidebarLabel(hourFormat: Int, time: LocalTime, modifier: Modifier = Mod
             .fillMaxHeight()
             .padding(4.dp),
         style = MaterialTheme.typography.labelMedium.copy(
-            fontSize = 12.sp
-        )
+            fontSize = 12.sp,
+        ),
     )
 }
 
@@ -513,9 +521,9 @@ fun ScheduleSidebar(
     label: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { _, time ->
         BasicSidebarLabel(
             hourFormat = hourFormat,
-            time = time
+            time = time,
         )
-    }
+    },
 ) {
     val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
     val numHours = numMinutes / 60
@@ -530,7 +538,7 @@ fun ScheduleSidebar(
             Box(modifier = Modifier.height(hourHeight)) {
                 label(
                     hourFormat,
-                    startTime.plusHours(i)
+                    startTime.plusHours(i),
                 )
             }
         }
@@ -548,7 +556,7 @@ fun Schedule(
     verticalScrollState: ScrollState,
     modifier: Modifier = Modifier,
     taskContent: @Composable (
-        positionedTask: PositionedTask
+        positionedTask: PositionedTask,
     ) -> Unit = { positionedTask ->
         BasicTask(
             hourFormat = hourFormat,
@@ -556,13 +564,13 @@ fun Schedule(
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
             longBreakTime = longBreakTime,
-            onShowTaskOption = onShowTaskOption
+            onShowTaskOption = onShowTaskOption,
         )
     },
     timeLabel: @Composable (hourFormat: Int, time: LocalTime) -> Unit = { hrFormat, time ->
         BasicSidebarLabel(
             hourFormat = hrFormat,
-            time = time
+            time = time,
         )
     },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
@@ -574,13 +582,13 @@ fun Schedule(
             focusSessions = it.focusSessions,
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime
+            longBreakTime = longBreakTime,
         )
     }.maxOfOrNull { it.date } ?: today().date,
     minTime: LocalTime = min(),
     maxTime: LocalTime = max(),
     daySize: ScheduleSize,
-    hourSize: ScheduleSize
+    hourSize: ScheduleSize,
 ) {
     val numDays = 0 + 1
     val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
@@ -645,7 +653,7 @@ fun Schedule(
             is ScheduleSize.Adaptive -> with(LocalDensity.current) {
                 maxOf(
                     ((constraints.maxWidth - sidebarWidth) / numDays).toDp(),
-                    daySize.minSize
+                    daySize.minSize,
                 )
             }
         }
@@ -655,7 +663,7 @@ fun Schedule(
             is ScheduleSize.Adaptive -> with(LocalDensity.current) {
                 maxOf(
                     ((constraints.maxHeight) / numHours).toDp(),
-                    hourSize.minSize
+                    hourSize.minSize,
                 )
             }
         }
@@ -663,7 +671,7 @@ fun Schedule(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .align(Alignment.Start)
+                    .align(Alignment.Start),
             ) {
                 ScheduleSidebar(
                     hourFormat = hourFormat,
@@ -673,7 +681,7 @@ fun Schedule(
                     label = timeLabel,
                     modifier = Modifier
                         .verticalScroll(verticalScrollState)
-                        .onGloballyPositioned { sidebarWidth = it.size.width }
+                        .onGloballyPositioned { sidebarWidth = it.size.width },
                 )
                 BasicSchedule(
                     hourFormat = hourFormat,
@@ -691,7 +699,7 @@ fun Schedule(
                     onShowTaskOption = onShowTaskOption,
                     modifier = Modifier
                         .weight(1f)
-                        .verticalScroll(verticalScrollState)
+                        .verticalScroll(verticalScrollState),
                 )
             }
         }
@@ -714,7 +722,7 @@ fun BasicSchedule(
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
             longBreakTime = longBreakTime,
-            onShowTaskOption = onShowTaskOption
+            onShowTaskOption = onShowTaskOption,
         )
     },
     minDate: LocalDate = tasks.minByOrNull(Task::start)?.start?.date ?: Clock.System.now()
@@ -724,13 +732,13 @@ fun BasicSchedule(
             focusSessions = it.focusSessions,
             sessionTime = sessionTime,
             shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime
+            longBreakTime = longBreakTime,
         )
     }.maxOfOrNull { it.date } ?: today().date,
     minTime: LocalTime = min(),
     maxTime: LocalTime = max(),
     dayWidth: Dp,
-    hourHeight: Dp
+    hourHeight: Dp,
 ) {
     val numDays = differenceBetweenDays(minDate, maxDate) + 1
     val numMinutes = differenceBetweenMinutes(minTime, maxTime) + 1
@@ -743,8 +751,8 @@ fun BasicSchedule(
                     tasks = tasks.sortedBy(Task::start),
                     sessionTime = sessionTime,
                     shortBreakTime = shortBreakTime,
-                    longBreakTime = longBreakTime
-                )
+                    longBreakTime = longBreakTime,
+                ),
             ).filter { it.end > minTime && it.start < maxTime }
         }
     Layout(
@@ -763,10 +771,10 @@ fun BasicSchedule(
                         dividerColor,
                         start = Offset(0f, (it + 1) * hourHeight.toPx()),
                         end = Offset(size.width, (it + 1) * hourHeight.toPx()),
-                        strokeWidth = 1.dp.toPx()
+                        strokeWidth = 1.dp.toPx(),
                     )
                 }
-            }
+            },
     ) { measureables, constraints ->
         val height = (hourHeight.toPx() * (numMinutes / 60f)).roundToInt()
         val width = dayWidth.roundToPx() * numDays
@@ -782,8 +790,8 @@ fun BasicSchedule(
                     minWidth = taskWidth,
                     maxWidth = taskWidth,
                     minHeight = taskHeight,
-                    maxHeight = taskHeight
-                )
+                    maxHeight = taskHeight,
+                ),
             )
             Pair(placeable, splitTask)
         }
@@ -792,7 +800,7 @@ fun BasicSchedule(
                 val taskOffsetMinutes = if (splitTask.start > minTime) {
                     differenceBetweenMinutes(
                         minTime,
-                        splitTask.start
+                        splitTask.start,
                     )
                 } else {
                     0

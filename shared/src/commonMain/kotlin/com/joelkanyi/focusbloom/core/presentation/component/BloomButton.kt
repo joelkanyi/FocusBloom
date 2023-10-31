@@ -24,14 +24,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 
 @Composable
-fun BloomButton(modifier: Modifier = Modifier, onClick: () -> Unit, shape: Shape = MaterialTheme.shapes.medium, backgroundColor: Color = MaterialTheme.colorScheme.primary, content: @Composable () -> Unit) {
+fun BloomButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    shape: Shape = MaterialTheme.shapes.medium,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    content: @Composable () -> Unit,
+) {
     Button(
         modifier = modifier,
         onClick = onClick,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
-        )
+            containerColor = backgroundColor,
+        ),
     ) {
         content()
     }
