@@ -1,13 +1,12 @@
 [versions]
 componentsResources = "1.5.3"
 core = "1.12.0"
-koalaplotCore = "0.4.0-dev1"
-korau = "4.0.6"
+koalaplotCore = "0.4.0"
 kotlin = "1.9.10"
 gradle = "8.1.2"
 kotlinxCoroutinesSwing = "1.7.3"
-detekt = "1.19.0"
-gradleVersionUpdate = "0.46.0"
+detekt = "1.23.1"
+gradleVersionUpdate = "0.49.0"
 koinCore = "3.5.0"
 koinAndroid = "3.5.0"
 kotlinxSerializationJson = "1.6.0"
@@ -16,15 +15,15 @@ material3WindowSizeClassMultiplatform = "0.3.1"
 napier = "2.6.1"
 sqlDelight = "2.0.0"
 multiplatformSettings = "1.1.0"
-compose = "1.5.10-beta01"
+compose = "1.5.10-rc02"
 core-library-desugaring = "2.0.3"
 toast4j = "0.2.0"
-voyager = "1.0.0-rc07"
+voyager = "1.0.0-rc08"
 compose-activity = "1.8.0"
 koin-compose = "1.1.0"
 spotless = "5.17.1"
 ktlint = "11.6.1"
-accompanist-systemUIController = "0.30.1"
+accompanist-systemUIController = "0.32.0"
 annotationJvm = "1.7.0"
 
 [plugins]
@@ -48,7 +47,6 @@ core = { module = "androidx.core:core", version.ref = "core" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
-korau = { module = "com.soywiz.korlibs.korau:korau", version.ref = "korau" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
