@@ -103,7 +103,6 @@ kotlin {
                 implementation(libs.kotlinX.dateTime)
                 implementation(libs.koalaplot.core)
 
-                implementation(libs.korau)
                 implementation(libs.stdlib)
             }
         }
