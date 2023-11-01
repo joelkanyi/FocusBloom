@@ -21,7 +21,6 @@ core-library-desugaring = "2.0.3"
 toast4j = "0.2.0"
 compose-activity = "1.8.0"
 spotless = "5.17.1"
-ktlint = "11.6.1"
 accompanist-systemUIController = "0.32.0"
 annotationJvm = "1.7.0"
 
@@ -36,7 +35,6 @@ jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }

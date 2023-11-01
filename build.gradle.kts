@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.ktlint)
 }
 
 allprojects {

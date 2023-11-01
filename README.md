@@ -51,8 +51,6 @@ The app is shared between Android, iOS and Desktop. The shared code is written i
 - [Compose Components Resources](https://mvnrepository.com/artifact/org.jetbrains.compose.components/components-resources) - Resources For Compose Multiplatform.
 - [Material3 Window Size Multiplatform](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) - About Material 3 Window Size Class for Compose Multiplatform.
 - [Spotless](https://github.com/diffplug/spotless) - A code formatter that helps keep the codebase clean.
-- [Detekt](https://github.com/detekt/detekt) - Static code analysis for Kotlin.
-- [Ktlint](https://github.com/pinterest/ktlint) - A static code analysis tool and formatter for Kotlin.
 - [Github Actions](https://docs.github.com/en/actions) - A CI/CD tool that helps automate workflows.
 - [Renovate](https://docs.renovatebot.com/) - An open-source software tool designed to help automate the process of updating dependencies in software projects.
 
