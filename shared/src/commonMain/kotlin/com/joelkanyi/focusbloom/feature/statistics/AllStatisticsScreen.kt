@@ -45,6 +45,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.datetime.LocalDate
+import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -52,7 +53,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
-        val screenModel = get<StatisticsScreenModel>()
+        val screenModel = rememberKoinInject<StatisticsScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,

@@ -86,12 +86,12 @@ import com.joelkanyi.focusbloom.core.presentation.theme.Yellow
 import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
 import com.joelkanyi.focusbloom.core.utils.timeFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @Composable
-fun SettingsScreen() {
-    val screenModel: SettingsScreenModel = rememberKoinInject()
-
+fun SettingsScreen(
+    screenModel: SettingsScreenModel = koinInject(),
+) {
     val darkTheme = when (screenModel.appTheme.collectAsState().value) {
         1 -> true
         else -> false

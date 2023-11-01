@@ -1,36 +1,32 @@
 [versions]
-componentsResources = "1.5.3"
+kotlin = "1.9.20"
+compose = "1.5.10"
+koinCore = "3.5.0"
+koinAndroid = "3.5.0"
+gradle = "8.1.2"
+sqlDelight = "2.0.0"
+voyager = "1.0.0-rc08"
+componentsResources = "1.5.10"
+multiplatformSettings = "1.1.0"
+koin-compose = "1.1.0"
 core = "1.12.0"
 jna = "5.13.0"
 koalaplotCore = "0.4.0"
-kotlin = "1.9.10"
-gradle = "8.1.2"
 kotlinxCoroutinesSwing = "1.7.3"
-detekt = "1.23.1"
-gradleVersionUpdate = "0.49.0"
-koinCore = "3.5.0"
-koinAndroid = "3.5.0"
 kotlinxSerializationJson = "1.6.0"
 kotlinxDateTime = "0.4.1"
 material3WindowSizeClassMultiplatform = "0.3.1"
 napier = "2.6.1"
-sqlDelight = "2.0.0"
-multiplatformSettings = "1.1.0"
-compose = "1.5.10-rc02"
 core-library-desugaring = "2.0.3"
 toast4j = "0.2.0"
-voyager = "1.0.0-rc08"
 compose-activity = "1.8.0"
-koin-compose = "1.1.0"
 spotless = "5.17.1"
 ktlint = "11.6.1"
 accompanist-systemUIController = "0.32.0"
 annotationJvm = "1.7.0"
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
-gradleVersionUpdates = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionUpdate" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

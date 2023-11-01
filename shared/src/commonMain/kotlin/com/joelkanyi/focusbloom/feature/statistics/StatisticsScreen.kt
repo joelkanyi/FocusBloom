@@ -85,13 +85,13 @@ import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StatisticsScreen() {
-    val screenModel: StatisticsScreenModel = rememberKoinInject()
-
+fun StatisticsScreen(
+    screenModel: StatisticsScreenModel = koinInject(),
+) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,

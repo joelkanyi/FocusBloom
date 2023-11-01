@@ -16,7 +16,7 @@
 package com.joelkanyi.focusbloom.feature.onboarding
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import kotlinx.coroutines.channels.Channel
@@ -38,7 +38,7 @@ class OnboadingViewModel(
     }
 
     fun saveUsername() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             settingsRepository.saveUsername(username.value.trim())
             settingsRepository.toggleReminder(1)
             _eventsFlow.send(UiEvents.Navigation)

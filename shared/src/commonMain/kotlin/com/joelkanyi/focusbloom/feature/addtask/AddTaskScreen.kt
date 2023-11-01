@@ -54,8 +54,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -93,22 +91,20 @@ import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AddTaskScreen(
     taskId: Int? = null,
+    screenModel: AddTaskScreenModel = koinInject(),
 ) {
-    val screenModel: AddTaskScreenModel = rememberKoinInject()
-
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
@@ -139,23 +135,6 @@ fun AddTaskScreen(
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
     )
-    val calculatedFocusTime by remember {
-        mutableStateOf(
-            calculateFromFocusSessions(
-                focusSessions = focusSessions,
-                sessionTime = sessionTime,
-                shortBreakTime = shortBreakTime,
-                longBreakTime = longBreakTime,
-                currentLocalDateTime = LocalDateTime(
-                    year = taskDate.year,
-                    month = taskDate.month,
-                    dayOfMonth = taskDate.dayOfMonth,
-                    hour = startTime.hour,
-                    minute = startTime.minute,
-                ),
-            ),
-        )
-    }
 
     LaunchedEffect(key1 = true) {
         screenModel.getTask(taskId)
@@ -238,7 +217,6 @@ fun AddTaskScreen(
     AddTaskScreenContent(
         snackbarHostState = snackbarHostState,
         hourFormat = hourFormat,
-        calculatedFocusTime = calculatedFocusTime,
         taskOptions = taskTypes,
         selectedTaskType = selectedTaskType,
         taskName = taskName,
@@ -328,7 +306,6 @@ fun AddTaskScreen(
 @Composable
 private fun AddTaskScreenContent(
     snackbarHostState: SnackbarHostState,
-    calculatedFocusTime: LocalTime,
     hourFormat: Int,
     taskOptions: List<TaskType>,
     selectedTaskType: TaskType,

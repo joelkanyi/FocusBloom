@@ -16,7 +16,7 @@
 package com.joelkanyi.focusbloom.feature.home
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
@@ -45,7 +45,7 @@ class HomeScreenModel(
     val hourFormat = settingsRepository.getHourFormat()
         .map { it ?: 24 }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 24,
         )
@@ -55,21 +55,21 @@ class HomeScreenModel(
             it
         }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -79,19 +79,19 @@ class HomeScreenModel(
             ReminderState.Success(it)
         }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = ReminderState.Loading,
         )
 
     fun deleteTask(task: Task) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.deleteTask(task.id)
         }
     }
 
     fun updateTask(task: Task) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTask(task)
         }
     }
@@ -103,7 +103,7 @@ class HomeScreenModel(
     }
 
     fun pushToTomorrow(task: Task) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTask(
                 task.copy(
                     date = task.date.plusDays(1),
@@ -114,7 +114,7 @@ class HomeScreenModel(
     }
 
     fun pushToToday(task: Task) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTask(
                 task.copy(
                     date = today(),
@@ -125,7 +125,7 @@ class HomeScreenModel(
     }
 
     fun markAsCompleted(task: Task) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTaskCompleted(
                 id = task.id,
                 completed = true,
@@ -160,7 +160,7 @@ class HomeScreenModel(
             )
         }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = TasksState.Loading,
         )
@@ -168,7 +168,7 @@ class HomeScreenModel(
     val username = settingsRepository.getUsername()
         .map { it }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -176,7 +176,7 @@ class HomeScreenModel(
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -184,7 +184,7 @@ class HomeScreenModel(
     val longBreakColor = settingsRepository.longBreakColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -192,13 +192,13 @@ class HomeScreenModel(
     val focusColor = settingsRepository.focusColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 
     fun toggleReminder(value: Int) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             settingsRepository.toggleReminder(value)
         }
     }

@@ -46,6 +46,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -56,7 +57,7 @@ data class AllTasksScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val screenModel = get<HomeScreenModel>()
+        val screenModel = rememberKoinInject<HomeScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
