@@ -48,6 +48,11 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
+
     cocoapods {
         version = "1.0"
         summary = "Some description for a Kotlin/Native module"
@@ -104,6 +109,7 @@ kotlin {
                 implementation(libs.koalaplot.core)
 
                 implementation(libs.stdlib)
+                implementation(libs.kotlinx.coroutines)
             }
         }
 
@@ -153,6 +159,17 @@ kotlin {
                 implementation(libs.components.resources)
             }
         }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutines.js)
+                implementation(libs.web.worker.driver)
+                implementation(npm("kotlinx-coroutines-core", libs.versions.coroutines.get()))
+                implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.0.0"))
+                implementation(npm("sql.js", "1.7.0"))
+                implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+            }
+        }
     }
 }
 
@@ -160,6 +177,7 @@ sqldelight {
     databases {
         create("BloomDatabase") {
             packageName.set("com.joelkanyi.focusbloom.database")
+            generateAsync.set(true)
         }
     }
 }

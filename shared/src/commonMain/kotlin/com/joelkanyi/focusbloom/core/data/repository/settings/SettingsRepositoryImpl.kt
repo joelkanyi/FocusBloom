@@ -30,7 +30,7 @@ class SettingsRepositoryImpl(
         return preferenceManager.getInt(key = PreferenceManager.APP_THEME)
     }
 
-    override fun clearAll() {
+    override suspend fun clearAll() {
         return preferenceManager.clearPreferences()
     }
 
@@ -50,19 +50,19 @@ class SettingsRepositoryImpl(
         return preferenceManager.getInt(key = PreferenceManager.HOUR_FORMAT)
     }
 
-    override fun saveSessionTime(sessionTime: Int) {
+    override suspend fun saveSessionTime(sessionTime: Int) {
         preferenceManager.setInt(key = PreferenceManager.FOCUS_TIME, value = sessionTime)
     }
 
-    override fun saveLongBreakTime(longBreakTime: Int) {
+    override suspend fun saveLongBreakTime(longBreakTime: Int) {
         preferenceManager.setInt(key = PreferenceManager.LONG_BREAK_TIME, value = longBreakTime)
     }
 
-    override fun saveHourFormat(timeFormat: Int) {
+    override suspend fun saveHourFormat(timeFormat: Int) {
         preferenceManager.setInt(key = PreferenceManager.HOUR_FORMAT, value = timeFormat)
     }
 
-    override fun saveShortBreakTime(shortBreakTime: Int) {
+    override suspend fun saveShortBreakTime(shortBreakTime: Int) {
         preferenceManager.setInt(key = PreferenceManager.SHORT_BREAK_TIME, value = shortBreakTime)
     }
 
@@ -70,7 +70,7 @@ class SettingsRepositoryImpl(
         return preferenceManager.getLong(key = PreferenceManager.SHORT_BREAK_COLOR)
     }
 
-    override fun saveShortBreakColor(color: Long) {
+    override suspend fun saveShortBreakColor(color: Long) {
         preferenceManager.setLong(key = PreferenceManager.SHORT_BREAK_COLOR, value = color)
     }
 
@@ -78,7 +78,7 @@ class SettingsRepositoryImpl(
         return preferenceManager.getLong(key = PreferenceManager.LONG_BREAK_COLOR)
     }
 
-    override fun saveLongBreakColor(color: Long) {
+    override suspend fun saveLongBreakColor(color: Long) {
         preferenceManager.setLong(key = PreferenceManager.LONG_BREAK_COLOR, value = color)
     }
 
@@ -86,11 +86,11 @@ class SettingsRepositoryImpl(
         return preferenceManager.getLong(key = PreferenceManager.FOCUS_COLOR)
     }
 
-    override fun saveFocusColor(color: Long) {
+    override suspend fun saveFocusColor(color: Long) {
         preferenceManager.setLong(key = PreferenceManager.FOCUS_COLOR, value = color)
     }
 
-    override fun saveUsername(value: String) {
+    override suspend fun saveUsername(value: String) {
         preferenceManager.setString(key = PreferenceManager.USERNAME, value = value)
     }
 
@@ -102,7 +102,7 @@ class SettingsRepositoryImpl(
         return preferenceManager.getInt(key = PreferenceManager.NOTIFICATION_OPTION)
     }
 
-    override fun toggleReminder(value: Int) {
+    override suspend fun toggleReminder(value: Int) {
         preferenceManager.setInt(key = PreferenceManager.NOTIFICATION_OPTION, value = value)
     }
 }

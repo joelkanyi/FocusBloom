@@ -15,13 +15,14 @@
  */
 package com.joelkanyi.focusbloom.platform
 
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import com.joelkanyi.focusbloom.database.BloomDatabase
 
 actual class DatabaseDriverFactory {
-    actual fun createDriver(): SqlDriver {
+    actual suspend fun provideDbDriver(schema: SqlSchema<QueryResult.AsyncValue<Unit>>): SqlDriver {
         return JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-            .also { BloomDatabase.Schema.create(it) }
+            .also { schema.create(it).await() }
     }
 }

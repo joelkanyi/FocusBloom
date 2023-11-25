@@ -18,6 +18,7 @@ package com.joelkanyi.focusbloom.main
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -27,20 +28,21 @@ class MainViewModel(
     settingsRepository: SettingsRepository,
 ) : ScreenModel {
 
-    val appTheme: StateFlow<Int?> = settingsRepository.getAppTheme().map { it }.stateIn(
+    val appTheme: StateFlow<Int?> = MutableStateFlow(null)
+        /*settingsRepository.getAppTheme().map { it }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = null,
-    )
+    )*/
 
-    val onBoardingCompleted: StateFlow<OnBoardingState> =
-        settingsRepository.getUsername().map {
+    val onBoardingCompleted: StateFlow<OnBoardingState> = MutableStateFlow(OnBoardingState.Success(false))
+        /*settingsRepository.getUsername().map {
             OnBoardingState.Success(it.isNullOrEmpty().not())
         }.stateIn(
             scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = OnBoardingState.Loading,
-        )
+        )*/
 }
 
 sealed class OnBoardingState {

@@ -15,13 +15,17 @@
  */
 package com.joelkanyi.focusbloom.platform
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.coroutines.SuspendSettings
+import com.russhwolf.settings.coroutines.toSuspendSettings
 import java.util.prefs.Preferences
 
 actual class MultiplatformSettingsWrapper {
-    actual fun createSettings(): Settings {
+    @OptIn(ExperimentalSettingsApi::class)
+    actual fun createSettings(): SuspendSettings {
         val delegate: Preferences = Preferences.userRoot()
-        return PreferencesSettings(delegate)
+        return PreferencesSettings(delegate).toSuspendSettings()
     }
 }

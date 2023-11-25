@@ -17,42 +17,44 @@ package com.joelkanyi.focusbloom.core.data.local.setting
 
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.Settings
+import com.russhwolf.settings.coroutines.SuspendSettings
 import com.russhwolf.settings.coroutines.getBooleanFlow
 import com.russhwolf.settings.coroutines.getIntFlow
 import com.russhwolf.settings.coroutines.getIntOrNullFlow
 import com.russhwolf.settings.coroutines.getLongFlow
 import com.russhwolf.settings.coroutines.getStringOrNullFlow
-import com.russhwolf.settings.set
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-class PreferenceManager constructor(private val settings: Settings) {
+class PreferenceManager(private val settings: SuspendSettings) {
     private val observableSettings: ObservableSettings by lazy { settings as ObservableSettings }
 
     @OptIn(ExperimentalSettingsApi::class)
-    fun setString(key: String, value: String) {
-        observableSettings.set(key = key, value = value)
-    }
+    private val suspendSettings = settings
 
     @OptIn(ExperimentalSettingsApi::class)
+    suspend fun setString(key: String, value: String) {
+        // observableSettings.set(key = key, value = value)
+        suspendSettings.putString(key = key, value = value)
+    }
+
     fun getNonFlowString(key: String) = observableSettings.getString(
         key = key,
         defaultValue = "",
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalSettingsApi::class)
+    @OptIn(ExperimentalSettingsApi::class)
     fun getString(key: String) = observableSettings.getStringOrNullFlow(key = key)
 
     @OptIn(ExperimentalSettingsApi::class)
-    fun setInt(key: String, value: Int) {
-        observableSettings.set(key = key, value = value)
+    suspend fun setInt(key: String, value: Int) {
+        // observableSettings.set(key = key, value = value)
+        suspendSettings.putInt(key = key, value = value)
     }
 
-    @OptIn(ExperimentalSettingsApi::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalSettingsApi::class)
     fun getInt(key: String) = observableSettings.getIntOrNullFlow(key = key)
 
-    @OptIn(ExperimentalSettingsApi::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalSettingsApi::class)
     fun getIntFlow(key: String) = observableSettings.getIntFlow(key = key, defaultValue = 0)
 
     companion object {
@@ -69,11 +71,12 @@ class PreferenceManager constructor(private val settings: Settings) {
     }
 
     @OptIn(ExperimentalSettingsApi::class)
-    fun clearPreferences() {
-        observableSettings.clear()
+    suspend fun clearPreferences() {
+        // observableSettings.clear()
+        suspendSettings.clear()
     }
 
-    @OptIn(ExperimentalSettingsApi::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalSettingsApi::class)
     fun getBoolean(key: String): Flow<Boolean> {
         return observableSettings.getBooleanFlow(
             key = key,
@@ -82,11 +85,12 @@ class PreferenceManager constructor(private val settings: Settings) {
     }
 
     @OptIn(ExperimentalSettingsApi::class)
-    fun setBoolean(key: String, value: Boolean) {
-        observableSettings.set(key = key, value = value)
+    suspend fun setBoolean(key: String, value: Boolean) {
+        // observableSettings.set(key = key, value = value)
+        suspendSettings.putBoolean(key = key, value = value)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalSettingsApi::class)
+    @OptIn(ExperimentalSettingsApi::class)
     fun getLong(key: Any): Flow<Long?> {
         return observableSettings.getLongFlow(
             key = key.toString(),
@@ -95,7 +99,8 @@ class PreferenceManager constructor(private val settings: Settings) {
     }
 
     @OptIn(ExperimentalSettingsApi::class)
-    fun setLong(key: String, value: Long) {
-        observableSettings.set(key = key, value = value)
+    suspend fun setLong(key: String, value: Long) {
+        // observableSettings.set(key = key, value = value)
+        suspendSettings.putLong(key = key, value = value)
     }
 }

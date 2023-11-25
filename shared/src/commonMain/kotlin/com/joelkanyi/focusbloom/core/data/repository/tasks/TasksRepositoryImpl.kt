@@ -15,133 +15,155 @@
  */
 package com.joelkanyi.focusbloom.core.data.repository.tasks
 
-import app.cash.sqldelight.coroutines.asFlow
+import com.joelkanyi.focusbloom.core.data.local.sqldelight.DatabaseHelper
 import com.joelkanyi.focusbloom.core.data.mapper.toTask
 import com.joelkanyi.focusbloom.core.data.mapper.toTaskEntity
-import com.joelkanyi.focusbloom.core.data.utils.mapToList
-import com.joelkanyi.focusbloom.core.data.utils.mapToOneOrNull
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
-import com.joelkanyi.focusbloom.database.BloomDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class TasksRepositoryImpl(
-    bloomDatabase: BloomDatabase,
+    private val databaseHelper: DatabaseHelper,
 ) : TasksRepository {
-    private val dbQuery = bloomDatabase.taskQueries
     override fun getTasks(): Flow<List<Task>> {
-        return dbQuery
-            .getAllTasks()
-            .asFlow()
-            .mapToList()
-            .map { tasks ->
-                tasks.map {
-                    it.toTask()
-                }
+        return databaseHelper.queryAsListFlow {
+            it.taskQueries.getAllTasks()
+        }.map { taskEntities ->
+            taskEntities.map { taskEntity ->
+                taskEntity.toTask()
             }
+        }
     }
 
     override fun getTask(id: Int): Flow<Task?> {
-        return dbQuery
-            .getTaskById(id)
-            .asFlow()
-            .mapToOneOrNull()
-            .map { taskEntity ->
-                taskEntity?.toTask()
-            }
+        return databaseHelper.queryAsOneOrNullFlow {
+            it.taskQueries.getTaskById(id)
+        }.map {
+            it?.toTask()
+        }
     }
 
     override suspend fun addTask(task: Task) {
-        task.toTaskEntity().let {
-            dbQuery.insertTask(
-                name = it.name,
-                description = it.description,
-                start = it.start,
-                color = it.color,
-                current = it.current,
-                date = it.date,
-                focusSessions = it.focusSessions,
-                completed = it.completed,
-                type = it.type,
-                consumedFocusTime = it.consumedFocusTime,
-                consumedShortBreakTime = it.consumedShortBreakTime,
-                consumedLongBreakTime = it.consumedLongBreakTime,
-                inProgressTask = it.inProgressTask,
-                currentCycle = it.currentCycle,
-                active = it.active,
-            )
+        task.toTaskEntity().let { taskEntity ->
+            databaseHelper.withDatabase {
+                it.taskQueries.insertTask(
+                    name = taskEntity.name,
+                    description = taskEntity.description,
+                    start = taskEntity.start,
+                    color = taskEntity.color,
+                    current = taskEntity.current,
+                    date = taskEntity.date,
+                    focusSessions = taskEntity.focusSessions,
+                    completed = taskEntity.completed,
+                    type = taskEntity.type,
+                    consumedFocusTime = taskEntity.consumedFocusTime,
+                    consumedShortBreakTime = taskEntity.consumedShortBreakTime,
+                    consumedLongBreakTime = taskEntity.consumedLongBreakTime,
+                    inProgressTask = taskEntity.inProgressTask,
+                    currentCycle = taskEntity.currentCycle,
+                    active = taskEntity.active,
+                )
+            }
         }
     }
 
     override suspend fun updateTask(task: Task) {
-        task.toTaskEntity().let {
-            dbQuery.updateTask(
-                id = it.id,
-                name = it.name,
-                description = it.description,
-                start = it.start,
-                color = it.color,
-                current = it.current,
-                date = it.date,
-                focusSessions = it.focusSessions,
-                completed = it.completed,
-                active = it.active,
-            )
+        task.toTaskEntity().let { taskEntity ->
+            databaseHelper.withDatabase {
+                it.taskQueries.updateTask(
+                    id = taskEntity.id,
+                    name = taskEntity.name,
+                    description = taskEntity.description,
+                    start = taskEntity.start,
+                    color = taskEntity.color,
+                    current = taskEntity.current,
+                    date = taskEntity.date,
+                    focusSessions = taskEntity.focusSessions,
+                    completed = taskEntity.completed,
+                    active = taskEntity.active,
+                )
+            }
         }
     }
 
     override suspend fun deleteTask(id: Int) {
-        dbQuery.deleteTaskById(id)
+        databaseHelper.withDatabase {
+            it.taskQueries.deleteTaskById(id)
+        }
     }
 
     override suspend fun deleteAllTasks() {
-        dbQuery.deleteAllTasks()
+        databaseHelper.withDatabase {
+            it.taskQueries.deleteAllTasks()
+        }
     }
 
     override suspend fun updateConsumedFocusTime(id: Int, focusTime: Long) {
-        dbQuery.updateConsumedFocusTime(id = id, consumedFocusTime = focusTime)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateConsumedFocusTime(id = id, consumedFocusTime = focusTime)
+        }
     }
 
     override suspend fun updateConsumedShortBreakTime(id: Int, shortBreakTime: Long) {
-        dbQuery.updateConsumedShortBreakTime(id = id, consumedShortBreakTime = shortBreakTime)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateConsumedShortBreakTime(
+                id = id,
+                consumedShortBreakTime = shortBreakTime,
+            )
+        }
     }
 
     override suspend fun updateConsumedLongBreakTime(id: Int, longBreakTime: Long) {
-        dbQuery.updateConsumedLongBreakTime(id = id, consumedLongBreakTime = longBreakTime)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateConsumedLongBreakTime(
+                id = id,
+                consumedLongBreakTime = longBreakTime,
+            )
+        }
     }
 
     override suspend fun updateTaskInProgress(id: Int, inProgressTask: Boolean) {
-        dbQuery.updateInProgressTask(id = id, inProgressTask = inProgressTask)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateInProgressTask(id = id, inProgressTask = inProgressTask)
+        }
     }
 
     override suspend fun updateTaskCompleted(id: Int, completed: Boolean) {
-        dbQuery.updateTaskCompleted(id = id, completed = completed)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateTaskCompleted(id = id, completed = completed)
+        }
     }
 
     override suspend fun updateCurrentSessionName(id: Int, current: String) {
-        dbQuery.updateCurrentSessionName(id = id, current = current)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateCurrentSessionName(id = id, current = current)
+        }
     }
 
     override suspend fun updateTaskCycleNumber(id: Int, cycle: Int) {
-        dbQuery.updateTaskCycleNumber(id = id, currentCycle = cycle)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateTaskCycleNumber(id = id, currentCycle = cycle)
+        }
     }
 
     override fun getActiveTask(): Flow<Task?> {
-        return dbQuery
-            .getActiveTask()
-            .asFlow()
-            .mapToOneOrNull()
-            .map { taskEntity ->
-                taskEntity?.toTask()
-            }
+        return databaseHelper.queryAsOneOrNullFlow {
+            it.taskQueries.getActiveTask()
+        }.map {
+            it?.toTask()
+        }
     }
 
     override suspend fun updateTaskActive(id: Int, active: Boolean) {
-        dbQuery.updateTaskActiveStatus(id = id, active = active)
+        databaseHelper.withDatabase {
+            it.taskQueries.updateTaskActiveStatus(id = id, active = active)
+        }
     }
 
     override suspend fun updateAllTasksActiveStatusToInactive() {
-        dbQuery.updateAllTasksActiveStatusToInactive()
+        databaseHelper.withDatabase {
+            it.taskQueries.updateAllTasksActiveStatusToInactive()
+        }
     }
 }

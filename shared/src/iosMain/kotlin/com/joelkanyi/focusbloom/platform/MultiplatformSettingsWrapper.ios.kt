@@ -15,13 +15,17 @@
  */
 package com.joelkanyi.focusbloom.platform
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.coroutines.SuspendSettings
+import com.russhwolf.settings.coroutines.toSuspendSettings
 import platform.Foundation.NSUserDefaults
 
 actual class MultiplatformSettingsWrapper {
-    actual fun createSettings(): Settings {
+    @OptIn(ExperimentalSettingsApi::class)
+    actual fun createSettings(): SuspendSettings {
         val delegate = NSUserDefaults.standardUserDefaults
-        return NSUserDefaultsSettings(delegate)
+        return NSUserDefaultsSettings(delegate).toSuspendSettings()
     }
 }

@@ -15,20 +15,13 @@
  */
 package com.joelkanyi.focusbloom.di
 
-import com.joelkanyi.focusbloom.core.data.adapter.colorAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.consumedFocusTimeAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.consumedLongBreakTimeAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.consumedShortBreakTimeAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.currentAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.currentCycleAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.focusSessionsAdapter
-import com.joelkanyi.focusbloom.core.data.adapter.idAdapter
 import com.joelkanyi.focusbloom.core.data.local.setting.PreferenceManager
+import com.joelkanyi.focusbloom.core.data.local.sqldelight.DatabaseHelper
+import com.joelkanyi.focusbloom.core.data.local.sqldelight.ProvideDatabase
 import com.joelkanyi.focusbloom.core.data.repository.settings.SettingsRepositoryImpl
 import com.joelkanyi.focusbloom.core.data.repository.tasks.TasksRepositoryImpl
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
-import com.joelkanyi.focusbloom.database.BloomDatabase
 import com.joelkanyi.focusbloom.feature.addtask.AddTaskScreenModel
 import com.joelkanyi.focusbloom.feature.calendar.CalendarScreenModel
 import com.joelkanyi.focusbloom.feature.home.HomeScreenModel
@@ -37,28 +30,23 @@ import com.joelkanyi.focusbloom.feature.settings.SettingsScreenModel
 import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreenModel
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreenModel
 import com.joelkanyi.focusbloom.main.MainViewModel
-import com.joelkanyi.focusbloom.platform.DatabaseDriverFactory
-import database.TaskEntity
+import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+@OptIn(ExperimentalSettingsApi::class)
 fun commonModule() = module {
     /**
      * Database
      */
-    single<BloomDatabase> {
-        BloomDatabase(
-            driver = get<DatabaseDriverFactory>().createDriver(),
-            taskEntityAdapter = TaskEntity.Adapter(
-                idAdapter = idAdapter,
-                colorAdapter = colorAdapter,
-                consumedFocusTimeAdapter = consumedFocusTimeAdapter,
-                consumedLongBreakTimeAdapter = consumedLongBreakTimeAdapter,
-                consumedShortBreakTimeAdapter = consumedShortBreakTimeAdapter,
-                currentAdapter = currentAdapter,
-                currentCycleAdapter = currentCycleAdapter,
-                focusSessionsAdapter = focusSessionsAdapter,
-            ),
+    single {
+        DatabaseHelper(
+            databaseFlow = get<ProvideDatabase>().provideDatabaseFlow(),
+        )
+    }
+    single {
+        ProvideDatabase(
+            databaseDriverFactory = get(),
         )
     }
     /**
@@ -77,9 +65,13 @@ fun commonModule() = module {
         )
     }
 
+/*    single<SettingsRepository> {
+        MockSettings()
+    }*/
+
     single<TasksRepository> {
         TasksRepositoryImpl(
-            bloomDatabase = get(),
+            databaseHelper = get(),
         )
     }
 
