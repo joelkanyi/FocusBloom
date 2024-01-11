@@ -94,7 +94,6 @@ class PreferenceManager constructor(private val settings: Settings) {
         )
     }
 
-    @OptIn(ExperimentalSettingsApi::class)
     fun setLong(key: String, value: Long) {
         observableSettings.set(key = key, value = value)
     }

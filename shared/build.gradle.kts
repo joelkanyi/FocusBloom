@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 /*
  * Copyright 2023 Joel Kanyi.
  *
@@ -44,7 +46,6 @@ kotlin {
     }
     jvm()
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -62,6 +63,7 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
             transitiveExport = true
             compilations.all {
                 kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
@@ -70,88 +72,75 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(libs.koin.core)
-                api(libs.koin.compose)
+        commonMain.dependencies {
+            api(libs.koin.core)
+            api(libs.koin.compose)
 
-                implementation(compose.material3)
-                implementation(compose.material)
-                implementation(compose.materialIconsExtended)
+            implementation(compose.material3)
+            implementation(compose.material)
+            implementation(compose.materialIconsExtended)
 
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.components.resources)
 
-                implementation(libs.voyager.navigator)
-                implementation(libs.voyager.bottomSheetNavigator)
-                implementation(libs.voyager.transitions)
-                implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.bottomSheetNavigator)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.koin)
 
-                implementation(libs.kotlinX.serializationJson)
+            implementation(libs.kotlinX.serializationJson)
 
-                implementation(libs.material3.window.size.multiplatform)
+            implementation(libs.material3.window.size.multiplatform)
 
-                implementation(libs.sqlDelight.runtime)
-                implementation(libs.sqlDelight.coroutine)
-                implementation(libs.primitive.adapters)
+            implementation(libs.sqlDelight.runtime)
+            implementation(libs.sqlDelight.coroutine)
+            implementation(libs.primitive.adapters)
 
-                api(libs.multiplatformSettings.noArg)
-                api(libs.multiplatformSettings.coroutines)
+            api(libs.multiplatformSettings.noArg)
+            api(libs.multiplatformSettings.coroutines)
 
-                api(libs.napier)
+            api(libs.napier)
 
-                implementation(libs.kotlinX.dateTime)
-                implementation(libs.koalaplot.core)
+            implementation(libs.kotlinX.dateTime)
+            implementation(libs.koalaplot.core)
 
-                implementation(libs.stdlib)
-            }
+            implementation(libs.stdlib)
         }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.sqlDelight.android)
-                implementation(libs.accompanist.systemUIController)
-                implementation(libs.core)
-                implementation(libs.compose.activity)
-            }
+        androidMain.dependencies {
+            implementation(libs.sqlDelight.android)
+            implementation(libs.accompanist.systemUIController)
+            implementation(libs.core)
+            implementation(libs.compose.activity)
         }
 
-        val nativeMain by creating {
+
+        /*val nativeMain by creating {
             dependsOn(commonMain)
+        }*/
+
+        jvmMain.dependencies {
+            implementation(libs.sqlDelight.jvm)
+            implementation(libs.kotlinx.coroutines.swing)
+
+            // Toaster for Windows
+            implementation(libs.toast4j)
+
+            // JNA for Linux
+            implementation("de.jangassen:jfa:1.2.0") {
+                // not excluding this leads to a strange error during build:
+                // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
+                exclude(group = "net.java.dev.jna", module = "jna")
+            }
+
+            // JNA for Windows
+            implementation(libs.jna)
         }
 
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.sqlDelight.jvm)
-                implementation(libs.kotlinx.coroutines.swing)
-
-                // Toaster for Windows
-                implementation(libs.toast4j)
-
-                // JNA for Linux
-                implementation("de.jangassen:jfa:1.2.0") {
-                    // not excluding this leads to a strange error during build:
-                    // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
-                    exclude(group = "net.java.dev.jna", module = "jna")
-                }
-
-                // JNA for Windows
-                implementation(libs.jna)
-            }
-        }
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosArm64Main.dependsOn(this)
-            iosX64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-            dependencies {
-                implementation(libs.sqlDelight.native)
-                implementation(libs.components.resources)
-            }
+        iosMain.dependencies {
+            implementation(libs.sqlDelight.native)
+            implementation(libs.components.resources)
         }
     }
 }

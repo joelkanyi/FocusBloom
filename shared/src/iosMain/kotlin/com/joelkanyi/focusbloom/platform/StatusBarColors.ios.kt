@@ -37,9 +37,7 @@ private fun statusBarView() = remember {
     val tag =
         3848245L // https://stackoverflow.com/questions/56651245/how-to-change-the-status-bar-background-color-and-text-color-on-ios-13
 
-    keyWindow?.viewWithTag(tag)?.let {
-        it
-    } ?: run {
+    keyWindow?.viewWithTag(tag) ?: run {
         val height =
             keyWindow?.windowScene?.statusBarManager?.statusBarFrame ?: zeroValue<CGRect>()
         val statusBarView = UIView(frame = height)
