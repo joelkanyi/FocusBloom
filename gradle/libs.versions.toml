@@ -6,23 +6,21 @@ koinAndroid = "3.5.3"
 gradle = "8.2.1"
 sqlDelight = "2.0.1"
 voyager = "1.0.0"
-componentsResources = "1.5.11"
 multiplatformSettings = "1.1.1"
 koin-compose = "1.1.2"
 core = "1.12.0"
-jna = "5.13.0"
+jna = "5.14.0"
 koalaplotCore = "0.5.1"
 kotlinxCoroutinesSwing = "1.7.3"
 kotlinxSerializationJson = "1.6.2"
 kotlinxDateTime = "0.5.0"
-material3WindowSizeClassMultiplatform = "0.3.1"
+material3WindowSizeClassMultiplatform = "0.3.2"
 napier = "2.7.1"
 core-library-desugaring = "2.0.4"
 toast4j = "0.2.0"
 compose-activity = "1.8.2"
 spotless = "5.17.1"
 accompanist-systemUIController = "0.32.0"
-annotationJvm = "1.7.1"
 
 [plugins]
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
@@ -37,7 +35,6 @@ sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
 core = { module = "androidx.core:core", version.ref = "core" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
@@ -71,7 +68,5 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }
-lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version = "2.6.2" }
-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
 
 stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }

@@ -50,7 +50,6 @@ class CalendarScreenModel(
 
     fun setSelectedDay(date: kotlinx.datetime.LocalDate) {
         _selectedDay.value = date
-
     }
 
     val tasks = tasksRepository.getTasks()
