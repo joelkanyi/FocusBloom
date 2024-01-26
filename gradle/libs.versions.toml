@@ -10,7 +10,7 @@ multiplatformSettings = "1.1.1"
 koin-compose = "1.1.2"
 core = "1.12.0"
 jna = "5.14.0"
-koalaplotCore = "0.5.1"
+koalaplotCore = "0.5.2"
 kotlinxCoroutinesSwing = "1.7.3"
 kotlinxSerializationJson = "1.6.2"
 kotlinxDateTime = "0.5.0"
@@ -20,7 +20,7 @@ core-library-desugaring = "2.0.4"
 toast4j = "0.2.0"
 compose-activity = "1.8.2"
 spotless = "5.17.1"
-accompanist-systemUIController = "0.32.0"
+accompanist-systemUIController = "0.34.0"
 
 [plugins]
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
