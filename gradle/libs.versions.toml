@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.9.21"
-compose = "1.5.11"
+compose = "1.5.12"
 koinCore = "3.5.3"
 koinAndroid = "3.5.3"
 gradle = "8.2.2"
