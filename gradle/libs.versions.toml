@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 compose = "1.5.12"
 koinCore = "3.5.3"
 koinAndroid = "3.5.3"
