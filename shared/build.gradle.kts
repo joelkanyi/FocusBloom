@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
+import com.android.build.gradle.internal.lint.LintModelWriterTask
 
 /*
  * Copyright 2023 Joel Kanyi.
@@ -167,4 +169,13 @@ sqldelight {
             packageName.set("com.joelkanyi.focusbloom.database")
         }
     }
+}
+
+
+tasks.withType<AndroidLintAnalysisTask>{
+    dependsOn("copyFontsToAndroidAssets")
+}
+
+tasks.withType<LintModelWriterTask>{
+    dependsOn("copyFontsToAndroidAssets")
 }
