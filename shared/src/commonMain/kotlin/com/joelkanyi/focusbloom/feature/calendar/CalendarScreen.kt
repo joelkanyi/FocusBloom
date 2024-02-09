@@ -113,6 +113,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -257,7 +258,8 @@ fun CalendarScreenContent(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    painter = painterResource("redo.xml"),
+                                    painter = painterResource(
+                                        DrawableResource("redo.xml")),
                                     contentDescription = "Today",
                                 )
                                 Text(

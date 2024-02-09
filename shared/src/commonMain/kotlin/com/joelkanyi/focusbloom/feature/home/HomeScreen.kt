@@ -77,6 +77,7 @@ import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.feature.taskprogress.Timer
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -401,7 +402,7 @@ private fun HomeScreenContent(
                                             .size(300.dp)
                                             .align(CenterHorizontally),
                                         painter = painterResource(
-                                            if (tasks.isEmpty()) "il_empty.xml" else "il_completed.xml",
+                                            DrawableResource(if (tasks.isEmpty()) "il_empty.xml" else "il_completed.xml"),
                                         ),
                                         contentDescription = null,
                                     )

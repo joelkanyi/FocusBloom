@@ -52,6 +52,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -194,7 +195,8 @@ private fun PageContent(title: String, description: String, illustration: String
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(illustration),
+            painter = painterResource(
+                DrawableResource(illustration)),
             contentDescription = illustration,
             modifier = Modifier.size(370.dp),
         )

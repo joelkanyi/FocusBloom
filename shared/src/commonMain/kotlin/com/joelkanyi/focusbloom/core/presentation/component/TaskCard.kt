@@ -55,6 +55,7 @@ import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -186,7 +187,8 @@ fun TaskCard(
                     Image(
                         modifier = Modifier
                             .size(48.dp),
-                        painter = painterResource("ic_complete.xml"),
+                        painter = painterResource(
+                            DrawableResource("ic_complete.xml")),
                         contentDescription = "Task Options",
                     )
                 } else {

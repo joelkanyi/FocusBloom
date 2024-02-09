@@ -95,6 +95,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -364,7 +365,8 @@ private fun AddTaskScreenContent(
                                 Image(
                                     modifier = Modifier
                                         .size(32.dp),
-                                    painter = painterResource("ic_complete.xml"),
+                                    painter = painterResource(
+                                        DrawableResource("ic_complete.xml")),
                                     contentDescription = "Task Options",
                                 )
                             }
@@ -607,7 +609,7 @@ private fun TimeComponent(
             Icon(
                 modifier = Modifier
                     .size(iconSize.dp),
-                painter = painterResource(icon),
+                painter = painterResource(DrawableResource(icon)),
                 contentDescription = title,
                 tint = iconColor,
             )

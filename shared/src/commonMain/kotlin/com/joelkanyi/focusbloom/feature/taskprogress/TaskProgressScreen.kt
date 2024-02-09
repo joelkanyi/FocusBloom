@@ -78,6 +78,7 @@ import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -401,7 +402,8 @@ fun SuccessfulCompletionOfTask(
         icon = {
             Image(
                 modifier = Modifier.size(48.dp),
-                painter = painterResource("ic_complete.xml"),
+                painter = painterResource(
+                    DrawableResource("ic_complete.xml")),
                 contentDescription = "Task Completed",
             )
         },

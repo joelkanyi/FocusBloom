@@ -83,6 +83,7 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -218,7 +219,8 @@ fun StatisticsScreenContent(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    painter = painterResource("redo.xml"),
+                                    painter = painterResource(
+                                        DrawableResource("redo.xml")),
                                     contentDescription = "This Week",
                                 )
                                 Text(
@@ -417,7 +419,7 @@ fun HistoryCard(
                         modifier = Modifier
                             .padding(12.dp)
                             .size(24.dp),
-                        painter = painterResource(task.type.taskIcon()),
+                        painter = painterResource(DrawableResource(task.type.taskIcon())),
                         contentDescription = "Task Icon",
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )

@@ -24,6 +24,7 @@ import com.joelkanyi.focusbloom.feature.calendar.CalendarScreen
 import com.joelkanyi.focusbloom.feature.home.HomeScreen
 import com.joelkanyi.focusbloom.feature.settings.SettingsScreen
 import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreen
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -34,7 +35,7 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Home"
-                val icon = painterResource("home_outlined.xml")
+                val icon = painterResource(DrawableResource("home_outlined.xml"))
 
                 return remember {
                     TabOptions(
@@ -57,7 +58,7 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Calendar"
-                val icon = painterResource("calendar_outlined.xml")
+                val icon = painterResource(DrawableResource("calendar_outlined.xml"))
 
                 return remember {
                     TabOptions(
@@ -80,7 +81,7 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Statistics"
-                val icon = painterResource("statistics_outlined.xml")
+                val icon = painterResource(DrawableResource("statistics_outlined.xml"))
 
                 return remember {
                     TabOptions(
@@ -103,7 +104,7 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Settings"
-                val icon = painterResource("settings_outlined.xml")
+                val icon = painterResource(DrawableResource("settings_outlined.xml"))
 
                 return remember {
                     TabOptions(
@@ -128,7 +129,7 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Add Task"
-                val icon = painterResource("add_outlined.xml")
+                val icon = painterResource(DrawableResource("add_outlined.xml"))
 
                 return remember {
                     TabOptions(
