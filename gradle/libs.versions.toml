@@ -1,24 +1,26 @@
 [versions]
-kotlin = "1.9.22"
-compose = "1.6.0-beta02"
-koinCore = "3.5.3"
+
+androidDriver = "2.0.2"
+kotlin = "1.9.23"
+compose = "1.6.2"
+koinCore = "3.5.6"
 koinAndroid = "3.5.3"
-gradle = "8.3.1"
-sqlDelight = "2.0.1"
+gradle = "8.3.2"
+sqlDelight = " 2.0.2"
 voyager = "1.0.0"
 multiplatformSettings = "1.1.1"
-koin-compose = "1.1.2"
-core = "1.12.0"
+koin-compose = "1.1.5"
+core = "1.13.0"
 jna = "5.14.0"
-koalaplotCore = "0.5.2"
+koalaplotCore = "0.5.4"
 kotlinxCoroutinesSwing = "1.8.0"
 kotlinxSerializationJson = "1.6.3"
 kotlinxDateTime = "0.5.0"
-material3WindowSizeClassMultiplatform = "0.3.2"
+material3WindowSizeClassMultiplatform = "0.5.0"
 napier = "2.7.1"
 core-library-desugaring = "2.0.4"
 toast4j = "0.2.0"
-compose-activity = "1.8.2"
+compose-activity = "1.9.0"
 spotless = "6.25.0"
 accompanist-systemUIController = "0.34.0"
 
@@ -35,7 +37,9 @@ sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
+android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
 core = { module = "androidx.core:core", version.ref = "core" }
+coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
@@ -43,13 +47,9 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-com
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqlDelight" }
+native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "androidDriver" }
+primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "androidDriver" }
 sqlDelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
-sqlDelight-coroutine = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sqlDelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-sqlDelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
-sqlDelight-JVM = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
-sqlDelight-driver-sqljs = { module = "app.cash.sqldelight:sqljs-driver", version = "2.0.0-alpha05" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinX-dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
 multiplatformSettings-noArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
@@ -57,6 +57,7 @@ multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-setti
 
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
+sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "androidDriver" }
 toast4j = { module = "de.mobanisto:toast4j", version.ref = "toast4j" }
 
 # Voyager

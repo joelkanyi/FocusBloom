@@ -37,7 +37,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    alias(libs.plugins.sqlDelight.plugin)
+    id("app.cash.sqldelight") version "2.0.2"
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
 }
@@ -111,7 +111,7 @@ kotlin {
             implementation(libs.material3.window.size.multiplatform)
 
             implementation(libs.sqlDelight.runtime)
-            implementation(libs.sqlDelight.coroutine)
+            implementation(libs.coroutines.extensions)
             implementation(libs.primitive.adapters)
 
             api(libs.multiplatformSettings.noArg)
@@ -126,19 +126,16 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.sqlDelight.android)
+            implementation(libs.android.driver)
+
             implementation(libs.accompanist.systemUIController)
             implementation(libs.core)
             implementation(libs.compose.activity)
         }
 
-
-        /*val nativeMain by creating {
-            dependsOn(commonMain)
-        }*/
-
         jvmMain.dependencies {
-            implementation(libs.sqlDelight.jvm)
+            implementation(libs.sqlite.driver)
+
             implementation(libs.kotlinx.coroutines.swing)
 
             // Toaster for Windows
@@ -156,7 +153,8 @@ kotlin {
         }
 
         iosMain.dependencies {
-            implementation(libs.sqlDelight.native)
+            implementation(libs.native.driver)
+
 
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)        }

@@ -7,15 +7,7 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven(url = "https://jitpack.io")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
 }
 
 subprojects {
