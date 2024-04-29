@@ -10,6 +10,15 @@ plugins {
 
 }
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}
+
 subprojects {
     apply(plugin = "com.diffplug.spotless")
     spotless {
