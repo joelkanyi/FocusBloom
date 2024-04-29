@@ -1,5 +1,3 @@
-<p align="center"><img src="art/app_logo.png" alt="MealTime" height="150px"></p>
-
 # FocusBloom
 FocusBloom is a Kotlin Multiplatform app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
 
@@ -66,6 +64,20 @@ Run the desktop application: `./gradlew :desktop:run`
 To run the application on iPhone device/simulator:
 - Open `ios/iosApp.xcworkspace` in Xcode and run standard configuration
 - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
+
+### Module Graph
+
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral'
+  }
+}%%
+
+graph LR
+  :desktop --> :shared
+  :android --> :shared
+```
 
 ## License
 ```xml
