@@ -77,7 +77,9 @@ import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.feature.taskprogress.Timer
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.jetbrains.compose.resources.DrawableResource
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.il_completed
+import focusbloom.shared.generated.resources.il_empty
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -401,9 +403,7 @@ private fun HomeScreenContent(
                                         modifier = Modifier
                                             .size(300.dp)
                                             .align(CenterHorizontally),
-                                        painter = painterResource(
-                                            DrawableResource(if (tasks.isEmpty()) "il_empty.xml" else "il_completed.xml"),
-                                        ),
+                                        painter = painterResource(if (tasks.isEmpty()) Res.drawable.il_empty else Res.drawable.il_completed),
                                         contentDescription = null,
                                     )
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -491,21 +491,21 @@ fun ActiveTaskCard(
                 )
                 Text(
                     text = "${
-                    when (task.current.sessionType()) {
-                        SessionType.Focus -> {
-                            "Focus Session"
-                        }
+                        when (task.current.sessionType()) {
+                            SessionType.Focus -> {
+                                "Focus Session"
+                            }
 
-                        SessionType.ShortBreak -> {
-                            "Short Break"
-                        }
+                            SessionType.ShortBreak -> {
+                                "Short Break"
+                            }
 
-                        SessionType.LongBreak -> {
-                            "Long Break"
+                            SessionType.LongBreak -> {
+                                "Long Break"
+                            }
                         }
-                    }
                     } - ${
-                    tickingTime.toTimer()
+                        tickingTime.toTimer()
                     }",
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onPrimary,

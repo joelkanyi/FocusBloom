@@ -30,6 +30,8 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.other
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -42,6 +44,8 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.jvm.JvmInline
 
 @Composable
@@ -324,8 +328,9 @@ fun String.taskColor(): Long {
     return taskTypes.find { it.name == this }?.color ?: 0xFFAFBBF2
 }
 
-fun String.taskIcon(): String {
-    return taskTypes.find { it.name == this }?.icon ?: "other.xml"
+@OptIn(ExperimentalResourceApi::class)
+fun String.taskIcon(): DrawableResource {
+    return taskTypes.find { it.name == this }?.icon ?: Res.drawable.other
 }
 
 fun getThisWeek(): List<LocalDate> {

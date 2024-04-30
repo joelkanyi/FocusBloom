@@ -57,7 +57,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -90,6 +89,10 @@ import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.end_time
+import focusbloom.shared.generated.resources.ic_complete
+import focusbloom.shared.generated.resources.start_time
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -100,7 +103,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
     taskId: Int? = null,
@@ -366,7 +369,7 @@ private fun AddTaskScreenContent(
                                     modifier = Modifier
                                         .size(32.dp),
                                     painter = painterResource(
-                                        DrawableResource("ic_complete.xml")),
+                                        Res.drawable.ic_complete),
                                     contentDescription = "Task Options",
                                 )
                             }
@@ -501,7 +504,7 @@ private fun AddTaskScreenContent(
                         time = startTime,
                         hourFormat = hourFormat,
                         title = "Start Time",
-                        icon = "start_time.xml",
+                        icon = Res.drawable.start_time,
                         iconColor = MaterialTheme.colorScheme.primary,
                         iconSize = 24,
                         onClick = onClickPickStartTime,
@@ -519,7 +522,7 @@ private fun AddTaskScreenContent(
                         time = endTime,
                         hourFormat = hourFormat,
                         title = "End Time",
-                        icon = "end_time.xml",
+                        icon = Res.drawable.end_time,
                         iconColor = SuccessColor,
                         onClick = {},
                     )
@@ -574,7 +577,7 @@ private fun AddTaskScreenContent(
 @Composable
 private fun TimeComponent(
     title: String,
-    icon: String,
+    icon: DrawableResource,
     iconColor: Color,
     iconSize: Int = 32,
     time: LocalTime,
@@ -609,7 +612,7 @@ private fun TimeComponent(
             Icon(
                 modifier = Modifier
                     .size(iconSize.dp),
-                painter = painterResource(DrawableResource(icon)),
+                painter = painterResource(icon),
                 contentDescription = title,
                 tint = iconColor,
             )

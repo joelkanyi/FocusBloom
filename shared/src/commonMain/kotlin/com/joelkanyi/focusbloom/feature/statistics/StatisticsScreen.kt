@@ -79,11 +79,12 @@ import com.joelkanyi.focusbloom.core.utils.taskIcon
 import com.joelkanyi.focusbloom.feature.statistics.component.BarChart
 import com.joelkanyi.focusbloom.feature.statistics.component.TickPositionState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.redo
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -219,8 +220,7 @@ fun StatisticsScreenContent(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    painter = painterResource(
-                                        DrawableResource("redo.xml")),
+                                    painter = painterResource(Res.drawable.redo),
                                     contentDescription = "This Week",
                                 )
                                 Text(
@@ -419,7 +419,7 @@ fun HistoryCard(
                         modifier = Modifier
                             .padding(12.dp)
                             .size(24.dp),
-                        painter = painterResource(DrawableResource(task.type.taskIcon())),
+                        painter = painterResource(task.type.taskIcon()),
                         contentDescription = "Task Icon",
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )

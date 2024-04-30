@@ -10,7 +10,6 @@ FocusBloom is a Kotlin Multiplatform app that helps users enhance their producti
 ![](https://img.shields.io/badge/Android-black.svg?style=for-the-badge&logo=android) | ![](https://img.shields.io/badge/iOS-black.svg?style=for-the-badge&logo=apple) | ![](https://img.shields.io/badge/Desktop-black.svg?style=for-the-badge&logo=windows) | ![](https://img.shields.io/badge/Web-black.svg?style=for-the-badge&logo=google-chrome)
 :----: | :----: | :----: | :----:
 ✅ | ✅ | ✅ | Planned
-<a href='https://play.google.com/store/apps/details?id=com.joelkanyi.focusbloom.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
 
 ## Screenshots
 ### Android
@@ -27,6 +26,18 @@ FocusBloom is a Kotlin Multiplatform app that helps users enhance their producti
 ## Architecture
 The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. Shared code, written in Kotlin, is compiled to JVM bytecode for Android and Desktop with Kotlin/JVM and to native binaries for iOS with Kotlin/Native.
 ### Modules
+
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral'
+  }
+}%%
+
+graph LR
+  :desktop --> :shared
+  :android --> :shared
+```
 - shared:
   - contains all the shared code between the platforms
 - android:
@@ -64,20 +75,6 @@ Run the desktop application: `./gradlew :desktop:run`
 To run the application on iPhone device/simulator:
 - Open `ios/iosApp.xcworkspace` in Xcode and run standard configuration
 - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-
-### Module Graph
-
-```mermaid
-%%{
-  init: {
-    'theme': 'neutral'
-  }
-}%%
-
-graph LR
-  :desktop --> :shared
-  :android --> :shared
-```
 
 ## License
 ```xml
