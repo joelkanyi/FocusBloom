@@ -1,19 +1,12 @@
-name: Build
+name: Build & Publish Release APK
 
 on:
   push:
-    branches: [ develop, main ]
-  pull_request:
-    branches: [ main, develop ]
-
-concurrency:
-  group: build-${{ github.ref }}
-  cancel-in-progress: true
+    tags:
+      - '*'
 
 jobs:
-
-  build:
-    name: 🔨 Build
+  Gradle:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -32,5 +25,11 @@ jobs:
       - name: Make gradle executable
         run: chmod +x ./gradlew
 
-      - name: Build app
-        run: ./gradlew assemble --stacktrace
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Releasing using Hub
+        uses: kyze8439690/action-release-releaseapk@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          APP_FOLDER: android

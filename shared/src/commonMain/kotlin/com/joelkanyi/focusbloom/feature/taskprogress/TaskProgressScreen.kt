@@ -76,9 +76,10 @@ import com.joelkanyi.focusbloom.core.utils.toMinutes
 import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.ic_complete
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -403,7 +404,7 @@ fun SuccessfulCompletionOfTask(
             Image(
                 modifier = Modifier.size(48.dp),
                 painter = painterResource(
-                    DrawableResource("ic_complete.xml")),
+                    Res.drawable.ic_complete),
                 contentDescription = "Task Completed",
             )
         },

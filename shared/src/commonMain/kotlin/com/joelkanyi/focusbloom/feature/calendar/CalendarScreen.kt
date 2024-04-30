@@ -107,13 +107,14 @@ import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.core.utils.truncatedTo
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.redo
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -258,8 +259,7 @@ fun CalendarScreenContent(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    painter = painterResource(
-                                        DrawableResource("redo.xml")),
+                                    painter = painterResource(Res.drawable.redo),
                                     contentDescription = "Today",
                                 )
                                 Text(

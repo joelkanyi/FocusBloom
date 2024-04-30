@@ -39,7 +39,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +50,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.il_statistics
+import focusbloom.shared.generated.resources.il_tasks
+import focusbloom.shared.generated.resources.il_work_time
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -160,44 +163,46 @@ private fun ColumnScope.PageIndicators(pageCount: Int, currentPage: Int) {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun OnboardingFirstPage() {
     PageContent(
         title = "Organize Tasks and Boost Productivity",
         description = "Welcome to FocusBloom, your task management and productivity companion. Effortlessly organize your tasks and supercharge your productivity journey.",
-        illustration = "il_tasks.xml",
-    )
-}
-
-@Composable
-private fun OnboardingSecondPage() {
-    PageContent(
-        title = "Tailor Your Work Sessions",
-        description = "With FocusBloom, you have the power to customize your work and break durations to match your preferences and maximize efficiency.",
-        illustration = "il_work_time.xml",
-    )
-}
-
-@Composable
-private fun OnboardingThirdPage() {
-    PageContent(
-        title = "Visualize Your Progress",
-        description = "Experience the power of progress tracking with FocusBloom. Gain insights into your productivity journey and visualize task completion trends.",
-        illustration = "il_statistics.xml",
+        illustration = Res.drawable.il_tasks,
     )
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun PageContent(title: String, description: String, illustration: String) {
+private fun OnboardingSecondPage() {
+    PageContent(
+        title = "Tailor Your Work Sessions",
+        description = "With FocusBloom, you have the power to customize your work and break durations to match your preferences and maximize efficiency.",
+        illustration = Res.drawable.il_work_time,
+    )
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+private fun OnboardingThirdPage() {
+    PageContent(
+        title = "Visualize Your Progress",
+        description = "Experience the power of progress tracking with FocusBloom. Gain insights into your productivity journey and visualize task completion trends.",
+        illustration = Res.drawable.il_statistics,
+    )
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+private fun PageContent(title: String, description: String, illustration: DrawableResource) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(
-                DrawableResource(illustration)),
-            contentDescription = illustration,
+            painter = painterResource(illustration),
+            contentDescription = null,
             modifier = Modifier.size(370.dp),
         )
         Spacer(modifier = Modifier.height(32.dp))

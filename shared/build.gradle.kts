@@ -45,8 +45,8 @@ plugins {
 android {
     namespace = "com.joelkanyi.focusbloom.shared"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/commonMain/resources")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    // sourceSets["main"].res.srcDirs("src/androidMain/res")
+    // sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     compileSdk = 34
     defaultConfig {
         minSdk = 21
@@ -97,7 +97,6 @@ kotlin {
             implementation(compose.material)
             implementation(compose.materialIconsExtended)
 
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
 
             implementation(libs.voyager.navigator)
@@ -167,13 +166,4 @@ sqldelight {
             packageName.set("com.joelkanyi.focusbloom.database")
         }
     }
-}
-
-
-tasks.withType<AndroidLintAnalysisTask>{
-    dependsOn("copyFontsToAndroidAssets")
-}
-
-tasks.withType<LintModelWriterTask>{
-    dependsOn("copyFontsToAndroidAssets")
 }
