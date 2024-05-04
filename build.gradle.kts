@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
     id("dev.iurysouza.modulegraph") version "0.8.0"
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 moduleGraphConfig {

@@ -1,16 +1,16 @@
 [versions]
 
 androidDriver = "2.0.2"
-kotlin = "1.9.23"
-compose = "1.6.10-dev1608"
+kotlin = "2.0.0-RC2"
+compose = "1.6.10-beta03"
 koinCore = "3.5.6"
-koinAndroid = "3.5.3"
+koinAndroid = "3.5.6"
 gradle = "8.3.2"
 sqlDelight = " 2.0.2"
 voyager = "1.0.0"
 multiplatformSettings = "1.1.1"
 koin-compose = "1.1.5"
-core = "1.13.0"
+core = "1.13.1"
 jna = "5.14.0"
 koalaplotCore = "0.5.4"
 kotlinxCoroutinesSwing = "1.8.0"
@@ -27,6 +27,7 @@ accompanist-systemUIController = "0.34.0"
 [plugins]
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "gradle" }
