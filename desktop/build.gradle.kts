@@ -16,6 +16,7 @@
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 dependencies {

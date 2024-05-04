@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
-import com.android.build.gradle.internal.lint.LintModelWriterTask
 
 /*
  * Copyright 2023 Joel Kanyi.
@@ -40,6 +38,7 @@ plugins {
     id("app.cash.sqldelight") version "2.0.2"
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
