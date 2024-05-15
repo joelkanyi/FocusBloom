@@ -64,10 +64,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
-import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.completedTasks
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
@@ -98,7 +98,7 @@ fun StatisticsScreen(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
-    val navigator = LocalAppNavigator.currentOrThrow
+    val navigator = LocalNavigator.currentOrThrow
     val tasksHistory = screenModel.tasks.collectAsState().value
     val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
     val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
@@ -137,7 +137,7 @@ fun StatisticsScreen(
         selectedWeekTasks = selectedWeekTasks,
         tasksHistory = tasksHistory,
         onClickSeeAllTasks = {
-            navigator.push(AllStatisticsScreen())
+            navigator.parent?.push(AllStatisticsScreen())
         },
         onClickThisWeek = {
             coroutineScope.launch {
@@ -173,7 +173,6 @@ fun StatisticsScreen(
     ExperimentalKoalaPlotApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalResourceApi::class,
 )
 @Composable
 fun StatisticsScreenContent(

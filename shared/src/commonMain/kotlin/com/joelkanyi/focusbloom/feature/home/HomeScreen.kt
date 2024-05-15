@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
@@ -65,7 +66,6 @@ import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
 import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
-import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
@@ -80,7 +80,6 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.il_completed
 import focusbloom.shared.generated.resources.il_empty
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
@@ -99,7 +98,8 @@ fun HomeScreen(
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
     val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-    val navigator = LocalAppNavigator.currentOrThrow
+    val navigator = LocalNavigator.currentOrThrow
+    val tabNavigator = LocalTabNavigator.current
     val selectedTask = screenModel.selectedTask.collectAsState().value
     val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
     val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
@@ -108,7 +108,6 @@ fun HomeScreen(
     val timerState = Timer.timerState.collectAsState().value
     val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
-    val tabNavigator = LocalTabNavigator.current
     val remindersOn = screenModel.remindersOn.collectAsState().value
 
     LaunchedEffect(Unit) {
@@ -175,11 +174,11 @@ fun HomeScreen(
                 screenModel.selectTask(it)
                 screenModel.openBottomSheet(true)
             } else {
-                navigator.push(TaskProgressScreen(taskId = it.id))
+                navigator.parent?.push(TaskProgressScreen(taskId = it.id))
             }
         },
         onClickSeeAllTasks = {
-            navigator.push(AllTasksScreen(it))
+            navigator.parent?.push(AllTasksScreen(it))
         },
         onClickTaskOptions = {
             screenModel.selectTask(it)
@@ -201,7 +200,6 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun HomeScreenContent(
     tasksState: TasksState,

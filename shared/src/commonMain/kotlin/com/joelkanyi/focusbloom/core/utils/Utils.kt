@@ -16,9 +16,6 @@
 package com.joelkanyi.focusbloom.core.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.platform.LocalDensity
@@ -26,7 +23,6 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import cafe.adriel.voyager.navigator.Navigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
@@ -45,7 +41,6 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.jvm.JvmInline
 
 @Composable
@@ -69,14 +64,6 @@ fun LocalDate.plusDays(days: Int): LocalDate {
 
 fun LocalDateTime.plusDays(days: Int): LocalDateTime {
     return this.date.plus(days, DateTimeUnit.DAY).atTime(this.time)
-}
-
-fun LocalDate.minusDays(days: Int): LocalDate {
-    return this.minus(days, DateTimeUnit.DAY)
-}
-
-fun LocalDateTime.minusDays(days: Int): LocalDateTime {
-    return this.date.minus(days, DateTimeUnit.DAY).atTime(this.time)
 }
 
 fun LocalTime.plusHours(hours: Int): LocalTime {
@@ -328,7 +315,6 @@ fun String.taskColor(): Long {
     return taskTypes.find { it.name == this }?.color ?: 0xFFAFBBF2
 }
 
-@OptIn(ExperimentalResourceApi::class)
 fun String.taskIcon(): DrawableResource {
     return taskTypes.find { it.name == this }?.icon ?: Res.drawable.other
 }
@@ -589,15 +575,6 @@ fun String?.sessionType(): SessionType {
         "ShortBreak" -> SessionType.ShortBreak
         "LongBreak" -> SessionType.LongBreak
         else -> SessionType.Focus
-    }
-}
-
-val LocalAppNavigator: ProvidableCompositionLocal<Navigator?> = staticCompositionLocalOf { null }
-
-@Composable
-fun ProvideAppNavigator(navigator: Navigator, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalAppNavigator provides navigator) {
-        content()
     }
 }
 
