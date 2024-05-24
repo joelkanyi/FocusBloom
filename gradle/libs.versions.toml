@@ -1,8 +1,8 @@
 [versions]
 
 androidDriver = "2.0.2"
-kotlin = "2.0.0-RC2"
-compose = "1.6.10-beta03"
+kotlin = "2.0.0"
+compose = "1.6.10"
 koinCore = "3.5.6"
 koinAndroid = "3.5.6"
 gradle = "8.4.0"
@@ -23,19 +23,6 @@ toast4j = "0.2.0"
 compose-activity = "1.9.0"
 spotless = "6.25.0"
 accompanist-systemUIController = "0.34.0"
-
-[plugins]
-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
-android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "gradle" }
-android-application = { id = "com.android.application", version.ref = "gradle" }
-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
@@ -72,3 +59,16 @@ core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", versi
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }
 
 stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
+[plugins]
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "gradle" }
+android-application = { id = "com.android.application", version.ref = "gradle" }
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+sqlDelight-plugin = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
