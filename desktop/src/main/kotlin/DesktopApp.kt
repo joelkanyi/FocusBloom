@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
@@ -36,7 +35,6 @@ fun main() {
     )
 
     return application {
-//        val icon = painterResource("focus_bloom.png")
         Window(
             onCloseRequest = { exitApplication() },
             title = "Focus Bloom",
@@ -45,7 +43,6 @@ fun main() {
                 width = 1200.dp,
                 height = 700.dp,
             ),
-//            icon = icon
         ) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 FocusBloomApp()
