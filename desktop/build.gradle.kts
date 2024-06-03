@@ -34,8 +34,18 @@ compose.desktop {
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Rpm
             )
-            packageName = "focusbloom"
-            packageName = "1.0.0"
+            macOS {
+                iconFile.set(project.file("focus_bloom.icns"))
+            }
+            windows {
+                iconFile.set(project.file("focus_bloom.ico"))
+            }
+            linux {
+                iconFile.set(project.file("focus_bloom.png"))
+            }
+            packageName = "Focus Bloom"
+            packageVersion = "1.0.0"
+            modules("java.sql")
         }
     }
 }
