@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: Release Desktop App
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Make gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Checkout Gradle Build Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/wrapper/dists/**/gradle*.zip
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Build app
+        run: ./gradlew :desktop:assemble --stacktrace
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: distributable-${{ matrix.os }}
+          if-no-files-found: ignore
+          path: |
+            build/**/*.deb
+            build/**/*.msi
+            build/compose/jars/*.jar  
+
+      - name: Release
+        uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
+        with:
+          prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
+          files: |
+            build/**/*.deb
+            build/**/*.msi
+            build/compose/jars/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
