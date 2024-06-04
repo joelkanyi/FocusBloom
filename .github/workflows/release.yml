@@ -57,15 +57,16 @@ jobs:
           path: |
             build/**/*.deb
             build/**/*.msi
+            build/**/*.dmg
             build/compose/jars/*.jar  
 
       - name: Release
         uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
         with:
-          prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
           files: |
             build/**/*.deb
             build/**/*.msi
+            build/**/*.dmg
             build/compose/jars/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
