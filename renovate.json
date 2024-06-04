@@ -12,7 +12,7 @@
   ],
   "prHourlyLimit": 0,
   "baseBranches": [
-    "develop"
+    "main"
   ],
   "separateMultipleMajor": true,
   "dependencyDashboardTitle": "automated dependency updates dashboard",
