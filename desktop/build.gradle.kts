@@ -1,5 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-
 /*
  * Copyright 2023 Joel Kanyi.
  *
@@ -15,6 +13,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.compose.multiplatform)
@@ -37,7 +37,8 @@ compose.desktop {
 
             packageName = "FocusBloom"
             packageVersion = project.version as String
-            description = "An  app that helps users enhance their productivity and time management skills through focused work intervals and short breaks."
+            description =
+                "An  app that helps users enhance their productivity and time management skills through focused work intervals and short breaks."
             copyright = "© 2023 Joel Kanyi"
             vendor = "Joel Kanyi"
 
