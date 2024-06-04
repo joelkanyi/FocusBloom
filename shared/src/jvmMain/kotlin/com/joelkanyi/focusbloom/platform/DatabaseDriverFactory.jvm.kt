@@ -18,10 +18,45 @@ package com.joelkanyi.focusbloom.platform
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.joelkanyi.focusbloom.database.BloomDatabase
+import java.io.File
 
 actual class DatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
-        return JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-            .also { BloomDatabase.Schema.create(it) }
+        return JdbcSqliteDriver(
+            url = "jdbc:sqlite:${databaseFile.absolutePath}",
+        ).also { db ->
+            BloomDatabase.Schema.create(db)
+        }
     }
+
+    private val databaseFile: File
+        get() = File(appDir.also { if (!it.exists()) it.mkdirs() }, "bloom.db")
+
+    private val appDir: File
+        get() {
+            val os = System.getProperty("os.name").lowercase()
+            return when {
+                os.contains("win") -> {
+                    File(
+                        System.getenv("AppData"),
+                        "bloom/db"
+                    ) // "C:\Users<username>\AppData\Roaming\bloom\db"
+                }
+
+                os.contains("nix") || os.contains("nux") || os.contains("aix") -> {
+                    File(
+                        System.getProperty("user.home"), ".bloom"
+                    ) // "/home/<username>/.bloom"
+                }
+
+                os.contains("mac") -> {
+                    File(
+                        System.getProperty("user.home"),
+                        "Library/Application Support/bloom"
+                    ) // "/Users/<username>/Library/Application Support/bloom"
+                }
+
+                else -> error("Unsupported operating system")
+            }
+        }
 }
