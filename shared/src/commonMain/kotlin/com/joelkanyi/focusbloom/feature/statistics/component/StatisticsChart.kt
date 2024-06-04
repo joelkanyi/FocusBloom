@@ -54,7 +54,7 @@ fun AxisTitle(title: String, modifier: Modifier = Modifier) {
         title,
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.titleMedium,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -66,7 +66,7 @@ fun AxisLabel(label: String, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.bodySmall,
         modifier = modifier,
         overflow = TextOverflow.Ellipsis,
-        maxLines = 1
+        maxLines = 1,
     )
 }
 
@@ -77,8 +77,8 @@ fun barChartEntries(fibonacci: List<Float>): List<BarChartEntry<Float, Float>> {
                 DefaultBarChartEntry(
                     xValue = (index + 1).toFloat(),
                     yMin = 0f,
-                    yMax = fl
-                )
+                    yMax = fl,
+                ),
             )
         }
     }
@@ -91,7 +91,7 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
     val xAxisRange = 0.5f..7.5f
     ChartLayout(
         modifier = paddingMod,
-        title = { }
+        title = { },
     ) {
         XYChart(
             xAxisModel = LinearAxisModel(
@@ -99,16 +99,16 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                 minimumMajorTickIncrement = 1f,
                 minimumMajorTickSpacing = 10.dp,
                 zoomRangeLimit = 3f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             yAxisModel = LinearAxisModel(
                 yAxisRange,
                 minimumMajorTickIncrement = 1f,
-                minorTickCount = 0
+                minorTickCount = 0,
             ),
             xAxisStyle = rememberAxisStyle(
                 tickPosition = tickPositionState.horizontalAxis,
-                color = Color.LightGray
+                color = Color.LightGray,
             ),
             xAxisLabels = {
                 AxisLabel(
@@ -122,13 +122,13 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                         7f -> "Sun"
                         else -> ""
                     },
-                    Modifier.padding(top = 2.dp)
+                    Modifier.padding(top = 2.dp),
                 )
             },
             xAxisTitle = {
                 AxisTitle(
                     "Day of the Week",
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp),
                 )
             },
             yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
@@ -139,25 +139,25 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
                 AxisTitle(
                     "Tasks Completed",
                     modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                        .padding(bottom = padding)
+                        .padding(bottom = padding),
                 )
             },
-            verticalMajorGridLineStyle = null
+            verticalMajorGridLineStyle = null,
         ) {
             VerticalBarChart(
                 series = listOf(
                     barChartEntries(
-                        fibonacci = entries
-                    )
+                        fibonacci = entries,
+                    ),
                 ),
                 bar = { _, _, value ->
                     DefaultVerticalBar(
                         brush = SolidColor(MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.fillMaxWidth(BarWidth)
+                        modifier = Modifier.fillMaxWidth(BarWidth),
                     ) {
                         HoverSurface { Text(value.yMax.toString()) }
                     }
-                }
+                },
             )
         }
     }
@@ -165,7 +165,7 @@ fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
 
 data class TickPositionState(
     val verticalAxis: TickPosition,
-    val horizontalAxis: TickPosition
+    val horizontalAxis: TickPosition,
 )
 
 @Composable
@@ -174,7 +174,7 @@ fun HoverSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit)
         shadowElevation = 2.dp,
         shape = MaterialTheme.shapes.medium,
         color = Color.LightGray,
-        modifier = modifier.padding(padding)
+        modifier = modifier.padding(padding),
     ) {
         Box(modifier = Modifier.padding(padding)) {
             content()

@@ -24,6 +24,12 @@ import com.joelkanyi.focusbloom.feature.calendar.CalendarScreen
 import com.joelkanyi.focusbloom.feature.home.HomeScreen
 import com.joelkanyi.focusbloom.feature.settings.SettingsScreen
 import com.joelkanyi.focusbloom.feature.statistics.StatisticsScreen
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.add_outlined
+import focusbloom.shared.generated.resources.calendar_outlined
+import focusbloom.shared.generated.resources.home_outlined
+import focusbloom.shared.generated.resources.settings_outlined
+import focusbloom.shared.generated.resources.statistics_outlined
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -34,13 +40,13 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Home"
-                val icon = painterResource("home_outlined.xml")
+                val icon = painterResource(Res.drawable.home_outlined)
 
                 return remember {
                     TabOptions(
                         index = 0u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -57,13 +63,13 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Calendar"
-                val icon = painterResource("calendar_outlined.xml")
+                val icon = painterResource(Res.drawable.calendar_outlined)
 
                 return remember {
                     TabOptions(
                         index = 1u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -80,13 +86,13 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Statistics"
-                val icon = painterResource("statistics_outlined.xml")
+                val icon = painterResource(Res.drawable.statistics_outlined)
 
                 return remember {
                     TabOptions(
                         index = 2u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -103,13 +109,13 @@ internal sealed class BloomTab {
             @Composable
             get() {
                 val title = "Settings"
-                val icon = painterResource("settings_outlined.xml")
+                val icon = painterResource(Res.drawable.settings_outlined)
 
                 return remember {
                     TabOptions(
                         index = 3u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }
@@ -121,20 +127,20 @@ internal sealed class BloomTab {
     }
 
     internal data class AddTaskTab(
-        val taskId: Int? = null
+        val taskId: Int? = null,
     ) : Tab {
         @OptIn(ExperimentalResourceApi::class)
         override val options: TabOptions
             @Composable
             get() {
                 val title = "Add Task"
-                val icon = painterResource("add_outlined.xml")
+                val icon = painterResource(Res.drawable.add_outlined)
 
                 return remember {
                     TabOptions(
                         index = 4u,
                         title = title,
-                        icon = icon
+                        icon = icon,
                     )
                 }
             }

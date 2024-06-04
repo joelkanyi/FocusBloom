@@ -7,9 +7,13 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
-    alias(libs.plugins.gradleVersionUpdates)
+    id("dev.iurysouza.modulegraph") version "0.8.1"
+    alias(libs.plugins.compose.compiler) apply false
+}
+
+moduleGraphConfig {
+    readmePath.set("./README.md")
+    heading = "### Module Graph"
 }
 
 allprojects {
@@ -19,44 +23,16 @@ allprojects {
         maven(url = "https://jitpack.io")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
-
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    ktlint {
-        debug.set(true)
-        verbose.set(true)
-        android.set(false)
-        outputToConsole.set(true)
-        outputColorName.set("RED")
-        filter {
-            enableExperimentalRules.set(true)
-            exclude { projectDir.toURI().relativize(it.file.toURI()).path.contains("/generated/") }
-            include("**/kotlin/**")
-        }
-    }
 }
 
 subprojects {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-    detekt {
-        parallel = true
-        config = files("${project.rootDir}/config/detekt/detekt.yml")
-    }
-
-    tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-        checkForGradleUpdate = true
-        outputFormatter = "html"
-        outputDir = "build/reports/dependencyUpdates"
-        reportfileName = "report"
-    }
-
     apply(plugin = "com.diffplug.spotless")
     spotless {
         kotlin {
             target("**/*.kt")
-            ktlint().userData(mapOf("disabled_rules" to "filename"))
             licenseHeaderFile(
                 rootProject.file("${project.rootDir}/spotless/copyright.kt"),
-                "^(package|object|import|interface)"
+                "^(package|object|import|interface)",
             )
             trimTrailingWhitespace()
             endWithNewline()
@@ -73,12 +49,4 @@ subprojects {
             endWithNewline()
         }
     }
-}
-
-task("addPreCommitGitHookOnBuild") {
-    println("⚈ ⚈ ⚈ Running Add Pre Commit Git Hook Script on Build ⚈ ⚈ ⚈")
-    exec {
-        commandLine("cp", "./.scripts/pre-commit", "./.git/hooks")
-    }
-    println("✅ Added Pre Commit Git Hook Script.")
 }

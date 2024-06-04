@@ -40,8 +40,8 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(
                         ContextCompat.checkSelfPermission(
                             this,
-                            android.Manifest.permission.POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_GRANTED
+                            android.Manifest.permission.POST_NOTIFICATIONS,
+                        ) == PackageManager.PERMISSION_GRANTED,
                     )
                 } else {
                     mutableStateOf(true)
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 contract = ActivityResultContracts.RequestPermission(),
                 onResult = { granted ->
                     hasCamPermission = granted
-                }
+                },
             )
 
             LaunchedEffect(key1 = true, block = {

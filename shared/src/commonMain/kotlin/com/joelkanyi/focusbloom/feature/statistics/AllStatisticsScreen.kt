@@ -45,6 +45,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.datetime.LocalDate
+import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -52,10 +53,10 @@ class AllStatisticsScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
-        val screenModel = get<StatisticsScreenModel>()
+        val screenModel = rememberKoinInject<StatisticsScreenModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background
+            navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
         val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
@@ -84,7 +85,7 @@ class AllStatisticsScreen : Screen, KoinComponent {
             },
             onClickCancel = {
                 screenModel.openTaskOptions(it)
-            }
+            },
         )
     }
 }
@@ -101,7 +102,7 @@ fun AllStatisticsScreenContent(
     onClickDelete: (task: Task) -> Unit,
     onClickCancel: (task: Task) -> Unit,
     showTaskOption: (task: Task) -> Boolean,
-    onShowTaskOption: (task: Task) -> Unit
+    onShowTaskOption: (task: Task) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -111,20 +112,20 @@ fun AllStatisticsScreenContent(
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             ) {
                 Text(text = "Tasks History")
             }
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             tasks.forEach { (date, tasks) ->
                 stickyHeader {
@@ -136,13 +137,13 @@ fun AllStatisticsScreenContent(
                         text = date.prettyFormat(),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
+                            fontSize = 16.sp,
+                        ),
                     )
                 }
                 items(
                     items = tasks,
-                    key = { it.id }
+                    key = { it.id },
                 ) {
                     HistoryCard(
                         modifier = Modifier
@@ -156,7 +157,7 @@ fun AllStatisticsScreenContent(
                         onClickDelete = onClickDelete,
                         onClickCancel = onClickCancel,
                         showTaskOption = showTaskOption,
-                        onShowTaskOption = onShowTaskOption
+                        onShowTaskOption = onShowTaskOption,
                     )
                 }
             }

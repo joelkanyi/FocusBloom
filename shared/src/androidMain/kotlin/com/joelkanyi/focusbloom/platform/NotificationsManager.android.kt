@@ -28,14 +28,14 @@ import androidx.core.app.NotificationManagerCompat
 import com.joelkanyi.focusbloom.shared.R
 
 actual class NotificationsManager(
-    private val context: Context
+    private val context: Context,
 ) {
     private val notificationManager get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     @SuppressLint("MissingPermission")
     actual fun showNotification(
         title: String,
-        description: String
+        description: String,
     ) {
         // TODO: use a PendingIntent to open the app on notification click
         // Intent for the notification click
@@ -45,7 +45,7 @@ actual class NotificationsManager(
         }*/
 
         val sound = Uri.parse(
-            "${ContentResolver.SCHEME_ANDROID_RESOURCE}://${context.applicationContext.packageName}/${R.raw.alarm}"
+            "${ContentResolver.SCHEME_ANDROID_RESOURCE}://${context.applicationContext.packageName}/${R.raw.alarm}",
         )
 
         println("sound: $sound")
@@ -76,7 +76,7 @@ actual class NotificationsManager(
                 channelId,
                 channelName,
 
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_HIGH,
             ).apply {
                 description = channelDescription
                 setSound(sound, Notification.AUDIO_ATTRIBUTES_DEFAULT)

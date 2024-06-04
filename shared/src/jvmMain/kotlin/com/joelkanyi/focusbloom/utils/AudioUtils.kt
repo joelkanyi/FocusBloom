@@ -24,7 +24,8 @@ object AudioUtils {
 
     fun loadAudioFromResource(name: String): Clip? {
         val resourceStream = getResourceAsStream(name) ?: return null
-        val bufferedStream = BufferedInputStream(resourceStream) // add buffer for mark/reset support
+        val bufferedStream =
+            BufferedInputStream(resourceStream) // add buffer for mark/reset support
         val audioInputStream = AudioSystem.getAudioInputStream(bufferedStream)
         val sound = AudioSystem.getClip()
         sound.open(audioInputStream)

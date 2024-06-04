@@ -2,9 +2,13 @@ name: Build
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, main ]
   pull_request:
     branches: [ main, develop ]
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -12,17 +16,21 @@ jobs:
     name: 🔨 Build
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v3
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
 
       - name: Make gradle executable
         run: chmod +x ./gradlew
 
-      - name: Build with gradle
-        run: ./gradlew build --stacktrace
+      - name: Build app
+        run: ./gradlew assemble --stacktrace

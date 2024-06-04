@@ -15,35 +15,44 @@
  */
 package com.joelkanyi.focusbloom.core.domain.model
 
-data class TaskType(
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.other
+import focusbloom.shared.generated.resources.personal
+import focusbloom.shared.generated.resources.study
+import focusbloom.shared.generated.resources.work
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+
+data class TaskType @OptIn(ExperimentalResourceApi::class) constructor(
     val name: String,
-    val icon: String,
-    val color: Long
+    val icon: DrawableResource,
+    val color: Long,
 ) {
     override fun toString(): String {
         return name
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 val taskTypes = listOf(
     TaskType(
         name = "Work",
-        icon = "work.xml",
-        color = 0xFF3375fd
+        icon = Res.drawable.work,
+        color = 0xFF3375fd,
     ),
     TaskType(
         name = "Study",
-        icon = "study.xml",
-        color = 0xFFff686d
+        icon = Res.drawable.study,
+        color = 0xFFff686d,
     ),
     TaskType(
         name = "Personal",
-        icon = "personal.xml",
-        color = 0xFF24c469
+        icon = Res.drawable.personal,
+        color = 0xFF24c469,
     ),
     TaskType(
         name = "Other",
-        icon = "other.xml",
-        color = 0xFF734efe
-    )
+        icon = Res.drawable.other,
+        color = 0xFF734efe,
+    ),
 )

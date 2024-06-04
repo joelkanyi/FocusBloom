@@ -17,16 +17,22 @@ package com.joelkanyi.focusbloom.core.presentation.utils
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.add_filled
+import focusbloom.shared.generated.resources.calendar_filled
+import focusbloom.shared.generated.resources.home_filled
+import focusbloom.shared.generated.resources.settings_filled
+import focusbloom.shared.generated.resources.statistics_filled
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 @OptIn(ExperimentalResourceApi::class)
 fun FilledIcon(item: Tab) = when (item.options.index) {
-    (0u).toUShort() -> painterResource("home_filled.xml")
-    (1u).toUShort() -> painterResource("calendar_filled.xml")
-    (2u).toUShort() -> painterResource("statistics_filled.xml")
-    (3u).toUShort() -> painterResource("settings_filled.xml")
-    (4u).toUShort() -> painterResource("add_filled.xml")
-    else -> painterResource("home_filled.xml")
+    (0u).toUShort() -> painterResource(Res.drawable.home_filled)
+    (1u).toUShort() -> painterResource(Res.drawable.calendar_filled)
+    (2u).toUShort() -> painterResource(Res.drawable.statistics_filled)
+    (3u).toUShort() -> painterResource(Res.drawable.settings_filled)
+    (4u).toUShort() -> painterResource(Res.drawable.add_filled)
+    else -> painterResource(Res.drawable.home_filled)
 }

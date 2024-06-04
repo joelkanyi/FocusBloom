@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
@@ -65,7 +66,6 @@ import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
 import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
-import com.joelkanyi.focusbloom.core.utils.LocalAppNavigator
 import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
@@ -77,18 +77,20 @@ import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.feature.taskprogress.Timer
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.il_completed
+import focusbloom.shared.generated.resources.il_empty
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
-    val screenModel: HomeScreenModel = rememberKoinInject()
-
+fun HomeScreen(
+    screenModel: HomeScreenModel = koinInject(),
+) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
-        navBarColor = MaterialTheme.colorScheme.background
+        navBarColor = MaterialTheme.colorScheme.background,
     )
     val tasksState = screenModel.tasks.collectAsState().value
     val username = screenModel.username.collectAsState().value ?: ""
@@ -96,7 +98,8 @@ fun HomeScreen() {
     val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
     val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-    val navigator = LocalAppNavigator.currentOrThrow
+    val navigator = LocalNavigator.currentOrThrow
+    val tabNavigator = LocalTabNavigator.current
     val selectedTask = screenModel.selectedTask.collectAsState().value
     val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
     val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
@@ -105,7 +108,6 @@ fun HomeScreen() {
     val timerState = Timer.timerState.collectAsState().value
     val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
-    val tabNavigator = LocalTabNavigator.current
     val remindersOn = screenModel.remindersOn.collectAsState().value
 
     LaunchedEffect(Unit) {
@@ -150,7 +152,7 @@ fun HomeScreen() {
                 onClickEditTask = {
                     tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
                 },
-                task = selectedTask
+                task = selectedTask,
             )
         }
     }
@@ -172,11 +174,11 @@ fun HomeScreen() {
                 screenModel.selectTask(it)
                 screenModel.openBottomSheet(true)
             } else {
-                navigator.push(TaskProgressScreen(taskId = it.id))
+                navigator.parent?.push(TaskProgressScreen(taskId = it.id))
             }
         },
         onClickSeeAllTasks = {
-            navigator.push(AllTasksScreen(it))
+            navigator.parent?.push(AllTasksScreen(it))
         },
         onClickTaskOptions = {
             screenModel.selectTask(it)
@@ -194,11 +196,10 @@ fun HomeScreen() {
 
                 else -> {}
             }
-        }
+        },
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun HomeScreenContent(
     tasksState: TasksState,
@@ -215,18 +216,18 @@ private fun HomeScreenContent(
     focusTimeColor: Long?,
     shortBreakColor: Long?,
     longBreakColor: Long?,
-    onClickActiveTaskOptions: (task: Task) -> Unit
+    onClickActiveTaskOptions: (task: Task) -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             when (tasksState) {
                 TasksState.Loading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -236,7 +237,7 @@ private fun HomeScreenContent(
                     val activeTask = tasks.firstOrNull { it.active }
                     LazyColumn(
                         contentPadding = PaddingValues(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         item {
                             if (activeTask != null) {
@@ -246,7 +247,7 @@ private fun HomeScreenContent(
                                             Color(SessionColor)
                                         } else {
                                             Color(
-                                                focusTimeColor
+                                                focusTimeColor,
                                             )
                                         }
                                     }
@@ -256,7 +257,7 @@ private fun HomeScreenContent(
                                             Color(LongBreakColor)
                                         } else {
                                             Color(
-                                                longBreakColor
+                                                longBreakColor,
                                             )
                                         }
                                     }
@@ -266,7 +267,7 @@ private fun HomeScreenContent(
                                             Color(ShortBreakColor)
                                         } else {
                                             Color(
-                                                shortBreakColor
+                                                shortBreakColor,
                                             )
                                         }
                                     }
@@ -277,14 +278,14 @@ private fun HomeScreenContent(
                                     containerColor = containerColor,
                                     onClickTaskOptions = onClickActiveTaskOptions,
                                     timerState = timerState,
-                                    tickingTime = tickingTime
+                                    tickingTime = tickingTime,
                                 )
                             }
                         }
                         item {
                             Text(
                                 text = "Hello, ${username.pickFirstName()}!",
-                                style = MaterialTheme.typography.displaySmall
+                                style = MaterialTheme.typography.displaySmall,
                             )
                         }
                         item {
@@ -297,14 +298,14 @@ private fun HomeScreenContent(
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
                                         text = "Overdue Tasks (${overdueTasks.size})",
                                         style = MaterialTheme.typography.titleLarge.copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.error
-                                        )
+                                            color = MaterialTheme.colorScheme.error,
+                                        ),
                                     )
                                     if (overdueTasks.size > 3) {
                                         Text(
@@ -315,8 +316,8 @@ private fun HomeScreenContent(
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = MaterialTheme.colorScheme.error,
-                                                fontSize = 16.sp
-                                            )
+                                                fontSize = 16.sp,
+                                            ),
                                         )
                                     }
                                 }
@@ -324,7 +325,7 @@ private fun HomeScreenContent(
 
                             items(
                                 items = tasksState.overdueTasks.take(3),
-                                key = { it.id }
+                                key = { it.id },
                             ) {
                                 TaskCard(
                                     type = "overdue",
@@ -335,7 +336,7 @@ private fun HomeScreenContent(
                                     focusSessions = it.focusSessions,
                                     sessionTime = sessionTime,
                                     shortBreakTime = shortBreakTime,
-                                    longBreakTime = longBreakTime
+                                    longBreakTime = longBreakTime,
                                 )
                             }
                         }
@@ -345,13 +346,13 @@ private fun HomeScreenContent(
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
                                         text = "Today's Tasks (${tasks.size})",
                                         style = MaterialTheme.typography.titleLarge.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
+                                            fontWeight = FontWeight.Bold,
+                                        ),
                                     )
                                     if (tasks.size > 3) {
                                         Text(
@@ -362,8 +363,8 @@ private fun HomeScreenContent(
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = MaterialTheme.colorScheme.primary,
-                                                fontSize = 16.sp
-                                            )
+                                                fontSize = 16.sp,
+                                            ),
                                         )
                                     }
                                 }
@@ -372,7 +373,7 @@ private fun HomeScreenContent(
                         if (tasks.all { it.completed }.not()) {
                             items(
                                 items = tasks.take(3),
-                                key = { it.id }
+                                key = { it.id },
                             ) {
                                 TaskCard(
                                     type = "today",
@@ -383,7 +384,7 @@ private fun HomeScreenContent(
                                     focusSessions = it.focusSessions,
                                     sessionTime = sessionTime,
                                     shortBreakTime = shortBreakTime,
-                                    longBreakTime = longBreakTime
+                                    longBreakTime = longBreakTime,
                                 )
                             }
                         }
@@ -393,17 +394,15 @@ private fun HomeScreenContent(
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth(),
-                                    horizontalAlignment = CenterHorizontally
+                                    horizontalAlignment = CenterHorizontally,
                                 ) {
                                     Spacer(modifier = Modifier.height(24.dp))
                                     Image(
                                         modifier = Modifier
                                             .size(300.dp)
                                             .align(CenterHorizontally),
-                                        painter = painterResource(
-                                            if (tasks.isEmpty()) "il_empty.xml" else "il_completed.xml"
-                                        ),
-                                        contentDescription = null
+                                        painter = painterResource(if (tasks.isEmpty()) Res.drawable.il_empty else Res.drawable.il_completed),
+                                        contentDescription = null,
                                     )
                                     Spacer(modifier = Modifier.height(24.dp))
                                     Text(
@@ -412,7 +411,7 @@ private fun HomeScreenContent(
                                             .align(CenterHorizontally),
                                         style = MaterialTheme.typography.titleSmall.copy(
                                             fontSize = 14.sp,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
                                         ),
                                         text = if (tasks.isEmpty()) {
                                             "Start your day productively! Add your first task."
@@ -421,7 +420,7 @@ private fun HomeScreenContent(
                                         } else {
                                             ""
                                         },
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
@@ -436,9 +435,9 @@ private fun HomeScreenContent(
                                             ""
                                         },
                                         style = MaterialTheme.typography.labelLarge.copy(
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
                                         ),
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
                                     )
                                 }
                             }
@@ -452,63 +451,70 @@ private fun HomeScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActiveTaskCard(task: Task, timerState: TimerState, tickingTime: Long, onClick: (task: Task) -> Unit, onClickTaskOptions: (task: Task) -> Unit, containerColor: Color) {
+fun ActiveTaskCard(
+    task: Task,
+    timerState: TimerState,
+    tickingTime: Long,
+    onClick: (task: Task) -> Unit,
+    onClickTaskOptions: (task: Task) -> Unit,
+    containerColor: Color,
+) {
     Card(
         onClick = {
             onClick(task)
         },
         colors = CardDefaults.cardColors(
-            containerColor = containerColor
-        )
+            containerColor = containerColor,
+        ),
     ) {
         Row(
             modifier = Modifier
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(.85f),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
                     text = task.name,
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onPrimary,
                     ),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = "${
-                    when (task.current.sessionType()) {
-                        SessionType.Focus -> {
-                            "Focus Session"
-                        }
+                        when (task.current.sessionType()) {
+                            SessionType.Focus -> {
+                                "Focus Session"
+                            }
 
-                        SessionType.ShortBreak -> {
-                            "Short Break"
-                        }
+                            SessionType.ShortBreak -> {
+                                "Short Break"
+                            }
 
-                        SessionType.LongBreak -> {
-                            "Long Break"
+                            SessionType.LongBreak -> {
+                                "Long Break"
+                            }
                         }
-                    }
                     } - ${
-                    tickingTime.toTimer()
+                        tickingTime.toTimer()
                     }",
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                        fontWeight = FontWeight.SemiBold,
+                    ),
                 )
             }
             IconButton(
                 onClick = {
                     onClickTaskOptions(task)
-                }
+                },
             ) {
                 Icon(
                     modifier = Modifier,
@@ -526,7 +532,7 @@ fun ActiveTaskCard(task: Task, timerState: TimerState, tickingTime: Long, onClic
                         }
                     },
                     contentDescription = "Play/Pause",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }
@@ -541,29 +547,29 @@ private fun TodayTaskProgressCard(tasks: List<Task>) {
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TaskProgress(
                 mainColor = MaterialTheme.colorScheme.primary,
                 percentage = taskCompletionPercentage(tasks).toFloat(),
-                counterColor = MaterialTheme.colorScheme.onSurface
+                counterColor = MaterialTheme.colorScheme.onSurface,
             )
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = taskCompleteMessage(tasks),
                     style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    )
+                        fontWeight = FontWeight.SemiBold,
+                    ),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${tasks.filter { it.completed }.size} of ${tasks.size} tasks completed",
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
                 )
             }
         }

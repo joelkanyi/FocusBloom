@@ -38,7 +38,7 @@ class PreferenceManager constructor(private val settings: Settings) {
     @OptIn(ExperimentalSettingsApi::class)
     fun getNonFlowString(key: String) = observableSettings.getString(
         key = key,
-        defaultValue = ""
+        defaultValue = "",
     )
 
     @OptIn(ExperimentalCoroutinesApi::class, ExperimentalSettingsApi::class)
@@ -77,7 +77,7 @@ class PreferenceManager constructor(private val settings: Settings) {
     fun getBoolean(key: String): Flow<Boolean> {
         return observableSettings.getBooleanFlow(
             key = key,
-            defaultValue = false
+            defaultValue = false,
         )
     }
 
@@ -90,11 +90,10 @@ class PreferenceManager constructor(private val settings: Settings) {
     fun getLong(key: Any): Flow<Long?> {
         return observableSettings.getLongFlow(
             key = key.toString(),
-            defaultValue = 0
+            defaultValue = 0,
         )
     }
 
-    @OptIn(ExperimentalSettingsApi::class)
     fun setLong(key: String, value: Long) {
         observableSettings.set(key = key, value = value)
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Joel Kanyi.
+ * Copyright 2024 Joel Kanyi.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    alias(libs.plugins.sqlDelight.plugin)
+    id("app.cash.sqldelight") version "2.0.2"
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.joelkanyi.focusbloom.shared"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/commonMain/resources")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    // sourceSets["main"].res.srcDirs("src/androidMain/res")
+    // sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     compileSdk = 34
     defaultConfig {
         minSdk = 21
@@ -44,7 +46,6 @@ kotlin {
     }
     jvm()
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -62,6 +63,7 @@ kotlin {
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
             transitiveExport = true
             compilations.all {
                 kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
@@ -70,87 +72,74 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(libs.koin.core)
-                api(libs.koin.compose)
+        commonMain.dependencies {
+            api(libs.koin.core)
+            api(libs.koin.compose)
 
-                implementation(compose.material3)
-                implementation(compose.material)
-                implementation(compose.materialIconsExtended)
+            implementation(compose.material3)
+            implementation(compose.material)
+            implementation(compose.materialIconsExtended)
 
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
+            implementation(compose.components.resources)
 
-                implementation(libs.voyager.navigator)
-                implementation(libs.voyager.bottomSheetNavigator)
-                implementation(libs.voyager.transitions)
-                implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.bottomSheetNavigator)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.koin)
 
-                implementation(libs.kotlinX.serializationJson)
+            implementation(libs.kotlinX.serializationJson)
 
-                implementation(libs.material3.window.size.multiplatform)
+            implementation(libs.material3.window.size.multiplatform)
 
-                implementation(libs.sqlDelight.runtime)
-                implementation(libs.sqlDelight.coroutine)
-                implementation(libs.primitive.adapters)
+            implementation(libs.sqlDelight.runtime)
+            implementation(libs.coroutines.extensions)
+            implementation(libs.primitive.adapters)
 
-                api(libs.multiplatformSettings.noArg)
-                api(libs.multiplatformSettings.coroutines)
+            api(libs.multiplatformSettings.noArg)
+            api(libs.multiplatformSettings.coroutines)
 
-                api(libs.napier)
+            api(libs.napier)
 
-                implementation(libs.kotlinX.dateTime)
-                implementation(libs.koalaplot.core)
+            implementation(libs.kotlinX.dateTime)
+            implementation(libs.koalaplot.core)
 
-                implementation(libs.korau)
-                implementation(libs.stdlib)
+            implementation(libs.stdlib)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.android.driver)
+
+            implementation(libs.accompanist.systemUIController)
+            implementation(libs.core)
+            implementation(libs.compose.activity)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.sqlite.driver)
+
+            implementation(libs.kotlinx.coroutines.swing)
+
+            // Toaster for Windows
+            implementation(libs.toast4j)
+
+            // JNA for Linux
+            implementation("de.jangassen:jfa:1.2.0") {
+                // not excluding this leads to a strange error during build:
+                // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
+                exclude(group = "net.java.dev.jna", module = "jna")
             }
+
+            // JNA for Windows
+            implementation(libs.jna)
         }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.sqlDelight.android)
-                implementation(libs.accompanist.systemUIController)
-                implementation(libs.core)
-                implementation(libs.compose.activity)
-            }
-        }
+        iosMain.dependencies {
+            implementation(libs.native.driver)
 
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
 
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.sqlDelight.jvm)
-                implementation(libs.kotlinx.coroutines.swing)
-
-                // Toaster for Windows
-                implementation(libs.toast4j)
-
-                // JNA for Linux
-                implementation("de.jangassen:jfa:1.2.0") {
-                    // not excluding this leads to a strange error during build:
-                    // > Could not find jna-5.13.0-jpms.jar (net.java.dev.jna:jna:5.13.0)
-                    exclude(group = "net.java.dev.jna", module = "jna")
-                }
-            }
-        }
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosArm64Main.dependsOn(this)
-            iosX64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-            dependencies {
-                implementation(libs.sqlDelight.native)
-                implementation(libs.components.resources)
-            }
-        }
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.components.resources)        }
     }
 }
 

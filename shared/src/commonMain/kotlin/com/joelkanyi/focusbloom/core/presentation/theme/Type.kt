@@ -22,82 +22,82 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.joelkanyi.focusbloom.platform.font
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.montserrat_black
+import focusbloom.shared.generated.resources.montserrat_bold
+import focusbloom.shared.generated.resources.montserrat_extrabold
+import focusbloom.shared.generated.resources.montserrat_extralight
+import focusbloom.shared.generated.resources.montserrat_light
+import focusbloom.shared.generated.resources.montserrat_medium
+import focusbloom.shared.generated.resources.montserrat_regular
+import focusbloom.shared.generated.resources.montserrat_semi_bold
+import focusbloom.shared.generated.resources.montserrat_thin
+import org.jetbrains.compose.resources.Font
 
 @Composable
-internal fun getTypography(): Typography {
+fun montserrat(): FontFamily {
     val montserratRegular =
-        font(
-            "Montserrat",
-            "montserrat_regular",
-            FontWeight.Normal,
-            FontStyle.Normal
+        Font(
+            resource = Res.font.montserrat_regular,
+            weight = FontWeight.Normal,
+            style = FontStyle.Normal,
         )
 
     val montserratBold =
-        font(
-            "Montserrat",
-            "montserrat_bold",
+        Font(
+            resource = Res.font.montserrat_bold,
             FontWeight.Bold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratLight =
-        font(
-            "Montserrat",
-            "montserrat_light",
+        Font(
+            resource = Res.font.montserrat_light,
             FontWeight.Light,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratMedium =
-        font(
-            "Montserrat",
-            "montserrat_medium",
+        Font(
+            resource = Res.font.montserrat_medium,
             FontWeight.Medium,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratSemiBold =
-        font(
-            "Montserrat",
-            "montserrat_semi_bold",
+        Font(
+            resource = Res.font.montserrat_semi_bold,
             FontWeight.SemiBold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratThin =
-        font(
-            "Montserrat",
-            "montserrat_thin",
+        Font(
+            resource = Res.font.montserrat_thin,
             FontWeight.Thin,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratExtraBold =
-        font(
-            "Montserrat",
-            "montserrat_extrabold",
+        Font(
+            resource = Res.font.montserrat_extrabold,
             FontWeight.ExtraBold,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
 
     val montserratExtraLight =
-        font(
-            "Montserrat",
-            "montserrat_extralight",
+        Font(
+            resource = Res.font.montserrat_extralight,
             FontWeight.ExtraLight,
-            FontStyle.Normal
+            FontStyle.Normal,
         )
-    val montserratBlack = font(
-        "Montserrat",
-        "montserrat_black",
+    val montserratBlack = Font(
+        resource = Res.font.montserrat_black,
         FontWeight.Black,
-        FontStyle.Normal
+        FontStyle.Normal,
     )
 
-    @Composable
-    fun montserrat() = FontFamily(
+     return FontFamily(
         montserratThin,
         montserratExtraLight,
         montserratLight,
@@ -106,107 +106,88 @@ internal fun getTypography(): Typography {
         montserratSemiBold,
         montserratBold,
         montserratExtraBold,
-        montserratBlack
+        montserratBlack,
     )
+}
 
+@Composable
+internal fun getTypography(): Typography {
+    val montserrat = montserrat()
     return Typography(
         displayLarge = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 50.sp
-            // lineHeight = 64.sp,
-            // letterSpacing = (-0.25).sp,
+            fontSize = 50.sp,
         ),
         displayMedium = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 40.sp
-            // lineHeight = 52.sp,
+            fontSize = 40.sp,
         ),
         displaySmall = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 30.sp
-            // lineHeight = 44.sp,
+            fontSize = 30.sp,
         ),
         headlineLarge = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 28.sp
-            // lineHeight = 40.sp,
+            fontSize = 28.sp,
         ),
         headlineMedium = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 24.sp
-            // lineHeight = 36.sp,
+            fontSize = 24.sp,
         ),
         headlineSmall = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 20.sp
-            // lineHeight = 32.sp,
+            fontSize = 20.sp,
         ),
         titleLarge = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W700,
-            fontSize = 18.sp
-            // lineHeight = 28.sp,
+            fontSize = 18.sp,
         ),
         titleMedium = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W700,
-            fontSize = 14.sp
-            // lineHeight = 24.sp,
-            // letterSpacing = 0.1.sp,
+            fontSize = 14.sp,
         ),
         titleSmall = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W500,
-            fontSize = 12.sp
-            // lineHeight = 20.sp,
-            // letterSpacing = 0.1.sp,
+            fontSize = 12.sp,
         ),
         bodyLarge = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 14.sp
-            // lineHeight = 24.sp,
-            // letterSpacing = 0.5.sp,
+            fontSize = 14.sp,
         ),
         bodyMedium = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 12.sp
-            // lineHeight = 20.sp,
-            // letterSpacing = 0.25.sp,
+            fontSize = 12.sp,
         ),
         bodySmall = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 11.sp
-            // lineHeight = 16.sp,
-            // letterSpacing = 0.4.sp,
+            fontSize = 11.sp,
         ),
         labelLarge = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 13.sp
-            // lineHeight = 20.sp,
-            // letterSpacing = 0.1.sp,
+            fontSize = 13.sp,
         ),
         labelMedium = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W400,
-            fontSize = 11.sp
-            // lineHeight = 16.sp,
-            // letterSpacing = 0.5.sp,
+            fontSize = 11.sp,
         ),
         labelSmall = TextStyle(
-            fontFamily = montserrat(),
+            fontFamily = montserrat,
             fontWeight = FontWeight.W500,
-            fontSize = 9.sp
-            // lineHeight = 16.sp,
-        )
+            fontSize = 9.sp,
+        ),
     )
 }

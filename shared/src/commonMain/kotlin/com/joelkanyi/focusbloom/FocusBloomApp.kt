@@ -21,56 +21,56 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideTransition
 import com.joelkanyi.focusbloom.core.presentation.theme.FocusBloomTheme
-import com.joelkanyi.focusbloom.core.utils.ProvideAppNavigator
 import com.joelkanyi.focusbloom.feature.onboarding.OnboardingScreen
 import com.joelkanyi.focusbloom.main.MainScreen
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.main.OnBoardingState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.KoinContext
+import org.koin.compose.koinInject
 
 @Composable
-fun FocusBloomApp() {
-    val mainViewModel = rememberKoinInject<MainViewModel>()
+fun FocusBloomApp(
+    mainViewModel: MainViewModel = koinInject(),
+) {
     val darkTheme = when (mainViewModel.appTheme.collectAsState().value) {
         1 -> true
         else -> false
     }
     val onBoardingCompleted = mainViewModel.onBoardingCompleted.collectAsState().value
 
-    FocusBloomTheme(
-        useDarkTheme = darkTheme
-    ) {
-        StatusBarColors(
-            statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background
-        )
-        when (onBoardingCompleted) {
-            is OnBoardingState.Success -> {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Navigator(
-                        screen = if (onBoardingCompleted.completed) {
-                            MainScreen()
-                        } else {
-                            OnboardingScreen()
-                        },
-                        content = { navigator ->
-                            ProvideAppNavigator(
-                                navigator = navigator,
-                                content = { SlideTransition(navigator = navigator) }
-                            )
-                        }
-                    )
+    KoinContext {
+        FocusBloomTheme(
+            useDarkTheme = darkTheme,
+        ) {
+            StatusBarColors(
+                statusBarColor = MaterialTheme.colorScheme.background,
+                navBarColor = MaterialTheme.colorScheme.background,
+            )
+            when (onBoardingCompleted) {
+                is OnBoardingState.Success -> {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
+                    ) {
+                        Navigator(
+                            screen = if (onBoardingCompleted.completed) {
+                                MainScreen()
+                            } else {
+                                OnboardingScreen()
+                            },
+                            content = {
+                                CurrentScreen()
+                            },
+                        )
+                    }
                 }
-            }
 
-            else -> {}
+                else -> {}
+            }
         }
     }
 }

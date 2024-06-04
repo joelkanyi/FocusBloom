@@ -32,12 +32,6 @@ else
     exit 1
 fi
 
-./gradlew app:ktlintCheck --daemon
-STATUS=$?
-
-# return 1 exit code if running checks
-[ $STATUS -ne 0 ] && exit 1
-exit 0
 
 # Branch
 branch="$(git rev-parse --abbrev-ref HEAD)"

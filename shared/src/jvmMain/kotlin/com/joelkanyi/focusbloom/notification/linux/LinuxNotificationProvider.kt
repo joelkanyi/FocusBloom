@@ -224,7 +224,7 @@ object LinuxNotificationProvider : NotificationProvider {
     @Suppress("FunctionName")
     private fun LibNotify.notify_notification_set_desktop_entry(
         notification: Pointer,
-        desktopEntry: String
+        desktopEntry: String,
     ) {
         val string = g_variant_new_string(desktopEntry)
         notify_notification_set_hint(notification, "desktop-entry", string) // NON-NLS
@@ -233,7 +233,7 @@ object LinuxNotificationProvider : NotificationProvider {
     @Suppress("FunctionName")
     private fun LibNotify.notify_notification_set_suppress_sound(
         notification: Pointer,
-        suppressSound: Boolean
+        suppressSound: Boolean,
     ) {
         val bool = g_variant_new_boolean(suppressSound)
         notify_notification_set_hint(notification, "suppress-sound", bool) // NON-NLS

@@ -1,5 +1,3 @@
-<p align="center"><img src="art/app_logo.png" alt="MealTime" height="150px"></p>
-
 # FocusBloom
 FocusBloom is a Kotlin Multiplatform app that helps users enhance their productivity and time management skills through focused work intervals and short breaks.
 
@@ -12,7 +10,6 @@ FocusBloom is a Kotlin Multiplatform app that helps users enhance their producti
 ![](https://img.shields.io/badge/Android-black.svg?style=for-the-badge&logo=android) | ![](https://img.shields.io/badge/iOS-black.svg?style=for-the-badge&logo=apple) | ![](https://img.shields.io/badge/Desktop-black.svg?style=for-the-badge&logo=windows) | ![](https://img.shields.io/badge/Web-black.svg?style=for-the-badge&logo=google-chrome)
 :----: | :----: | :----: | :----:
 ✅ | ✅ | ✅ | Planned
-<a href='https://play.google.com/store/apps/details?id=com.joelkanyi.focusbloom.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
 
 ## Screenshots
 ### Android
@@ -29,6 +26,18 @@ FocusBloom is a Kotlin Multiplatform app that helps users enhance their producti
 ## Architecture
 The app is shared between Android, iOS and Desktop. The shared code is written in Kotlin and the UI is built with Compose Multiplatform. Shared code, written in Kotlin, is compiled to JVM bytecode for Android and Desktop with Kotlin/JVM and to native binaries for iOS with Kotlin/Native.
 ### Modules
+
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral'
+  }
+}%%
+
+graph LR
+  :desktop --> :shared
+  :android --> :shared
+```
 - shared:
   - contains all the shared code between the platforms
 - android:
@@ -51,8 +60,6 @@ The app is shared between Android, iOS and Desktop. The shared code is written i
 - [Compose Components Resources](https://mvnrepository.com/artifact/org.jetbrains.compose.components/components-resources) - Resources For Compose Multiplatform.
 - [Material3 Window Size Multiplatform](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) - About Material 3 Window Size Class for Compose Multiplatform.
 - [Spotless](https://github.com/diffplug/spotless) - A code formatter that helps keep the codebase clean.
-- [Detekt](https://github.com/detekt/detekt) - Static code analysis for Kotlin.
-- [Ktlint](https://github.com/pinterest/ktlint) - A static code analysis tool and formatter for Kotlin.
 - [Github Actions](https://docs.github.com/en/actions) - A CI/CD tool that helps automate workflows.
 - [Renovate](https://docs.renovatebot.com/) - An open-source software tool designed to help automate the process of updating dependencies in software projects.
 

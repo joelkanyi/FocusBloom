@@ -16,7 +16,7 @@
 package com.joelkanyi.focusbloom.feature.taskprogress
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
@@ -36,30 +36,30 @@ import kotlinx.coroutines.launch
 class TaskProgressScreenModel(
     private val settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
-    private val notificationManager: NotificationsManager
+    private val notificationManager: NotificationsManager,
 ) : ScreenModel {
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val longBreakColor = settingsRepository.longBreakColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val focusColor = settingsRepository.focusColor()
         .map { it }
         .stateIn(
-            coroutineScope,
+            screenModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            initialValue = null,
         )
 
     val focusTime = settingsRepository.getSessionTime()
@@ -67,31 +67,31 @@ class TaskProgressScreenModel(
             it?.toMillis() ?: (25).toMillis()
         }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map {
             it?.toMillis() ?: (5).toMillis()
         }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it?.toMillis() ?: (15).toMillis() }
         .stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
+            initialValue = null,
         )
 
     private val _remindersOn = MutableStateFlow<Boolean?>(null)
-    val remindersOn = _remindersOn.asStateFlow()
+    private val remindersOn = _remindersOn.asStateFlow()
     fun getRemindersStatus() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             settingsRepository.remindersOn().collectLatest {
                 _remindersOn.value = it == 1
             }
@@ -101,7 +101,7 @@ class TaskProgressScreenModel(
     private val _task = MutableStateFlow<Task?>(null)
     val task = _task.asStateFlow()
     fun getTask(taskId: Int) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.getTask(taskId).collectLatest {
                 _task.value = it
             }
@@ -114,7 +114,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the focus
      */
     private fun updateConsumedFocusTime(taskId: Int, consumedTime: Long) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateConsumedFocusTime(taskId, consumedTime)
         }
     }
@@ -125,7 +125,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the short break
      */
     private fun updateConsumedShortBreakTime(taskId: Int, consumedTime: Long) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateConsumedShortBreakTime(taskId, consumedTime)
         }
     }
@@ -136,7 +136,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the long break
      */
     private fun updateConsumedLongBreakTime(taskId: Int, consumedTime: Long) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateConsumedLongBreakTime(taskId, consumedTime)
         }
     }
@@ -147,13 +147,13 @@ class TaskProgressScreenModel(
      * @param inProgressTask the in progress task
      */
     private fun updateInProgressTask(taskId: Int, inProgressTask: Boolean) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTaskInProgress(taskId, inProgressTask)
         }
     }
 
     fun updateActiveTask(taskId: Int, activeTask: Boolean) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTaskActive(id = taskId, active = activeTask)
         }
     }
@@ -164,13 +164,13 @@ class TaskProgressScreenModel(
      * @param completedTask the completed task
      */
     private fun updateCompletedTask(taskId: Int, completedTask: Boolean) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTaskCompleted(taskId, completedTask)
         }
     }
 
     fun resetAllTasksToInactive() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateAllTasksActiveStatusToInactive()
         }
     }
@@ -181,7 +181,7 @@ class TaskProgressScreenModel(
      * @param currentCycle the current cycle of the task
      */
     private fun updateCurrentCycle(taskId: Int, currentCycle: Int) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateTaskCycleNumber(taskId, currentCycle)
         }
     }
@@ -192,7 +192,7 @@ class TaskProgressScreenModel(
      * @param currentSession the current session of the task
      */
     private fun updateCurrentSession(taskId: Int, currentSession: String) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             tasksRepository.updateCurrentSessionName(taskId, currentSession)
         }
     }
@@ -201,23 +201,23 @@ class TaskProgressScreenModel(
         when (task.value?.current) {
             "Focus" -> updateConsumedFocusTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
 
             "ShortBreak" -> updateConsumedShortBreakTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
 
             "LongBreak" -> updateConsumedLongBreakTime(
                 task.value?.id ?: -1,
-                Timer.tickingTime.value
+                Timer.tickingTime.value,
             )
         }
     }
 
     fun executeTasks() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             if (task.value?.currentCycle?.equals(0) == true) {
                 println("executeTasks: first cycle")
                 updateCurrentCycle(task.value?.id ?: 0, 1)
@@ -230,7 +230,7 @@ class TaskProgressScreenModel(
                     },
                     executeTasks = {
                         executeTasks()
-                    }
+                    },
                 )
             } else {
                 when (task.value?.current) {
@@ -241,7 +241,7 @@ class TaskProgressScreenModel(
                                     title = "[TASK] ${task.value?.name}",
                                     description = "${
                                     task.value?.currentCycle?.formattedNumber()
-                                    } Focus Session Completed, going for a long break"
+                                    } Focus Session Completed, going for a long break",
                                 )
                             }
 
@@ -254,13 +254,13 @@ class TaskProgressScreenModel(
                                 },
                                 executeTasks = {
                                     executeTasks()
-                                }
+                                },
                             )
                         } else {
                             if (remindersOn.value == true) {
                                 notificationManager.showNotification(
                                     title = "[TASK] ${task.value?.name}",
-                                    description = "${task.value?.currentCycle?.formattedNumber()} focus session completed, going for a short break"
+                                    description = "${task.value?.currentCycle?.formattedNumber()} focus session completed, going for a short break",
                                 )
                             }
 
@@ -273,7 +273,7 @@ class TaskProgressScreenModel(
                                 },
                                 executeTasks = {
                                     executeTasks()
-                                }
+                                },
                             )
                         }
                     }
@@ -284,16 +284,16 @@ class TaskProgressScreenModel(
                                 title = "[TASK] ${task.value?.name}",
                                 description = "Short Break Completed, going for the ${
                                 task.value?.currentCycle?.plus(
-                                    1
+                                    1,
                                 )?.formattedNumber()
-                                } focus session"
+                                } focus session",
                             )
                         }
 
                         updateCurrentSession(task.value?.id ?: 0, "Focus")
                         updateCurrentCycle(
                             task.value?.id ?: 0,
-                            task.value?.currentCycle?.plus(1) ?: (0 + 1)
+                            task.value?.currentCycle?.plus(1) ?: (0 + 1),
                         )
                         updateInProgressTask(task.value?.id ?: 0, true)
                         Timer.setTickingTime(focusTime.value ?: 0L)
@@ -303,7 +303,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     }
 
@@ -311,7 +311,7 @@ class TaskProgressScreenModel(
                         if (remindersOn.value == true) {
                             notificationManager.showNotification(
                                 title = "[TASK] ${task.value?.name}",
-                                description = "Good Job, you have completed this task \uD83C\uDF89\uD83C\uDF89"
+                                description = "Good Job, you have completed this task \uD83C\uDF89\uD83C\uDF89",
                             )
                         }
 
@@ -328,7 +328,7 @@ class TaskProgressScreenModel(
     }
 
     fun moveToNextSessionOfTheTask() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             when (task.value?.current.sessionType()) {
                 SessionType.Focus -> {
                     if (task.value?.currentCycle == task.value?.focusSessions) {
@@ -341,7 +341,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     } else {
                         updateCurrentSession(task.value?.id ?: 0, "ShortBreak")
@@ -353,7 +353,7 @@ class TaskProgressScreenModel(
                             },
                             executeTasks = {
                                 executeTasks()
-                            }
+                            },
                         )
                     }
                 }
@@ -371,7 +371,7 @@ class TaskProgressScreenModel(
                     updateCurrentSession(task.value?.id ?: 0, "Focus")
                     updateCurrentCycle(
                         task.value?.id ?: 0,
-                        task.value?.currentCycle?.plus(1) ?: (0 + 1)
+                        task.value?.currentCycle?.plus(1) ?: (0 + 1),
                     )
                     updateInProgressTask(task.value?.id ?: 0, true)
                     Timer.setTickingTime(focusTime.value ?: 0L)
@@ -381,7 +381,7 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
             }
@@ -389,7 +389,7 @@ class TaskProgressScreenModel(
     }
 
     fun resetCurrentSessionOfTheTask() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             when (task.value?.current.sessionType()) {
                 SessionType.Focus -> {
                     updateCurrentSession(task.value?.id ?: 0, "Focus")
@@ -401,7 +401,7 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
 
@@ -424,15 +424,10 @@ class TaskProgressScreenModel(
                         },
                         executeTasks = {
                             executeTasks()
-                        }
+                        },
                     )
                 }
             }
         }
     }
-}
-
-sealed class ReminderState {
-    data object Loading : ReminderState()
-    data class Success(val reminderOn: Boolean) : ReminderState()
 }

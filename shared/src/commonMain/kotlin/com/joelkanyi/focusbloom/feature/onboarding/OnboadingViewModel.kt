@@ -16,7 +16,7 @@
 package com.joelkanyi.focusbloom.feature.onboarding
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import kotlinx.coroutines.channels.Channel
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class OnboadingViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
 ) : ScreenModel {
     private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
     val eventsFlow = _eventsFlow.receiveAsFlow()
@@ -38,7 +38,7 @@ class OnboadingViewModel(
     }
 
     fun saveUsername() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             settingsRepository.saveUsername(username.value.trim())
             settingsRepository.toggleReminder(1)
             _eventsFlow.send(UiEvents.Navigation)
@@ -58,6 +58,6 @@ class OnboadingViewModel(
         "be disciplined",
         "be motivated",
         "be consistent",
-        "be mindful"
+        "be mindful",
     )
 }

@@ -5,7 +5,7 @@ import kotlin.String;
 
 
 
-CREATE TABLE taskEntity (
+CREATE TABLE IF NOT EXISTS taskEntity (
     id INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
