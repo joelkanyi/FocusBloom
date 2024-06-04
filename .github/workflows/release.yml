@@ -10,7 +10,7 @@ defaults:
     shell: bash
 
 jobs:
-  release:
+  release_desktop:
     name: Release Desktop App
     strategy:
       fail-fast: false
@@ -73,5 +73,44 @@ jobs:
             desktop/build/**/*.msi
             desktop/build/**/*.dmg
             desktop/build/compose/jars/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+
+  release_android:
+    name: Release Android App
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Make gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Build app
+        run: ./gradlew :android:assembleRelease --stacktrace
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-app
+          if-no-files-found: ignore
+          path: android/build/outputs/apk/release/*.apk
+
+      - name: Release
+        uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
+        with:
+          files: |
+            android/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
