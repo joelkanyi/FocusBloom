@@ -35,9 +35,6 @@ jobs:
       - name: Make gradle executable
         run: chmod +x ./gradlew
 
-      - name: Copy CI gradle.properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-
       - name: Checkout Gradle Build Cache
         uses: actions/cache@v2
         with:
