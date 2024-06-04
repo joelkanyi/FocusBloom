@@ -49,24 +49,29 @@ jobs:
       - name: Build app
         run: ./gradlew :desktop:assemble --stacktrace
 
+      - name: Build Release App
+        run: |
+          ./gradlew packageUberJarForCurrentOS
+          ./gradlew package  
+
       - name: Archive Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: distributable-${{ matrix.os }}
           if-no-files-found: ignore
           path: |
-            build/**/*.deb
-            build/**/*.msi
-            build/**/*.dmg
-            build/compose/jars/*.jar  
+            desktop/build/**/*.deb
+            desktop/build/**/*.msi
+            desktop/build/**/*.dmg
+            desktop/build/compose/jars/*.jar  
 
       - name: Release
         uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
         with:
           files: |
-            build/**/*.deb
-            build/**/*.msi
-            build/**/*.dmg
-            build/compose/jars/*.jar
+            desktop/build/**/*.deb
+            desktop/build/**/*.msi
+            desktop/build/**/*.dmg
+            desktop/build/compose/jars/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
