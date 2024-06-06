@@ -55,7 +55,7 @@ jobs:
           ./gradlew package  
 
       - name: Archive Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: distributable-${{ matrix.os }}
           if-no-files-found: ignore
@@ -102,7 +102,7 @@ jobs:
         run: ./gradlew :android:assembleRelease --stacktrace
 
       - name: Archive Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: android-app
           if-no-files-found: ignore
