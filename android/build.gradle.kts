@@ -29,7 +29,7 @@ android {
         minSdk = 21
         targetSdk = compileSdk
         versionCode = 5
-        versionName = "1.0.4"
+        versionName = properties["version"] as String
     }
     buildTypes {
         // debug

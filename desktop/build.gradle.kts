@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = "com.joelkanyi"
-version = "1.0.4"
+version = properties["version"] as String
 
 compose.desktop {
     application {
