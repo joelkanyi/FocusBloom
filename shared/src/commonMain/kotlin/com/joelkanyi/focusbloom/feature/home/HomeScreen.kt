@@ -60,6 +60,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import com.joelkanyi.focusbloom.core.presentation.component.BloomButton
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
@@ -197,6 +198,9 @@ fun HomeScreen(
                 else -> {}
             }
         },
+        onClickAddTask = {
+            tabNavigator.current = BloomTab.AddTaskTab()
+        }
     )
 }
 
@@ -217,6 +221,7 @@ private fun HomeScreenContent(
     shortBreakColor: Long?,
     longBreakColor: Long?,
     onClickActiveTaskOptions: (task: Task) -> Unit,
+    onClickAddTask: () -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -439,6 +444,21 @@ private fun HomeScreenContent(
                                         ),
                                         textAlign = TextAlign.Center,
                                     )
+
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    if (tasks.isEmpty()) {
+                                        BloomButton(
+                                            onClick = onClickAddTask,
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.padding(horizontal = 24.dp),
+                                                text = "Add Your First Task",
+                                                style = MaterialTheme.typography.labelMedium.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                ),
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
