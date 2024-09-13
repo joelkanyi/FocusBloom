@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.core.presentation.component
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -49,8 +50,11 @@ fun BloomNavigationRailBar(
         },
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        navRailItems.forEach { item ->
+        navRailItems.forEachIndexed() { index, item ->
             val isSelected = tabNavigator.current == item
+            if (index == navRailItems.size - 1) {
+                Spacer(Modifier.weight(1f))
+            }
             NavigationRailItem(
                 modifier = Modifier.padding(vertical = 12.dp),
                 icon = {
