@@ -3,13 +3,15 @@
 androidDriver = "2.0.2"
 kotlin = "2.0.0"
 compose = "1.6.10"
-koinCore = "3.5.6"
-koinAndroid = "3.5.6"
+
+koin = "3.5.6"
+koinCompose = "3.6.0-wasm-alpha2"
+koinComposeMultiplatform = "1.2.0-alpha3"
+
 gradle = "8.5.0"
 sqlDelight = " 2.0.2"
 voyager = "1.0.0"
 multiplatformSettings = "1.1.1"
-koin-compose = "1.1.5"
 core = "1.13.1"
 jna = "5.14.0"
 koalaplotCore = "0.5.4"
@@ -23,6 +25,7 @@ toast4j = "0.2.0"
 compose-activity = "1.9.0"
 spotless = "6.25.0"
 accompanist-systemUIController = "0.34.0"
+androidx-lifecycle = "2.8.0"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
@@ -30,8 +33,12 @@ core = { module = "androidx.core:core", version.ref = "core" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCompose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComposeMultiplatform" }
+
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationJson" }
 material3-window-size-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
@@ -44,7 +51,6 @@ multiplatformSettings-noArg = { module = "com.russhwolf:multiplatform-settings-n
 multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "androidDriver" }
 toast4j = { module = "de.mobanisto:toast4j", version.ref = "toast4j" }
 
@@ -59,6 +65,7 @@ core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", versi
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }
 
 stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 
 [plugins]
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }

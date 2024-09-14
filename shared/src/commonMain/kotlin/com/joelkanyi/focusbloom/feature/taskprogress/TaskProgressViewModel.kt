@@ -15,8 +15,8 @@
  */
 package com.joelkanyi.focusbloom.feature.taskprogress
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
@@ -33,15 +33,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TaskProgressScreenModel(
+class TaskProgressViewModel(
     private val settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
     private val notificationManager: NotificationsManager,
-) : ScreenModel {
+) : ViewModel() {
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -49,7 +49,7 @@ class TaskProgressScreenModel(
     val longBreakColor = settingsRepository.longBreakColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -57,7 +57,7 @@ class TaskProgressScreenModel(
     val focusColor = settingsRepository.focusColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -67,7 +67,7 @@ class TaskProgressScreenModel(
             it?.toMillis() ?: (25).toMillis()
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -76,14 +76,14 @@ class TaskProgressScreenModel(
             it?.toMillis() ?: (5).toMillis()
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it?.toMillis() ?: (15).toMillis() }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -91,7 +91,7 @@ class TaskProgressScreenModel(
     private val _remindersOn = MutableStateFlow<Boolean?>(null)
     private val remindersOn = _remindersOn.asStateFlow()
     fun getRemindersStatus() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.remindersOn().collectLatest {
                 _remindersOn.value = it == 1
             }
@@ -101,7 +101,7 @@ class TaskProgressScreenModel(
     private val _task = MutableStateFlow<Task?>(null)
     val task = _task.asStateFlow()
     fun getTask(taskId: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.getTask(taskId).collectLatest {
                 _task.value = it
             }
@@ -114,7 +114,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the focus
      */
     private fun updateConsumedFocusTime(taskId: Int, consumedTime: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateConsumedFocusTime(taskId, consumedTime)
         }
     }
@@ -125,7 +125,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the short break
      */
     private fun updateConsumedShortBreakTime(taskId: Int, consumedTime: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateConsumedShortBreakTime(taskId, consumedTime)
         }
     }
@@ -136,7 +136,7 @@ class TaskProgressScreenModel(
      * @param consumedTime the consumed time of the long break
      */
     private fun updateConsumedLongBreakTime(taskId: Int, consumedTime: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateConsumedLongBreakTime(taskId, consumedTime)
         }
     }
@@ -147,13 +147,13 @@ class TaskProgressScreenModel(
      * @param inProgressTask the in progress task
      */
     private fun updateInProgressTask(taskId: Int, inProgressTask: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskInProgress(taskId, inProgressTask)
         }
     }
 
     fun updateActiveTask(taskId: Int, activeTask: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskActive(id = taskId, active = activeTask)
         }
     }
@@ -164,13 +164,13 @@ class TaskProgressScreenModel(
      * @param completedTask the completed task
      */
     private fun updateCompletedTask(taskId: Int, completedTask: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskCompleted(taskId, completedTask)
         }
     }
 
     fun resetAllTasksToInactive() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateAllTasksActiveStatusToInactive()
         }
     }
@@ -181,7 +181,7 @@ class TaskProgressScreenModel(
      * @param currentCycle the current cycle of the task
      */
     private fun updateCurrentCycle(taskId: Int, currentCycle: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskCycleNumber(taskId, currentCycle)
         }
     }
@@ -192,7 +192,7 @@ class TaskProgressScreenModel(
      * @param currentSession the current session of the task
      */
     private fun updateCurrentSession(taskId: Int, currentSession: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateCurrentSessionName(taskId, currentSession)
         }
     }
@@ -217,7 +217,7 @@ class TaskProgressScreenModel(
     }
 
     fun executeTasks() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (task.value?.currentCycle?.equals(0) == true) {
                 println("executeTasks: first cycle")
                 updateCurrentCycle(task.value?.id ?: 0, 1)
@@ -328,7 +328,7 @@ class TaskProgressScreenModel(
     }
 
     fun moveToNextSessionOfTheTask() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             when (task.value?.current.sessionType()) {
                 SessionType.Focus -> {
                     if (task.value?.currentCycle == task.value?.focusSessions) {
@@ -389,7 +389,7 @@ class TaskProgressScreenModel(
     }
 
     fun resetCurrentSessionOfTheTask() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             when (task.value?.current.sessionType()) {
                 SessionType.Focus -> {
                     updateCurrentSession(task.value?.id ?: 0, "Focus")

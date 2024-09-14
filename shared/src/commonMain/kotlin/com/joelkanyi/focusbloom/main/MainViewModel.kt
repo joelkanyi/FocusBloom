@@ -15,8 +15,8 @@
  */
 package com.joelkanyi.focusbloom.main
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +25,10 @@ import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(
     settingsRepository: SettingsRepository,
-) : ScreenModel {
+) : ViewModel() {
 
     val appTheme: StateFlow<Int?> = settingsRepository.getAppTheme().map { it }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = null,
     )
@@ -37,7 +37,7 @@ class MainViewModel(
         settingsRepository.getUsername().map {
             OnBoardingState.Success(it.isNullOrEmpty().not())
         }.stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = OnBoardingState.Loading,
         )

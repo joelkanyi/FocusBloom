@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Joel Kanyi.
+ * Copyright 2024 Joel Kanyi.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,6 @@
  */
 package com.joelkanyi.focusbloom.di
 
-import org.koin.core.Koin
-import org.koin.core.context.startKoin
-import org.koin.dsl.KoinAppDeclaration
+import org.koin.core.module.Module
 
-class KoinInit {
-    fun init(appDeclaration: KoinAppDeclaration = {}): Koin {
-        return startKoin {
-            modules(
-                listOf(
-                    platformModule(),
-                    commonModule(),
-                    viewModelModule,
-                ),
-            )
-            appDeclaration()
-        }.koin
-    }
-}
+expect val viewModelModule: Module

@@ -67,6 +67,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
 import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
 import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.pickFirstName
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.taskCompleteMessage
@@ -82,41 +83,40 @@ import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.il_completed
 import focusbloom.shared.generated.resources.il_empty
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    screenModel: HomeScreenModel = koinInject(),
+    viewModel: HomeViewModel = koinViewModel(),
 ) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
-    val tasksState = screenModel.tasks.collectAsState().value
-    val username = screenModel.username.collectAsState().value ?: ""
-    val hourFormat = screenModel.hourFormat.collectAsState().value
-    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
+    val tasksState = viewModel.tasks.collectAsState().value
+    val username = viewModel.username.collectAsState().value ?: ""
+    val hourFormat = viewModel.hourFormat.collectAsState().value
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
     val navigator = LocalNavigator.currentOrThrow
     val tabNavigator = LocalTabNavigator.current
-    val selectedTask = screenModel.selectedTask.collectAsState().value
-    val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
-    val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
-    val longBreakColor = screenModel.longBreakColor.collectAsState().value
-    val focusColor = screenModel.focusColor.collectAsState().value
+    val selectedTask = viewModel.selectedTask.collectAsState().value
+    val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
+    val shortBreakColor = viewModel.shortBreakColor.collectAsState().value
+    val longBreakColor = viewModel.longBreakColor.collectAsState().value
+    val focusColor = viewModel.focusColor.collectAsState().value
     val timerState = Timer.timerState.collectAsState().value
     val tickingTime = Timer.tickingTime.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
-    val remindersOn = screenModel.remindersOn.collectAsState().value
+    val remindersOn = viewModel.remindersOn.collectAsState().value
 
     LaunchedEffect(Unit) {
         when (remindersOn) {
             ReminderState.Loading -> {}
             is ReminderState.Success -> {
                 if (remindersOn.reminderOn == null) {
-                    screenModel.toggleReminder(1)
+                    viewModel.toggleReminder(1)
                 }
             }
         }
@@ -132,23 +132,23 @@ fun HomeScreen(
                 },
                 bottomSheetState = bottomSheetState,
                 onClickCancel = {
-                    screenModel.openBottomSheet(false)
+                    viewModel.openBottomSheet(false)
                 },
                 onClickDelete = {
-                    screenModel.deleteTask(it)
+                    viewModel.deleteTask(it)
                 },
                 onDismissRequest = {
-                    screenModel.openBottomSheet(false)
-                    screenModel.selectTask(null)
+                    viewModel.openBottomSheet(false)
+                    viewModel.selectTask(null)
                 },
                 onClickPushToTomorrow = {
-                    screenModel.pushToTomorrow(it)
+                    viewModel.pushToTomorrow(it)
                 },
                 onClickPushToToday = {
-                    screenModel.pushToToday(it)
+                    viewModel.pushToToday(it)
                 },
                 onClickMarkAsCompleted = {
-                    screenModel.markAsCompleted(it)
+                    viewModel.markAsCompleted(it)
                 },
                 onClickEditTask = {
                     tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
@@ -172,8 +172,8 @@ fun HomeScreen(
         username = username,
         onClickTask = {
             if (it.date.date < today().date) {
-                screenModel.selectTask(it)
-                screenModel.openBottomSheet(true)
+                viewModel.selectTask(it)
+                viewModel.openBottomSheet(true)
             } else {
                 navigator.parent?.push(TaskProgressScreen(taskId = it.id))
             }
@@ -182,8 +182,8 @@ fun HomeScreen(
             navigator.parent?.push(AllTasksScreen(it))
         },
         onClickTaskOptions = {
-            screenModel.selectTask(it)
-            screenModel.openBottomSheet(true)
+            viewModel.selectTask(it)
+            viewModel.openBottomSheet(true)
         },
         onClickActiveTaskOptions = {
             when (timerState) {
@@ -469,7 +469,6 @@ private fun HomeScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveTaskCard(
     task: Task,

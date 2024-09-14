@@ -17,8 +17,8 @@ package com.joelkanyi.focusbloom.feature.addtask
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.TaskType
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
@@ -39,10 +39,10 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-class AddTaskScreenModel(
+class AddTaskViewModel(
     settingsRepository: SettingsRepository,
     private val tasksRepository: TasksRepository,
-) : ScreenModel {
+) : ViewModel() {
     private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
     val eventsFlow = _eventsFlow.receiveAsFlow()
 
@@ -51,28 +51,28 @@ class AddTaskScreenModel(
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -172,7 +172,7 @@ class AddTaskScreenModel(
     }
 
     fun addTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.addTask(task)
             reset()
             setEndTime(today().time)
@@ -199,7 +199,7 @@ class AddTaskScreenModel(
     private val _task = MutableStateFlow<Task?>(null)
     val task = _task.asStateFlow()
     fun getTask(taskId: Int?) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (taskId != null) {
                 tasksRepository.getTask(taskId).collectLatest {
                     _task.value = it
@@ -240,7 +240,7 @@ class AddTaskScreenModel(
     }
 
     fun updateTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTask(task)
             reset()
             setEndTime(today().time)

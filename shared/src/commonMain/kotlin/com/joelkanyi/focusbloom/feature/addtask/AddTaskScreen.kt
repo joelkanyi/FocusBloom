@@ -85,6 +85,7 @@ import com.joelkanyi.focusbloom.core.presentation.theme.SuccessColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.calculateFromFocusSessions
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.selectedDateMillisToLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.toLocalDateTime
 import com.joelkanyi.focusbloom.core.utils.today
@@ -99,15 +100,13 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
     taskId: Int? = null,
-    screenModel: AddTaskScreenModel = koinInject(),
+    viewModel: AddTaskViewModel = koinViewModel(),
 ) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
@@ -115,20 +114,20 @@ fun AddTaskScreen(
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
-    val focusSessions = screenModel.focusSessions.collectAsState().value
-    val showStartTimeInputDialog = screenModel.showStartTimeInputDialog.collectAsState().value
-    val showTaskDatePickerDialog = screenModel.showTaskDatePickerDialog.collectAsState().value
-    val selectedTaskType = screenModel.selectedOption.collectAsState().value
-    val taskName = screenModel.taskName.value
-    val taskDescription = screenModel.taskDescription.value
-    val taskToUpdate = screenModel.task.collectAsState().value
-    val taskDate = screenModel.taskDate.collectAsState().value
-    val startTime = screenModel.startTime.collectAsState().value
-    val endTime = screenModel.endTime.collectAsState().value
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+    val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
+    val focusSessions = viewModel.focusSessions.collectAsState().value
+    val showStartTimeInputDialog = viewModel.showStartTimeInputDialog.collectAsState().value
+    val showTaskDatePickerDialog = viewModel.showTaskDatePickerDialog.collectAsState().value
+    val selectedTaskType = viewModel.selectedOption.collectAsState().value
+    val taskName = viewModel.taskName.value
+    val taskDescription = viewModel.taskDescription.value
+    val taskToUpdate = viewModel.task.collectAsState().value
+    val taskDate = viewModel.taskDate.collectAsState().value
+    val startTime = viewModel.startTime.collectAsState().value
+    val endTime = viewModel.endTime.collectAsState().value
     val tabNavigator = LocalTabNavigator.current
 
     val startTimeState = rememberTimePickerState(
@@ -141,8 +140,8 @@ fun AddTaskScreen(
     )
 
     LaunchedEffect(key1 = true) {
-        screenModel.getTask(taskId)
-        screenModel.setEndTime(
+        viewModel.getTask(taskId)
+        viewModel.setEndTime(
             calculateFromFocusSessions(
                 focusSessions = focusSessions,
                 sessionTime = sessionTime,
@@ -158,7 +157,7 @@ fun AddTaskScreen(
             ),
         )
         withContext(Dispatchers.Main.immediate) {
-            screenModel.eventsFlow.collect { event ->
+            viewModel.eventsFlow.collect { event ->
                 when (event) {
                     is UiEvents.ShowSnackbar -> {
                         snackbarHostState.showSnackbar(
@@ -181,11 +180,11 @@ fun AddTaskScreen(
             title = "Start Time",
             state = startTimeState,
             onDismiss = {
-                screenModel.setShowStartTimeInputDialog(false)
+                viewModel.setShowStartTimeInputDialog(false)
             },
             onConfirmStartTime = {
-                screenModel.setStartTime(it)
-                screenModel.setEndTime(
+                viewModel.setStartTime(it)
+                viewModel.setEndTime(
                     calculateFromFocusSessions(
                         focusSessions = focusSessions,
                         sessionTime = sessionTime,
@@ -200,7 +199,7 @@ fun AddTaskScreen(
                         ),
                     ),
                 )
-                screenModel.setShowStartTimeInputDialog(false)
+                viewModel.setShowStartTimeInputDialog(false)
             },
         )
     }
@@ -209,11 +208,11 @@ fun AddTaskScreen(
         TaskDatePicker(
             datePickerState = datePickerState,
             dismiss = {
-                screenModel.setShowTaskDatePickerDialog(false)
+                viewModel.setShowTaskDatePickerDialog(false)
             },
             onConfirmDate = {
-                screenModel.setTaskDate(it)
-                screenModel.setShowTaskDatePickerDialog(false)
+                viewModel.setTaskDate(it)
+                viewModel.setShowTaskDatePickerDialog(false)
             },
         )
     }
@@ -230,30 +229,30 @@ fun AddTaskScreen(
         endTime = endTime,
         focusSessions = focusSessions,
         onTaskNameChange = {
-            screenModel.setTaskName(it)
+            viewModel.setTaskName(it)
         },
         onIncrementFocusSessions = {
-            screenModel.incrementFocusSessions()
+            viewModel.incrementFocusSessions()
         },
         onDecrementIncrementFocusSessions = {
-            screenModel.decrementFocusSessions()
+            viewModel.decrementFocusSessions()
         },
         onSelectedTaskTypeChange = {
-            screenModel.setSelectedOption(it)
+            viewModel.setSelectedOption(it)
         },
         onTaskDescriptionChange = {
-            screenModel.setTaskDescription(it)
+            viewModel.setTaskDescription(it)
         },
         onClickPickStartTime = {
-            screenModel.setShowStartTimeInputDialog(true)
+            viewModel.setShowStartTimeInputDialog(true)
         },
         onClickPickDate = {
-            screenModel.setShowTaskDatePickerDialog(true)
+            viewModel.setShowTaskDatePickerDialog(true)
         },
         onClickAddTask = {
             keyboardController?.hide()
             if (taskToUpdate != null) {
-                screenModel.updateTask(
+                viewModel.updateTask(
                     task = Task(
                         id = taskToUpdate.id,
                         name = taskName,
@@ -278,7 +277,7 @@ fun AddTaskScreen(
                     ),
                 )
             } else {
-                screenModel.addTask(
+                viewModel.addTask(
                     task = Task(
                         name = taskName,
                         description = taskDescription,
@@ -306,7 +305,7 @@ fun AddTaskScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddTaskScreenContent(
     snackbarHostState: SnackbarHostState,
@@ -573,7 +572,6 @@ private fun AddTaskScreenContent(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun TimeComponent(
     title: String,

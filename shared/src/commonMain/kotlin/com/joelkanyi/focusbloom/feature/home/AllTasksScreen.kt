@@ -23,7 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,12 +43,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 data class AllTasksScreen(
     val type: String,
@@ -57,19 +56,19 @@ data class AllTasksScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val screenModel = rememberKoinInject<HomeScreenModel>()
+        val viewModel = koinViewModel<HomeViewModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
-        val tasksState = screenModel.tasks.collectAsState().value
-        val hourFormat = screenModel.hourFormat.collectAsState().value
-        val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-        val selectedTask = screenModel.selectedTask.collectAsState().value
-        val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+        val tasksState = viewModel.tasks.collectAsState().value
+        val hourFormat = viewModel.hourFormat.collectAsState().value
+        val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+        val selectedTask = viewModel.selectedTask.collectAsState().value
+        val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
         val bottomSheetState = rememberModalBottomSheetState()
         // val tabNavigator = LocalTabNavigator.current
 
@@ -79,23 +78,23 @@ data class AllTasksScreen(
                     type = type,
                     bottomSheetState = bottomSheetState,
                     onClickCancel = {
-                        screenModel.openBottomSheet(false)
+                        viewModel.openBottomSheet(false)
                     },
                     onClickDelete = {
-                        screenModel.deleteTask(it)
+                        viewModel.deleteTask(it)
                     },
                     onDismissRequest = {
-                        screenModel.openBottomSheet(false)
-                        screenModel.selectTask(null)
+                        viewModel.openBottomSheet(false)
+                        viewModel.selectTask(null)
                     },
                     onClickPushToTomorrow = {
-                        screenModel.pushToTomorrow(it)
+                        viewModel.pushToTomorrow(it)
                     },
                     onClickPushToToday = {
-                        screenModel.pushToToday(it)
+                        viewModel.pushToToday(it)
                     },
                     onClickMarkAsCompleted = {
-                        screenModel.markAsCompleted(it)
+                        viewModel.markAsCompleted(it)
                     },
                     onClickEditTask = {
                         /*tabNavigator.current = BloomTab.AddTaskTab(
@@ -118,8 +117,8 @@ data class AllTasksScreen(
                 navigator.pop()
             },
             onClickTaskOptions = {
-                screenModel.selectTask(it)
-                screenModel.openBottomSheet(true)
+                viewModel.selectTask(it)
+                viewModel.openBottomSheet(true)
             },
             onClickTask = {
                 navigator.push(TaskProgressScreen(taskId = it.id))
@@ -161,7 +160,7 @@ fun AllTasksScreenContent(
                             navigationIcon = {
                                 IconButton(onClick = onClickNavigateBack) {
                                     Icon(
-                                        imageVector = Icons.Outlined.ArrowBack,
+                                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                                         contentDescription = "Back",
                                     )
                                 }

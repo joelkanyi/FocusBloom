@@ -74,7 +74,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.koin.core)
-            api(libs.koin.compose)
+            implementation(libs.koin.compose)
 
             implementation(compose.material3)
             implementation(compose.material)
@@ -105,6 +105,8 @@ kotlin {
             implementation(libs.koalaplot.core)
 
             implementation(libs.stdlib)
+
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
         }
 
         androidMain.dependencies {
@@ -113,6 +115,9 @@ kotlin {
             implementation(libs.accompanist.systemUIController)
             implementation(libs.core)
             implementation(libs.compose.activity)
+
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
 
         jvmMain.dependencies {

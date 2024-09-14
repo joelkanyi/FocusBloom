@@ -72,6 +72,7 @@ import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.completedTasks
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.getLast52Weeks
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import com.joelkanyi.focusbloom.core.utils.taskColor
@@ -85,26 +86,24 @@ import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xychart.TickPosition
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StatisticsScreen(
-    screenModel: StatisticsScreenModel = koinInject(),
+    viewModel: StatisticsViewModel = koinViewModel(),
 ) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
     val navigator = LocalNavigator.currentOrThrow
-    val tasksHistory = screenModel.tasks.collectAsState().value
+    val tasksHistory = viewModel.tasks.collectAsState().value
     val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
-    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
-    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
+    val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = lastFiftyTwoWeeks.size - 1,
@@ -155,16 +154,16 @@ fun StatisticsScreen(
             }
         },
         onClickDelete = {
-            screenModel.deleteTask(it)
+            viewModel.deleteTask(it)
         },
         showTaskOption = {
-            screenModel.openedTasks.contains(it)
+            viewModel.openedTasks.contains(it)
         },
         onShowTaskOption = {
-            screenModel.openTaskOptions(it)
+            viewModel.openTaskOptions(it)
         },
         onClickCancel = {
-            screenModel.openTaskOptions(it)
+            viewModel.openTaskOptions(it)
         },
     )
 }
@@ -381,7 +380,6 @@ private fun WeeksController(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HistoryCard(
     task: Task,

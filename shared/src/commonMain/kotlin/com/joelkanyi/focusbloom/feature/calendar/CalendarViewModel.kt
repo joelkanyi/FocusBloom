@@ -15,8 +15,8 @@
  */
 package com.joelkanyi.focusbloom.feature.calendar
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
@@ -31,17 +31,17 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class CalendarScreenModel(
+class CalendarViewModel(
     private val tasksRepository: TasksRepository,
     settingsRepository: SettingsRepository,
-) : ScreenModel {
+) : ViewModel() {
     private val _selectedDay = MutableStateFlow(
         Clock.System.now().toLocalDateTime(
             TimeZone.currentSystemDefault(),
         ).date,
     )
     val selectedDay = _selectedDay.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = Clock.System.now().toLocalDateTime(
             TimeZone.currentSystemDefault(),
@@ -59,7 +59,7 @@ class CalendarScreenModel(
             }
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList(),
         )
@@ -67,7 +67,7 @@ class CalendarScreenModel(
     val hourFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -77,21 +77,21 @@ class CalendarScreenModel(
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -109,7 +109,7 @@ class CalendarScreenModel(
     }
 
     fun pushToTomorrow(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTask(
                 task.copy(
                     date = task.date.plusDays(1),
@@ -120,7 +120,7 @@ class CalendarScreenModel(
     }
 
     fun markAsCompleted(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskCompleted(
                 id = task.id,
                 completed = true,
@@ -137,7 +137,7 @@ class CalendarScreenModel(
     }
 
     fun deleteTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.deleteTask(task.id)
         }
     }

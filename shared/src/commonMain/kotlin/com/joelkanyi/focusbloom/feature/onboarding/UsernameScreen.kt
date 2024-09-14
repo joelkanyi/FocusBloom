@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -52,27 +51,25 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.utils.UiEvents
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.main.MainScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 class UsernameScreen : Screen, KoinComponent {
 
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
-        val onboadingViewModel = rememberKoinInject<OnboadingViewModel>()
+        val viewModel = koinViewModel<OnboardingViewModel>()
         val navigator = LocalNavigator.currentOrThrow
-        val username = onboadingViewModel.username.collectAsState().value
+        val username = viewModel.username.collectAsState().value
         val keyboardController = LocalSoftwareKeyboardController.current
 
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Main.immediate) {
-                onboadingViewModel.eventsFlow.collect { event ->
+                viewModel.eventsFlow.collect { event ->
                     when (event) {
                         is UiEvents.Navigation -> {
                             navigator.replaceAll(MainScreen())
@@ -85,13 +82,13 @@ class UsernameScreen : Screen, KoinComponent {
         }
         UsernameScreenContent(
             username = username,
-            typeWriterTextParts = onboadingViewModel.typeWriterTextParts,
+            typeWriterTextParts = viewModel.typeWriterTextParts,
             onUsernameChange = {
-                onboadingViewModel.setUsername(it)
+                viewModel.setUsername(it)
             },
             onClickContinue = {
                 keyboardController?.hide()
-                onboadingViewModel.saveUsername()
+                viewModel.saveUsername()
             },
         )
     }

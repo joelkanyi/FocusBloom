@@ -35,11 +35,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.AlertDialog
@@ -84,15 +84,15 @@ import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
 import com.joelkanyi.focusbloom.core.presentation.theme.Yellow
 import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.timeFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.compose.koinInject
 
 @Composable
 fun SettingsScreen(
-    screenModel: SettingsScreenModel = koinInject(),
+    viewModel: SettingsViewModel = koinViewModel(),
 ) {
-    val darkTheme = when (screenModel.appTheme.collectAsState().value) {
+    val darkTheme = when (viewModel.appTheme.collectAsState().value) {
         1 -> true
         else -> false
     }
@@ -101,71 +101,71 @@ fun SettingsScreen(
         navBarColor = MaterialTheme.colorScheme.background,
     )
 
-    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-    val timeFormat = screenModel.timeFormat.collectAsState().value ?: 24
-    val selectedColorCardTitle = screenModel.selectedColorCardTitle.collectAsState().value
-    val currentShortBreakColor = screenModel.shortBreakColor.collectAsState().value
-    val currentLongBreakColor = screenModel.longBreakColor.collectAsState().value
-    val currentSessionColor = screenModel.focusColor.collectAsState().value
-    val showColorDialog = screenModel.showColorDialog.collectAsState().value
-    val remindersOn = screenModel.remindersOn.collectAsState().value
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+    val timeFormat = viewModel.timeFormat.collectAsState().value ?: 24
+    val selectedColorCardTitle = viewModel.selectedColorCardTitle.collectAsState().value
+    val currentShortBreakColor = viewModel.shortBreakColor.collectAsState().value
+    val currentLongBreakColor = viewModel.longBreakColor.collectAsState().value
+    val currentSessionColor = viewModel.focusColor.collectAsState().value
+    val showColorDialog = viewModel.showColorDialog.collectAsState().value
+    val remindersOn = viewModel.remindersOn.collectAsState().value
 
     SettingsScreenContent(
         darkTheme = darkTheme,
         onDarkThemeChange = { themeValue ->
-            screenModel.setAppTheme(if (themeValue) 1 else 0)
+            viewModel.setAppTheme(if (themeValue) 1 else 0)
         },
-        optionsOpened = screenModel.optionsOpened,
+        optionsOpened = viewModel.optionsOpened,
         openOptions = { option ->
-            screenModel.openOptions(option)
+            viewModel.openOptions(option)
         },
         focusSessionMinutes = sessionTime,
         onFocusSessionMinutesChange = { time ->
             if (time.isEmpty()) {
-                screenModel.setSessionTime(0)
+                viewModel.setSessionTime(0)
                 return@SettingsScreenContent
             }
             if (time.isDigitsOnly().not()) {
                 return@SettingsScreenContent
             }
-            screenModel.setSessionTime(time.toInt())
+            viewModel.setSessionTime(time.toInt())
         },
         shortBreakMinutes = shortBreakTime,
         onShortBreakMinutesChange = { time ->
             if (time.isEmpty()) {
-                screenModel.setShortBreakTime(0)
+                viewModel.setShortBreakTime(0)
                 return@SettingsScreenContent
             }
             if (time.isDigitsOnly().not()) {
                 return@SettingsScreenContent
             }
-            screenModel.setShortBreakTime(time.toInt())
+            viewModel.setShortBreakTime(time.toInt())
         },
         longBreakMinutes = longBreakTime,
         onLongBreakMinutesChange = { time ->
             if (time.isEmpty()) {
-                screenModel.setLongBreakTime(0)
+                viewModel.setLongBreakTime(0)
                 return@SettingsScreenContent
             }
             if (time.isDigitsOnly().not()) {
                 return@SettingsScreenContent
             }
-            screenModel.setLongBreakTime(time.toInt())
+            viewModel.setLongBreakTime(time.toInt())
         },
-        hourFormats = screenModel.hourFormats,
+        hourFormats = viewModel.hourFormats,
         selectedHourFormat = timeFormat,
         onHourFormatChange = {
-            screenModel.setHourFormat(it)
+            viewModel.setHourFormat(it)
         },
         showColorDialog = showColorDialog,
         selectedColorCardTitle = selectedColorCardTitle,
         onColorCardTitleChange = {
-            screenModel.setSelectedColorCardTitle(it)
+            viewModel.setSelectedColorCardTitle(it)
         },
         onShowColorDialog = {
-            screenModel.setShowColorDialog(it)
+            viewModel.setShowColorDialog(it)
         },
         currentShortBreakColor = if (currentShortBreakColor?.toInt() == 0 || currentShortBreakColor == null) {
             ShortBreakColor
@@ -185,21 +185,21 @@ fun SettingsScreen(
         onSelectColor = {
             when (selectedColorCardTitle) {
                 "Focus Session" -> {
-                    screenModel.setFocusColor(it)
+                    viewModel.setFocusColor(it)
                 }
 
                 "Short Break" -> {
-                    screenModel.setShortBreakColor(it)
+                    viewModel.setShortBreakColor(it)
                 }
 
                 "Long Break" -> {
-                    screenModel.setLongBreakColor(it)
+                    viewModel.setLongBreakColor(it)
                 }
             }
         },
         remindersOn = remindersOn == 1,
         onRemindersChange = {
-            screenModel.setReminders(
+            viewModel.setReminders(
                 if (it) {
                     1
                 } else {
@@ -435,7 +435,7 @@ fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
         },
         expanded = expanded("Sounds"),
         title = "Sounds",
-        icon = Icons.Outlined.VolumeUp,
+        icon = Icons.AutoMirrored.Outlined.VolumeUp,
         content = {
             var alarmSliderPosition by remember { mutableStateOf(0f) }
             var tickingSliderPosition by remember { mutableStateOf(0f) }
@@ -656,7 +656,6 @@ fun SessionTime(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingCard(
     title: String,

@@ -16,8 +16,8 @@
 package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.runtime.mutableStateListOf
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
@@ -26,16 +26,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class StatisticsScreenModel(
+class StatisticsViewModel(
     private val tasksRepository: TasksRepository,
     settingsRepository: SettingsRepository,
-) : ScreenModel {
+) : ViewModel() {
     val hourFormat = settingsRepository.getHourFormat()
         .map {
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -45,21 +45,21 @@ class StatisticsScreenModel(
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -72,13 +72,13 @@ class StatisticsScreenModel(
                 }
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList(),
         )
 
     fun deleteTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.deleteTask(task.id)
         }
     }
