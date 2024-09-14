@@ -1,14 +1,14 @@
 [versions]
 
 androidDriver = "2.0.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 compose = "1.6.10"
 
 koin = "3.5.6"
 koinCompose = "3.6.0-wasm-alpha2"
 koinComposeMultiplatform = "1.2.0-alpha3"
 
-gradle = "8.5.0"
+gradle = "8.5.2"
 sqlDelight = " 2.0.2"
 voyager = "1.0.0"
 multiplatformSettings = "1.1.1"
@@ -17,7 +17,7 @@ jna = "5.14.0"
 koalaplotCore = "0.5.4"
 kotlinxCoroutinesSwing = "1.8.1"
 kotlinxSerializationJson = "1.7.1"
-kotlinxDateTime = "0.6.0"
+kotlinxDateTime = "0.6.1"
 material3WindowSizeClassMultiplatform = "0.5.0"
 napier = "2.7.1"
 core-library-desugaring = "2.0.4"
