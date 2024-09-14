@@ -24,17 +24,17 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import com.joelkanyi.focusbloom.core.presentation.theme.FocusBloomTheme
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.feature.onboarding.OnboardingScreen
 import com.joelkanyi.focusbloom.main.MainScreen
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.main.OnBoardingState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import org.koin.compose.KoinContext
-import org.koin.compose.koinInject
 
 @Composable
 fun FocusBloomApp(
-    mainViewModel: MainViewModel = koinInject(),
+    mainViewModel: MainViewModel = koinViewModel(),
 ) {
     val darkTheme = when (mainViewModel.appTheme.collectAsState().value) {
         1 -> true

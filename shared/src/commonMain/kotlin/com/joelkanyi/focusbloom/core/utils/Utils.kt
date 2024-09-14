@@ -23,6 +23,8 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
@@ -41,6 +43,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
+import org.koin.compose.currentKoinScope
 import kotlin.jvm.JvmInline
 
 @Composable
@@ -607,4 +610,12 @@ fun Int.formattedNumber(): String {
         else -> "th"
     }
     }"
+}
+
+@Composable
+inline fun <reified T : ViewModel> koinViewModel(): T {
+    val scope = currentKoinScope()
+    return viewModel {
+        scope.get<T>()
+    }
 }

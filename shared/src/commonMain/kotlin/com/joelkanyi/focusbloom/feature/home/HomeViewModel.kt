@@ -15,8 +15,8 @@
  */
 package com.joelkanyi.focusbloom.feature.home
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import com.joelkanyi.focusbloom.core.domain.repository.tasks.TasksRepository
@@ -32,10 +32,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class HomeScreenModel(
+class HomeViewModel(
     private val tasksRepository: TasksRepository,
     private val settingsRepository: SettingsRepository,
-) : ScreenModel {
+) : ViewModel() {
     private val _openBottomSheet = MutableStateFlow(false)
     val openBottomSheet = _openBottomSheet.asStateFlow()
     fun openBottomSheet(value: Boolean) {
@@ -45,7 +45,7 @@ class HomeScreenModel(
     val hourFormat = settingsRepository.getHourFormat()
         .map { it ?: 24 }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 24,
         )
@@ -55,21 +55,21 @@ class HomeScreenModel(
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -79,19 +79,19 @@ class HomeScreenModel(
             ReminderState.Success(it)
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = ReminderState.Loading,
         )
 
     fun deleteTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.deleteTask(task.id)
         }
     }
 
     fun updateTask(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTask(task)
         }
     }
@@ -103,7 +103,7 @@ class HomeScreenModel(
     }
 
     fun pushToTomorrow(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTask(
                 task.copy(
                     date = task.date.plusDays(1),
@@ -114,7 +114,7 @@ class HomeScreenModel(
     }
 
     fun pushToToday(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTask(
                 task.copy(
                     date = today(),
@@ -125,7 +125,7 @@ class HomeScreenModel(
     }
 
     fun markAsCompleted(task: Task) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             tasksRepository.updateTaskCompleted(
                 id = task.id,
                 completed = true,
@@ -160,7 +160,7 @@ class HomeScreenModel(
             )
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = TasksState.Loading,
         )
@@ -168,7 +168,7 @@ class HomeScreenModel(
     val username = settingsRepository.getUsername()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
@@ -176,7 +176,7 @@ class HomeScreenModel(
     val shortBreakColor = settingsRepository.shortBreakColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -184,7 +184,7 @@ class HomeScreenModel(
     val longBreakColor = settingsRepository.longBreakColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -192,13 +192,13 @@ class HomeScreenModel(
     val focusColor = settingsRepository.focusColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 
     fun toggleReminder(value: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.toggleReminder(value)
         }
     }

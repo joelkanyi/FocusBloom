@@ -16,8 +16,8 @@
 package com.joelkanyi.focusbloom.feature.settings
 
 import androidx.compose.runtime.mutableStateListOf
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joelkanyi.focusbloom.core.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,9 +27,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsScreenModel(
+class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
-) : ScreenModel {
+) : ViewModel() {
     private val _selectedColorCardTitle = MutableStateFlow("")
     val selectedColorCardTitle = _selectedColorCardTitle.asStateFlow()
     fun setSelectedColorCardTitle(title: String) {
@@ -50,13 +50,13 @@ class SettingsScreenModel(
     val appTheme: StateFlow<Int?> = settingsRepository.getAppTheme()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 
     fun setAppTheme(appTheme: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveAppTheme(appTheme)
         }
     }
@@ -66,13 +66,13 @@ class SettingsScreenModel(
             it
         }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
 
     fun setSessionTime(sessionTime: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveSessionTime(sessionTime)
         }
     }
@@ -80,13 +80,13 @@ class SettingsScreenModel(
     val shortBreakTime = settingsRepository.getShortBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
 
     fun setShortBreakTime(shortBreakTime: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveShortBreakTime(shortBreakTime)
         }
     }
@@ -94,13 +94,13 @@ class SettingsScreenModel(
     val longBreakTime = settingsRepository.getLongBreakTime()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
 
     fun setLongBreakTime(longBreakTime: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveLongBreakTime(longBreakTime)
         }
     }
@@ -108,31 +108,31 @@ class SettingsScreenModel(
     val timeFormat = settingsRepository.getHourFormat()
         .map { it }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
 
     fun setHourFormat(timeFormat: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveHourFormat(timeFormat)
         }
     }
 
     fun setShortBreakColor(color: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveShortBreakColor(color)
         }
     }
 
     fun setLongBreakColor(color: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveLongBreakColor(color)
         }
     }
 
     fun setFocusColor(color: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.saveFocusColor(color)
         }
     }
@@ -148,7 +148,7 @@ class SettingsScreenModel(
             it
         }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -156,7 +156,7 @@ class SettingsScreenModel(
     val longBreakColor = settingsRepository.longBreakColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -164,7 +164,7 @@ class SettingsScreenModel(
     val focusColor = settingsRepository.focusColor()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
@@ -172,13 +172,13 @@ class SettingsScreenModel(
     val remindersOn = settingsRepository.remindersOn()
         .map { it }
         .stateIn(
-            screenModelScope,
+            viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = false,
         )
 
     fun setReminders(value: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.toggleReminder(value)
         }
     }

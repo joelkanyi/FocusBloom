@@ -42,28 +42,27 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.datetime.LocalDate
-import org.koin.compose.rememberKoinInject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 class AllStatisticsScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
-        val screenModel = rememberKoinInject<StatisticsScreenModel>()
+        val viewModel = koinViewModel<StatisticsViewModel>()
         StatusBarColors(
             statusBarColor = MaterialTheme.colorScheme.background,
             navBarColor = MaterialTheme.colorScheme.background,
         )
         val navigator = LocalNavigator.currentOrThrow
-        val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
-        val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-        val tasksHistory = screenModel.tasks.collectAsState().value.groupBy { it.date.date }
+        val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
+        val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+        val tasksHistory = viewModel.tasks.collectAsState().value.groupBy { it.date.date }
 
         AllStatisticsScreenContent(
             timeFormat = hourFormat,
@@ -75,16 +74,16 @@ class AllStatisticsScreen : Screen, KoinComponent {
                 navigator.pop()
             },
             onClickDelete = {
-                screenModel.deleteTask(it)
+                viewModel.deleteTask(it)
             },
             showTaskOption = {
-                screenModel.openedTasks.contains(it)
+                viewModel.openedTasks.contains(it)
             },
             onShowTaskOption = {
-                screenModel.openTaskOptions(it)
+                viewModel.openTaskOptions(it)
             },
             onClickCancel = {
-                screenModel.openTaskOptions(it)
+                viewModel.openTaskOptions(it)
             },
         )
     }

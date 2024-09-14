@@ -95,6 +95,7 @@ import com.joelkanyi.focusbloom.core.utils.dpToPx
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
 import com.joelkanyi.focusbloom.core.utils.formattedTimeBasedOnTimeFormat
 import com.joelkanyi.focusbloom.core.utils.insideThisWeek
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.max
 import com.joelkanyi.focusbloom.core.utils.min
 import com.joelkanyi.focusbloom.core.utils.plusHours
@@ -117,29 +118,28 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    screenModel: CalendarScreenModel = koinInject(),
+    viewModel: CalendarViewModel = koinViewModel(),
 ) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
     val coroutineScope = rememberCoroutineScope()
-    val tasks = screenModel.tasks.collectAsState().value
-    val selectedDay = screenModel.selectedDay.collectAsState().value
-    val hourFormat = screenModel.hourFormat.collectAsState().value ?: 24
+    val tasks = viewModel.tasks.collectAsState().value
+    val selectedDay = viewModel.selectedDay.collectAsState().value
+    val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
     val calendarPagerState = rememberLazyListState()
     val verticalScrollState = rememberScrollState()
-    val sessionTime = screenModel.sessionTime.collectAsState().value ?: 25
-    val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: 5
-    val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: 15
-    val selectedTask = screenModel.selectedTask.collectAsState().value
-    val openBottomSheet = screenModel.openBottomSheet.collectAsState().value
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+    val selectedTask = viewModel.selectedTask.collectAsState().value
+    val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
     val tabNavigator = LocalTabNavigator.current
 
@@ -161,21 +161,21 @@ fun CalendarScreen(
                     type = "calendar",
                     bottomSheetState = bottomSheetState,
                     onClickCancel = {
-                        screenModel.openBottomSheet(false)
+                        viewModel.openBottomSheet(false)
                     },
                     onClickDelete = {
-                        screenModel.deleteTask(it)
+                        viewModel.deleteTask(it)
                     },
                     onDismissRequest = {
-                        screenModel.openBottomSheet(false)
-                        screenModel.selectTask(null)
+                        viewModel.openBottomSheet(false)
+                        viewModel.selectTask(null)
                     },
                     onClickPushToTomorrow = {
-                        screenModel.pushToTomorrow(it)
+                        viewModel.pushToTomorrow(it)
                     },
                     onClickPushToToday = {},
                     onClickMarkAsCompleted = {
-                        screenModel.markAsCompleted(it)
+                        viewModel.markAsCompleted(it)
                     },
                     onClickEditTask = {
                         tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
@@ -207,18 +207,18 @@ fun CalendarScreen(
                         ),
                         scrollOffset = 0,
                     )
-                    screenModel.setSelectedDay(
+                    viewModel.setSelectedDay(
                         Clock.System.now()
                             .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                     )
                 }
             },
             onSelectDay = {
-                screenModel.setSelectedDay(it)
+                viewModel.setSelectedDay(it)
             },
             onShowTaskOption = {
-                screenModel.selectTask(it)
-                screenModel.openBottomSheet(true)
+                viewModel.selectTask(it)
+                viewModel.openBottomSheet(true)
             },
         )
     }

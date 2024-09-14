@@ -29,7 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -70,6 +70,7 @@ import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
+import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.sessionType
 import com.joelkanyi.focusbloom.core.utils.toMillis
 import com.joelkanyi.focusbloom.core.utils.toMinutes
@@ -80,10 +81,8 @@ import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.ic_complete
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 data class TaskProgressScreen(
     val taskId: Int,
@@ -91,18 +90,18 @@ data class TaskProgressScreen(
 
     @Composable
     override fun Content() {
-        val screenModel = get<TaskProgressScreenModel>()
+        val viewModel = koinViewModel<TaskProgressViewModel>()
         val snackbarHostState = remember { SnackbarHostState() }
-        val task = screenModel.task.collectAsState().value
+        val task = viewModel.task.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
         val timer = Timer.tickingTime.collectAsState().value
         val timerState = Timer.timerState.collectAsState().value
-        val shortBreakColor = screenModel.shortBreakColor.collectAsState().value
-        val longBreakColor = screenModel.longBreakColor.collectAsState().value
-        val focusColor = screenModel.focusColor.collectAsState().value
-        val focusTime = screenModel.focusTime.collectAsState().value ?: (25).toMillis()
-        val shortBreakTime = screenModel.shortBreakTime.collectAsState().value ?: (5).toMillis()
-        val longBreakTime = screenModel.longBreakTime.collectAsState().value ?: (15).toMillis()
+        val shortBreakColor = viewModel.shortBreakColor.collectAsState().value
+        val longBreakColor = viewModel.longBreakColor.collectAsState().value
+        val focusColor = viewModel.focusColor.collectAsState().value
+        val focusTime = viewModel.focusTime.collectAsState().value ?: (25).toMillis()
+        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: (5).toMillis()
+        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: (15).toMillis()
 
         val containerColor = when (task?.current.sessionType()) {
             SessionType.Focus -> {
@@ -140,8 +139,8 @@ data class TaskProgressScreen(
             navBarColor = containerColor,
         )
         LaunchedEffect(key1 = Unit) {
-            screenModel.getRemindersStatus()
-            screenModel.getTask(taskId)
+            viewModel.getRemindersStatus()
+            viewModel.getTask(taskId)
             withContext(Dispatchers.Main.immediate) {
                 Timer.eventsFlow.collect { event ->
                     when (event) {
@@ -179,10 +178,10 @@ data class TaskProgressScreen(
                 navigator.pop()
             },
             onClickNext = {
-                screenModel.moveToNextSessionOfTheTask()
+                viewModel.moveToNextSessionOfTheTask()
             },
             onClickReset = {
-                screenModel.resetCurrentSessionOfTheTask()
+                viewModel.resetCurrentSessionOfTheTask()
             },
             onClickAction = { state ->
                 when (state) {
@@ -195,24 +194,24 @@ data class TaskProgressScreen(
                     }
 
                     TimerState.Stopped -> {
-                        // screenModel.setTime(task?.focusTime ?: 20)
+                        // viewModel.setTime(task?.focusTime ?: 20)
                     }
 
                     TimerState.Idle -> {
                         Timer.start(
                             update = {
-                                screenModel.updateConsumedTime()
+                                viewModel.updateConsumedTime()
                             },
                             executeTasks = {
-                                screenModel.executeTasks()
+                                viewModel.executeTasks()
                             },
                         )
-                        screenModel.resetAllTasksToInactive()
-                        screenModel.updateActiveTask(taskId, true)
+                        viewModel.resetAllTasksToInactive()
+                        viewModel.updateActiveTask(taskId, true)
                     }
 
                     TimerState.Finished -> {
-                        // screenModel.setTime(task?.focusTime ?: 20)
+                        // viewModel.setTime(task?.focusTime ?: 20)
                     }
                 }
             },
@@ -247,7 +246,7 @@ fun FocusTimeScreenContent(
                 navigationIcon = {
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = "Add Task Back Button",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -389,7 +388,6 @@ fun FocusTimeScreenContent(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SuccessfulCompletionOfTask(
     modifier: Modifier = Modifier,
