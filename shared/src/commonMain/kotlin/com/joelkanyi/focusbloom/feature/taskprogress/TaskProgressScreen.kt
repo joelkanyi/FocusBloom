@@ -57,9 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTimerControls
@@ -82,141 +80,137 @@ import focusbloom.shared.generated.resources.ic_complete
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
 
-data class TaskProgressScreen(
-    val taskId: Int,
-) : Screen, KoinComponent {
+@Composable
+fun TaskProgressScreen(
+    taskId: Int,
+    navController: NavController,
+    viewModel: TaskProgressViewModel = koinViewModel()
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val task = viewModel.task.collectAsState().value
+    val timer = Timer.tickingTime.collectAsState().value
+    val timerState = Timer.timerState.collectAsState().value
+    val shortBreakColor = viewModel.shortBreakColor.collectAsState().value
+    val longBreakColor = viewModel.longBreakColor.collectAsState().value
+    val focusColor = viewModel.focusColor.collectAsState().value
+    val focusTime = viewModel.focusTime.collectAsState().value ?: (25).toMillis()
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: (5).toMillis()
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: (15).toMillis()
 
-    @Composable
-    override fun Content() {
-        val viewModel = koinViewModel<TaskProgressViewModel>()
-        val snackbarHostState = remember { SnackbarHostState() }
-        val task = viewModel.task.collectAsState().value
-        val navigator = LocalNavigator.currentOrThrow
-        val timer = Timer.tickingTime.collectAsState().value
-        val timerState = Timer.timerState.collectAsState().value
-        val shortBreakColor = viewModel.shortBreakColor.collectAsState().value
-        val longBreakColor = viewModel.longBreakColor.collectAsState().value
-        val focusColor = viewModel.focusColor.collectAsState().value
-        val focusTime = viewModel.focusTime.collectAsState().value ?: (25).toMillis()
-        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: (5).toMillis()
-        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: (15).toMillis()
-
-        val containerColor = when (task?.current.sessionType()) {
-            SessionType.Focus -> {
-                if (focusColor == null || focusColor == 0L) {
-                    Color(SessionColor)
-                } else {
-                    Color(
-                        focusColor,
-                    )
-                }
-            }
-
-            SessionType.LongBreak -> {
-                if (longBreakColor == null || longBreakColor == 0L) {
-                    Color(LongBreakColor)
-                } else {
-                    Color(
-                        longBreakColor,
-                    )
-                }
-            }
-
-            SessionType.ShortBreak -> {
-                if (shortBreakColor == null || shortBreakColor == 0L) {
-                    Color(ShortBreakColor)
-                } else {
-                    Color(
-                        shortBreakColor,
-                    )
-                }
-            }
-        }
-        StatusBarColors(
-            statusBarColor = containerColor,
-            navBarColor = containerColor,
-        )
-        LaunchedEffect(key1 = Unit) {
-            viewModel.getRemindersStatus()
-            viewModel.getTask(taskId)
-            withContext(Dispatchers.Main.immediate) {
-                Timer.eventsFlow.collect { event ->
-                    when (event) {
-                        is UiEvents.ShowSnackbar -> {
-                            snackbarHostState.showSnackbar(event.message)
-                        }
-
-                        else -> {}
-                    }
-                }
+    val containerColor = when (task?.current.sessionType()) {
+        SessionType.Focus -> {
+            if (focusColor == null || focusColor == 0L) {
+                Color(SessionColor)
+            } else {
+                Color(
+                    focusColor,
+                )
             }
         }
 
-        if (task?.completed == true) {
-            SuccessfulCompletionOfTask(
-                title = "Task Completed",
-                message = "You have successfully completed this task",
-                onConfirm = {
-                    Timer.reset()
-                    navigator.pop()
-                },
-            )
+        SessionType.LongBreak -> {
+            if (longBreakColor == null || longBreakColor == 0L) {
+                Color(LongBreakColor)
+            } else {
+                Color(
+                    longBreakColor,
+                )
+            }
         }
 
-        FocusTimeScreenContent(
-            task = task,
-            focusTime = focusTime,
-            shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime,
-            timerValue = timer,
-            snackbarHostState = snackbarHostState,
-            timerState = timerState,
-            containerColor = containerColor,
-            onClickNavigateBack = {
-                navigator.pop()
-            },
-            onClickNext = {
-                viewModel.moveToNextSessionOfTheTask()
-            },
-            onClickReset = {
-                viewModel.resetCurrentSessionOfTheTask()
-            },
-            onClickAction = { state ->
-                when (state) {
-                    TimerState.Ticking -> {
-                        Timer.pause()
+        SessionType.ShortBreak -> {
+            if (shortBreakColor == null || shortBreakColor == 0L) {
+                Color(ShortBreakColor)
+            } else {
+                Color(
+                    shortBreakColor,
+                )
+            }
+        }
+    }
+    StatusBarColors(
+        statusBarColor = containerColor,
+        navBarColor = containerColor,
+    )
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getRemindersStatus()
+        viewModel.getTask(taskId)
+        withContext(Dispatchers.Main.immediate) {
+            Timer.eventsFlow.collect { event ->
+                when (event) {
+                    is UiEvents.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(event.message)
                     }
 
-                    TimerState.Paused -> {
-                        Timer.resume()
-                    }
-
-                    TimerState.Stopped -> {
-                        // viewModel.setTime(task?.focusTime ?: 20)
-                    }
-
-                    TimerState.Idle -> {
-                        Timer.start(
-                            update = {
-                                viewModel.updateConsumedTime()
-                            },
-                            executeTasks = {
-                                viewModel.executeTasks()
-                            },
-                        )
-                        viewModel.resetAllTasksToInactive()
-                        viewModel.updateActiveTask(taskId, true)
-                    }
-
-                    TimerState.Finished -> {
-                        // viewModel.setTime(task?.focusTime ?: 20)
-                    }
+                    else -> {}
                 }
+            }
+        }
+    }
+
+    if (task?.completed == true) {
+        SuccessfulCompletionOfTask(
+            title = "Task Completed",
+            message = "You have successfully completed this task",
+            onConfirm = {
+                Timer.reset()
+                navController.popBackStack()
             },
         )
     }
+
+    FocusTimeScreenContent(
+        task = task,
+        focusTime = focusTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+        timerValue = timer,
+        snackbarHostState = snackbarHostState,
+        timerState = timerState,
+        containerColor = containerColor,
+        onClickNavigateBack = {
+            navController.popBackStack()
+        },
+        onClickNext = {
+            viewModel.moveToNextSessionOfTheTask()
+        },
+        onClickReset = {
+            viewModel.resetCurrentSessionOfTheTask()
+        },
+        onClickAction = { state ->
+            when (state) {
+                TimerState.Ticking -> {
+                    Timer.pause()
+                }
+
+                TimerState.Paused -> {
+                    Timer.resume()
+                }
+
+                TimerState.Stopped -> {
+                    // viewModel.setTime(task?.focusTime ?: 20)
+                }
+
+                TimerState.Idle -> {
+                    Timer.start(
+                        update = {
+                            viewModel.updateConsumedTime()
+                        },
+                        executeTasks = {
+                            viewModel.executeTasks()
+                        },
+                    )
+                    viewModel.resetAllTasksToInactive()
+                    viewModel.updateActiveTask(taskId, true)
+                }
+
+                TimerState.Finished -> {
+                    // viewModel.setTime(task?.focusTime ?: 20)
+                }
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -313,12 +307,12 @@ fun FocusTimeScreenContent(
                                 ) {
                                     Text(
                                         text = "Total: ${
-                                        task.durationInMinutes(
-                                            sessionTime = focusTime.toMinutes(),
-                                            shortBreakTime = shortBreakTime.toMinutes(),
-                                            longBreakTime = longBreakTime.toMinutes(),
-                                            focusSessions = task.focusSessions,
-                                        )
+                                            task.durationInMinutes(
+                                                sessionTime = focusTime.toMinutes(),
+                                                shortBreakTime = shortBreakTime.toMinutes(),
+                                                longBreakTime = longBreakTime.toMinutes(),
+                                                focusSessions = task.focusSessions,
+                                            )
                                         } minutes",
                                         style = MaterialTheme.typography.bodySmall,
                                     )
@@ -402,7 +396,8 @@ fun SuccessfulCompletionOfTask(
             Image(
                 modifier = Modifier.size(48.dp),
                 painter = painterResource(
-                    Res.drawable.ic_complete),
+                    Res.drawable.ic_complete
+                ),
                 contentDescription = "Task Completed",
             )
         },

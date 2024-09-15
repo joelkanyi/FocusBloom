@@ -2,7 +2,7 @@
 
 androidDriver = "2.0.2"
 kotlin = "2.0.20"
-compose = "1.6.10"
+compose = "1.7.0-beta02"
 
 koin = "3.5.6"
 koinCompose = "3.6.0-wasm-alpha2"
@@ -10,7 +10,6 @@ koinComposeMultiplatform = "1.2.0-alpha3"
 
 gradle = "8.5.2"
 sqlDelight = " 2.0.2"
-voyager = "1.0.0"
 multiplatformSettings = "1.1.1"
 core = "1.13.1"
 jna = "5.14.0"
@@ -26,6 +25,7 @@ compose-activity = "1.9.0"
 spotless = "6.25.0"
 accompanist-systemUIController = "0.34.0"
 androidx-lifecycle = "2.8.0"
+androidx-navigation = "2.8.0-alpha09"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
@@ -54,18 +54,12 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "androidDriver" }
 toast4j = { module = "de.mobanisto:toast4j", version.ref = "toast4j" }
 
-# Voyager
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
-voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
-voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
-
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemUIController" }
 
 stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 
 [plugins]
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }

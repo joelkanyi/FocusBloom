@@ -37,94 +37,85 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
-import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.platform.StatusBarColors
-import org.koin.core.component.KoinComponent
 
-data class AllTasksScreen(
-    val type: String,
-) : Screen, KoinComponent {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AllTasksScreen(
+    type: String,
+    navController: NavController,
+    viewModel:HomeViewModel =  koinViewModel()
+) {
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val tasksState = viewModel.tasks.collectAsState().value
+    val hourFormat = viewModel.hourFormat.collectAsState().value
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+    val selectedTask = viewModel.selectedTask.collectAsState().value
+    val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
+    val bottomSheetState = rememberModalBottomSheetState()
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val viewModel = koinViewModel<HomeViewModel>()
-        StatusBarColors(
-            statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background,
-        )
-        val navigator = LocalNavigator.currentOrThrow
-        val tasksState = viewModel.tasks.collectAsState().value
-        val hourFormat = viewModel.hourFormat.collectAsState().value
-        val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
-        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
-        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
-        val selectedTask = viewModel.selectedTask.collectAsState().value
-        val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
-        val bottomSheetState = rememberModalBottomSheetState()
-        // val tabNavigator = LocalTabNavigator.current
-
-        if (openBottomSheet) {
-            if (selectedTask != null) {
-                TaskOptionsBottomSheet(
-                    type = type,
-                    bottomSheetState = bottomSheetState,
-                    onClickCancel = {
-                        viewModel.openBottomSheet(false)
-                    },
-                    onClickDelete = {
-                        viewModel.deleteTask(it)
-                    },
-                    onDismissRequest = {
-                        viewModel.openBottomSheet(false)
-                        viewModel.selectTask(null)
-                    },
-                    onClickPushToTomorrow = {
-                        viewModel.pushToTomorrow(it)
-                    },
-                    onClickPushToToday = {
-                        viewModel.pushToToday(it)
-                    },
-                    onClickMarkAsCompleted = {
-                        viewModel.markAsCompleted(it)
-                    },
-                    onClickEditTask = {
-                        /*tabNavigator.current = BloomTab.AddTaskTab(
-                            taskId = it.id
-                        )*/
-                    },
-                    task = selectedTask,
-                )
-            }
+    if (openBottomSheet) {
+        if (selectedTask != null) {
+            TaskOptionsBottomSheet(
+                type = type,
+                bottomSheetState = bottomSheetState,
+                onClickCancel = {
+                    viewModel.openBottomSheet(false)
+                },
+                onClickDelete = {
+                    viewModel.deleteTask(it)
+                },
+                onDismissRequest = {
+                    viewModel.openBottomSheet(false)
+                    viewModel.selectTask(null)
+                },
+                onClickPushToTomorrow = {
+                    viewModel.pushToTomorrow(it)
+                },
+                onClickPushToToday = {
+                    viewModel.pushToToday(it)
+                },
+                onClickMarkAsCompleted = {
+                    viewModel.markAsCompleted(it)
+                },
+                onClickEditTask = {
+                    navController.navigate(Destinations.AddTask(taskId = it.id))
+                },
+                task = selectedTask,
+            )
         }
-
-        AllTasksScreenContent(
-            type = type,
-            tasksState = tasksState,
-            timeFormat = hourFormat,
-            sessionTime = sessionTime,
-            shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime,
-            onClickNavigateBack = {
-                navigator.pop()
-            },
-            onClickTaskOptions = {
-                viewModel.selectTask(it)
-                viewModel.openBottomSheet(true)
-            },
-            onClickTask = {
-                navigator.push(TaskProgressScreen(taskId = it.id))
-            },
-        )
     }
+
+    AllTasksScreenContent(
+        type = type,
+        tasksState = tasksState,
+        timeFormat = hourFormat,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+        onClickNavigateBack = {
+            navController.popBackStack()
+        },
+        onClickTaskOptions = {
+            viewModel.selectTask(it)
+            viewModel.openBottomSheet(true)
+        },
+        onClickTask = {
+            navController.navigate(Destinations.TaskProgress(taskId = it.id))
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

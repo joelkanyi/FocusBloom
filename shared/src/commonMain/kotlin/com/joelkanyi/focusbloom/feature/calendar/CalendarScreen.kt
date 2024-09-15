@@ -79,10 +79,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.Task
-import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.utils.PositionedTask
 import com.joelkanyi.focusbloom.core.utils.ScheduleSize
 import com.joelkanyi.focusbloom.core.utils.SplitType
@@ -116,13 +116,13 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
+    navController: NavController,
     viewModel: CalendarViewModel = koinViewModel(),
 ) {
     StatusBarColors(
@@ -141,7 +141,6 @@ fun CalendarScreen(
     val selectedTask = viewModel.selectedTask.collectAsState().value
     val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
     val bottomSheetState = rememberModalBottomSheetState()
-    val tabNavigator = LocalTabNavigator.current
 
     LaunchedEffect(key1 = tasks, block = {
         calendarPagerState.animateScrollToItem(
@@ -178,7 +177,7 @@ fun CalendarScreen(
                         viewModel.markAsCompleted(it)
                     },
                     onClickEditTask = {
-                        tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
+                        navController.navigate(Destinations.AddTask(it.id))
                     },
                     task = selectedTask,
                 )
@@ -224,7 +223,7 @@ fun CalendarScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreenContent(
     verticalScrollState: ScrollState,

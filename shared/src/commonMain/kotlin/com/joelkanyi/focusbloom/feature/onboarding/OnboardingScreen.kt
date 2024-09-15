@@ -15,7 +15,6 @@
  */
 package com.joelkanyi.focusbloom.feature.onboarding
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,44 +46,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.il_statistics
 import focusbloom.shared.generated.resources.il_tasks
 import focusbloom.shared.generated.resources.il_work_time
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.component.KoinComponent
 
-class OnboardingScreen : Screen, KoinComponent {
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val coroutineScope = rememberCoroutineScope()
-        val pageCount = 3
-        val pagerState = rememberPagerState(pageCount = { pageCount })
+@Composable
+fun OnboardingScreen(
+    navController: NavController,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val pageCount = 3
+    val pagerState = rememberPagerState(pageCount = { pageCount })
 
-        OnboardingScreenContent(
-            pagerState = pagerState,
-            pageCount = pageCount,
-            onClickNext = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                }
-            },
-            onClickGetStarted = {
-                navigator.push(UsernameScreen())
-            },
-        )
-    }
+    OnboardingScreenContent(
+        pagerState = pagerState,
+        pageCount = pageCount,
+        onClickNext = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+            }
+        },
+        onClickGetStarted = {
+            navController.popBackStack()
+            navController.navigate(Destinations.Username)
+        },
+    )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreenContent(
     pageCount: Int,
@@ -163,7 +157,6 @@ private fun ColumnScope.PageIndicators(pageCount: Int, currentPage: Int) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun OnboardingFirstPage() {
     PageContent(
@@ -173,7 +166,6 @@ private fun OnboardingFirstPage() {
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun OnboardingSecondPage() {
     PageContent(
@@ -183,7 +175,6 @@ private fun OnboardingSecondPage() {
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun OnboardingThirdPage() {
     PageContent(
@@ -193,7 +184,6 @@ private fun OnboardingThirdPage() {
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun PageContent(title: String, description: String, illustration: DrawableResource) {
     Column(

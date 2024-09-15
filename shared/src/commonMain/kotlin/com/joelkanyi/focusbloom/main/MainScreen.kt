@@ -15,9 +15,7 @@
  */
 package com.joelkanyi.focusbloom.main
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,130 +30,134 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabNavigator
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomNavigationRailBar
-import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
-import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
+import com.joelkanyi.focusbloom.core.presentation.navigation.AppNavHost
+import com.joelkanyi.focusbloom.core.presentation.navigation.BottomNav
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
+import org.jetbrains.compose.resources.painterResource
 
-class MainScreen : Screen {
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Composable
-    override fun Content() {
-        val windowSizeClass = calculateWindowSizeClass()
-        val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
-
-        TabNavigator(
-            BloomTab.HomeTab,
-        ) {
-            val tabNavigator = LocalTabNavigator.current
-
-            if (useNavRail) {
-                Row {
-                    BloomNavigationRailBar(
-                        tabNavigator = it,
-                        navRailItems = listOf(
-                            BloomTab.HomeTab,
-                            BloomTab.CalendarTab,
-                            BloomTab.AddTaskTab(),
-                            BloomTab.StatisticsTab,
-                            BloomTab.SettingsTab,
-                        ),
-                    )
-                    CurrentScreen()
-                }
-            } else {
-                Scaffold(
-                    content = { innerPadding ->
-                        Box(
-                            modifier = Modifier
-                                .padding(innerPadding),
-                        ) {
-                            CurrentScreen()
-                        }
-                    },
-                    floatingActionButtonPosition = FabPosition.Center,
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            modifier = Modifier
-                                .offset(y = 60.dp)
-                                .size(42.dp),
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            onClick = {
-                                tabNavigator.current = BloomTab.AddTaskTab()
-                            },
-                            elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 0.dp,
-                            ),
-                            shape = CircleShape,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
-                    },
-                    bottomBar = {
-                        BottomNavigation(
-                            backgroundColor = MaterialTheme.colorScheme.background,
-                        ) {
-                            TabNavigationItem(BloomTab.HomeTab)
-                            TabNavigationItem(BloomTab.CalendarTab)
-                            TabNavigationItem(BloomTab.StatisticsTab)
-                            TabNavigationItem(BloomTab.SettingsTab)
-                        }
-                    },
-                )
-            }
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-private fun RowScope.TabNavigationItem(tab: Tab) {
-    val tabNavigator = LocalTabNavigator.current
-    val isSelected = tabNavigator.current == tab
+fun MainScreen(
+    navController: NavHostController,
+    onBoardingCompleted: Boolean,
+) {
+    val windowSizeClass = calculateWindowSizeClass()
+    val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
 
-    BottomNavigationItem(
-        modifier = Modifier.offset(
-            x = when (tab.options.index) {
-                (0u).toUShort() -> 0.dp
-                (1u).toUShort() -> (-24).dp
-                (2u).toUShort() -> 24.dp
-                (3u).toUShort() -> 0.dp
-                else -> 0.dp
-            },
-        ),
-        selected = tabNavigator.current == tab,
-        onClick = { tabNavigator.current = tab },
-        icon = {
-            tab.options.icon?.let {
-                Icon(
-                    painter = if (isSelected) {
-                        FilledIcon(tab)
-                    } else {
-                        it
-                    },
-                    contentDescription = tab.options.title,
-                    tint = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onBackground
-                    },
+    if (useNavRail) {
+        Row {
+            if (onBoardingCompleted) {
+                BloomNavigationRailBar(
+                    navController = navController,
                 )
             }
-        },
-    )
+            AppNavHost(
+                navController = navController,
+                completedOnboarding = onBoardingCompleted,
+            )
+        }
+    } else {
+        Scaffold(
+            content = { innerPadding ->
+                AppNavHost(
+                    modifier = Modifier.padding(innerPadding),
+                    navController = navController,
+                    completedOnboarding = onBoardingCompleted,
+                )
+            },
+            floatingActionButtonPosition = FabPosition.Center,
+            floatingActionButton = {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .offset(y = 60.dp)
+                        .size(42.dp),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = {
+                        navController.navigate(Destinations.AddTask())
+                    },
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 0.dp,
+                    ),
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add Task",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            },
+            bottomBar = {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
+                    ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
+                val showBottomNavigation =
+                    currentRoute in BottomNav.entries.map { it.route::class.qualifiedName }
+
+                val addTask = Destinations.AddTask::class.qualifiedName?.substringBefore("?")
+
+                if (showBottomNavigation || currentRoute == addTask) {
+                    BottomNavigation(
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                    ) {
+                        BottomNav.entries
+                            .forEach { navigationItem ->
+                                val isSelected by remember(currentRoute) {
+                                    derivedStateOf { currentRoute == navigationItem.route::class.qualifiedName }
+                                }
+                                BottomNavigationItem(
+                                    modifier = Modifier
+                                        .testTag(navigationItem.name)
+                                        .offset(
+                                            x = when (navigationItem.index) {
+                                                0 -> 0.dp
+                                                1 -> (-24).dp
+                                                2 -> 24.dp
+                                                3 -> 0.dp
+                                                else -> 0.dp
+                                            },
+                                        ),
+                                    selected = isSelected,
+                                    label = {
+                                        Text(
+                                            text = navigationItem.label,
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
+                                    },
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(if (isSelected) navigationItem.selectedIcon else navigationItem.unselectedIcon),
+                                            contentDescription = navigationItem.label,
+                                            tint = if (isSelected) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onBackground
+                                            },
+                                        )
+                                    },
+                                    onClick = {
+                                        navController.navigate(navigationItem.route)
+                                    },
+                                )
+                            }
+                    }
+                }
+            },
+        )
+    }
 }

@@ -47,51 +47,48 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
-import com.joelkanyi.focusbloom.main.MainScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
 
-class UsernameScreen : Screen, KoinComponent {
+@Composable
+fun UsernameScreen(
+    navController: NavController,
+) {
+    val viewModel = koinViewModel<OnboardingViewModel>()
+    val username = viewModel.username.collectAsState().value
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-    @Composable
-    override fun Content() {
-        val viewModel = koinViewModel<OnboardingViewModel>()
-        val navigator = LocalNavigator.currentOrThrow
-        val username = viewModel.username.collectAsState().value
-        val keyboardController = LocalSoftwareKeyboardController.current
-
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.Main.immediate) {
-                viewModel.eventsFlow.collect { event ->
-                    when (event) {
-                        is UiEvents.Navigation -> {
-                            navigator.replaceAll(MainScreen())
-                        }
-
-                        else -> {}
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.Main.immediate) {
+            viewModel.eventsFlow.collect { event ->
+                when (event) {
+                    is UiEvents.Navigation -> {
+                        navController.popBackStack()
+                        navController.navigate(Destinations.Home)
                     }
+
+                    else -> {}
                 }
             }
         }
-        UsernameScreenContent(
-            username = username,
-            typeWriterTextParts = viewModel.typeWriterTextParts,
-            onUsernameChange = {
-                viewModel.setUsername(it)
-            },
-            onClickContinue = {
-                keyboardController?.hide()
-                viewModel.saveUsername()
-            },
-        )
     }
+
+    UsernameScreenContent(
+        username = username,
+        typeWriterTextParts = viewModel.typeWriterTextParts,
+        onUsernameChange = {
+            viewModel.setUsername(it)
+        },
+        onClickContinue = {
+            keyboardController?.hide()
+            viewModel.saveUsername()
+        },
+    )
 }
 
 @Composable

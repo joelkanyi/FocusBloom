@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,56 +37,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import kotlinx.datetime.LocalDate
-import org.koin.core.component.KoinComponent
 
-class AllStatisticsScreen : Screen, KoinComponent {
+@Composable
+fun AllStatisticsScreen(
+    navController: NavController,
+    viewModel: StatisticsViewModel = koinViewModel()
+) {
+    StatusBarColors(
+        statusBarColor = MaterialTheme.colorScheme.background,
+        navBarColor = MaterialTheme.colorScheme.background,
+    )
+    val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
+    val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
+    val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
+    val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
+    val tasksHistory = viewModel.tasks.collectAsState().value.groupBy { it.date.date }
 
-    @Composable
-    override fun Content() {
-        val viewModel = koinViewModel<StatisticsViewModel>()
-        StatusBarColors(
-            statusBarColor = MaterialTheme.colorScheme.background,
-            navBarColor = MaterialTheme.colorScheme.background,
-        )
-        val navigator = LocalNavigator.currentOrThrow
-        val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
-        val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
-        val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
-        val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
-        val tasksHistory = viewModel.tasks.collectAsState().value.groupBy { it.date.date }
-
-        AllStatisticsScreenContent(
-            timeFormat = hourFormat,
-            sessionTime = sessionTime,
-            shortBreakTime = shortBreakTime,
-            longBreakTime = longBreakTime,
-            tasks = tasksHistory,
-            onClickNavigateBack = {
-                navigator.pop()
-            },
-            onClickDelete = {
-                viewModel.deleteTask(it)
-            },
-            showTaskOption = {
-                viewModel.openedTasks.contains(it)
-            },
-            onShowTaskOption = {
-                viewModel.openTaskOptions(it)
-            },
-            onClickCancel = {
-                viewModel.openTaskOptions(it)
-            },
-        )
-    }
+    AllStatisticsScreenContent(
+        timeFormat = hourFormat,
+        sessionTime = sessionTime,
+        shortBreakTime = shortBreakTime,
+        longBreakTime = longBreakTime,
+        tasks = tasksHistory,
+        onClickNavigateBack = {
+            navController.popBackStack()
+        },
+        onClickDelete = {
+            viewModel.deleteTask(it)
+        },
+        showTaskOption = {
+            viewModel.openedTasks.contains(it)
+        },
+        onShowTaskOption = {
+            viewModel.openTaskOptions(it)
+        },
+        onClickCancel = {
+            viewModel.openTaskOptions(it)
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -110,7 +105,7 @@ fun AllStatisticsScreenContent(
                 navigationIcon = {
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = "Back",
                         )
                     }

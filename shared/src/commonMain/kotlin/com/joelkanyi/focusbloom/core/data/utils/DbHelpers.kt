@@ -63,7 +63,7 @@ fun <T : Any> Flow<Query<T>>.mapToOneNotNull(
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToList(
-    context: CoroutineContext = Dispatchers.Default,
+    context: CoroutineContext = Dispatchers.Main.immediate,
 ): Flow<List<T>> = map {
     withContext(context) {
         it.executeAsList()

@@ -64,10 +64,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.utils.calculateEndTime
 import com.joelkanyi.focusbloom.core.utils.completedTasks
 import com.joelkanyi.focusbloom.core.utils.durationInMinutes
@@ -91,13 +91,13 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StatisticsScreen(
+    navController: NavController,
     viewModel: StatisticsViewModel = koinViewModel(),
 ) {
     StatusBarColors(
         statusBarColor = MaterialTheme.colorScheme.background,
         navBarColor = MaterialTheme.colorScheme.background,
     )
-    val navigator = LocalNavigator.currentOrThrow
     val tasksHistory = viewModel.tasks.collectAsState().value
     val lastFiftyTwoWeeks = getLast52Weeks().asReversed()
     val hourFormat = viewModel.hourFormat.collectAsState().value ?: 24
@@ -136,7 +136,7 @@ fun StatisticsScreen(
         selectedWeekTasks = selectedWeekTasks,
         tasksHistory = tasksHistory,
         onClickSeeAllTasks = {
-            navigator.parent?.push(AllStatisticsScreen())
+            navController.navigate(Destinations.AllStatistics)
         },
         onClickThisWeek = {
             coroutineScope.launch {

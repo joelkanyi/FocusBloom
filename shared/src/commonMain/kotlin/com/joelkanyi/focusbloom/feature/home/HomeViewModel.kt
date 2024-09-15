@@ -90,12 +90,6 @@ class HomeViewModel(
         }
     }
 
-    fun updateTask(task: Task) {
-        viewModelScope.launch {
-            tasksRepository.updateTask(task)
-        }
-    }
-
     private val _selectedTask = MutableStateFlow<Task?>(null)
     val selectedTask = _selectedTask.asStateFlow()
     fun selectTask(task: Task?) {
