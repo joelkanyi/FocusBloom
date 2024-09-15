@@ -55,15 +55,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.SessionType
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.presentation.component.BloomButton
-import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.TaskCard
 import com.joelkanyi.focusbloom.core.presentation.component.TaskProgress
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.presentation.theme.LongBreakColor
 import com.joelkanyi.focusbloom.core.presentation.theme.SessionColor
 import com.joelkanyi.focusbloom.core.presentation.theme.ShortBreakColor
@@ -75,7 +73,6 @@ import com.joelkanyi.focusbloom.core.utils.taskCompletionPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.core.utils.today
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
-import com.joelkanyi.focusbloom.feature.taskprogress.TaskProgressScreen
 import com.joelkanyi.focusbloom.feature.taskprogress.Timer
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
@@ -87,6 +84,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     StatusBarColors(
@@ -99,8 +97,6 @@ fun HomeScreen(
     val sessionTime = viewModel.sessionTime.collectAsState().value ?: 25
     val shortBreakTime = viewModel.shortBreakTime.collectAsState().value ?: 5
     val longBreakTime = viewModel.longBreakTime.collectAsState().value ?: 15
-    val navigator = LocalNavigator.currentOrThrow
-    val tabNavigator = LocalTabNavigator.current
     val selectedTask = viewModel.selectedTask.collectAsState().value
     val openBottomSheet = viewModel.openBottomSheet.collectAsState().value
     val shortBreakColor = viewModel.shortBreakColor.collectAsState().value
@@ -111,7 +107,7 @@ fun HomeScreen(
     val bottomSheetState = rememberModalBottomSheetState()
     val remindersOn = viewModel.remindersOn.collectAsState().value
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         when (remindersOn) {
             ReminderState.Loading -> {}
             is ReminderState.Success -> {
@@ -151,7 +147,7 @@ fun HomeScreen(
                     viewModel.markAsCompleted(it)
                 },
                 onClickEditTask = {
-                    tabNavigator.current = BloomTab.AddTaskTab(taskId = it.id)
+                    navController.navigate(Destinations.AddTask(taskId = it.id))
                 },
                 task = selectedTask,
             )
@@ -175,11 +171,11 @@ fun HomeScreen(
                 viewModel.selectTask(it)
                 viewModel.openBottomSheet(true)
             } else {
-                navigator.parent?.push(TaskProgressScreen(taskId = it.id))
+                navController.navigate(Destinations.TaskProgress(taskId = it.id))
             }
         },
         onClickSeeAllTasks = {
-            navigator.parent?.push(AllTasksScreen(it))
+            navController.navigate(Destinations.AllTasks(it))
         },
         onClickTaskOptions = {
             viewModel.selectTask(it)
@@ -199,7 +195,7 @@ fun HomeScreen(
             }
         },
         onClickAddTask = {
-            tabNavigator.current = BloomTab.AddTaskTab()
+            navController.navigate(Destinations.AddTask())
         }
     )
 }
@@ -345,6 +341,7 @@ private fun HomeScreenContent(
                                 )
                             }
                         }
+
                         if (tasks.isNotEmpty()) {
                             item {
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -375,6 +372,7 @@ private fun HomeScreenContent(
                                 }
                             }
                         }
+
                         if (tasks.all { it.completed }.not()) {
                             items(
                                 items = tasks.take(3),

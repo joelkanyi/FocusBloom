@@ -21,11 +21,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.Navigator
+import androidx.navigation.compose.rememberNavController
 import com.joelkanyi.focusbloom.core.presentation.theme.FocusBloomTheme
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
-import com.joelkanyi.focusbloom.feature.onboarding.OnboardingScreen
 import com.joelkanyi.focusbloom.main.MainScreen
 import com.joelkanyi.focusbloom.main.MainViewModel
 import com.joelkanyi.focusbloom.main.OnBoardingState
@@ -46,6 +44,8 @@ fun FocusBloomApp(
         FocusBloomTheme(
             useDarkTheme = darkTheme,
         ) {
+            val navController = rememberNavController()
+
             StatusBarColors(
                 statusBarColor = MaterialTheme.colorScheme.background,
                 navBarColor = MaterialTheme.colorScheme.background,
@@ -56,15 +56,9 @@ fun FocusBloomApp(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        Navigator(
-                            screen = if (onBoardingCompleted.completed) {
-                                MainScreen()
-                            } else {
-                                OnboardingScreen()
-                            },
-                            content = {
-                                CurrentScreen()
-                            },
+                        MainScreen(
+                            onBoardingCompleted = onBoardingCompleted.completed,
+                            navController = navController,
                         )
                     }
                 }

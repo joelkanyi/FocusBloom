@@ -68,6 +68,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
@@ -90,6 +91,7 @@ import com.joelkanyi.focusbloom.platform.StatusBarColors
 
 @Composable
 fun SettingsScreen(
+    navController: NavController,
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val darkTheme = when (viewModel.appTheme.collectAsState().value) {
@@ -422,63 +424,6 @@ fun TimeSetting(
                     onHourFormatChange(it.timeFormat())
                     onExpand("Time")
                 },
-            )
-        },
-    )
-}
-
-@Composable
-fun SoundSetting(onExpand: (String) -> Unit, expanded: (String) -> Boolean) {
-    SettingCard(
-        onExpand = {
-            onExpand("Sounds")
-        },
-        expanded = expanded("Sounds"),
-        title = "Sounds",
-        icon = Icons.AutoMirrored.Outlined.VolumeUp,
-        content = {
-            var alarmSliderPosition by remember { mutableStateOf(0f) }
-            var tickingSliderPosition by remember { mutableStateOf(0f) }
-            var selectedAlarmSound by remember {
-                mutableStateOf("Nokia Tune")
-            }
-            var selectedTickingSound by remember {
-                mutableStateOf("White Noise")
-            }
-            SoundSelection(
-                title = "Alarm Sounds",
-                options = listOf("Nokia Tune", "Samsung Tune", "Itel Tune", "Oppo Tune"),
-                selectedOption = selectedAlarmSound,
-                onSelectOption = {
-                    selectedAlarmSound = it
-                },
-            )
-            Slider(
-                value = alarmSliderPosition,
-                valueRange = 0f..100f,
-                onValueChange = { alarmSliderPosition = it },
-                colors = SliderDefaults.colors(
-                    inactiveTickColor = MaterialTheme.colorScheme.secondary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.secondary,
-                ),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            SoundSelection(
-                title = "Ticking Sounds",
-                options = listOf("White Noise", "Clock Ticking"),
-                selectedOption = selectedTickingSound,
-                onSelectOption = {
-                    selectedTickingSound = it
-                },
-            )
-            Slider(
-                value = tickingSliderPosition,
-                valueRange = 0f..100f,
-                onValueChange = { tickingSliderPosition = it },
-                colors = SliderDefaults.colors(
-                    inactiveTickColor = MaterialTheme.colorScheme.secondary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.secondary,
-                ),
             )
         },
     )

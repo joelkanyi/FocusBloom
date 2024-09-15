@@ -24,55 +24,58 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.joelkanyi.focusbloom.core.presentation.utils.FilledIcon
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
+import com.joelkanyi.focusbloom.core.presentation.navigation.NavRail
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BloomNavigationRailBar(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
-    tabNavigator: TabNavigator,
-    navRailItems: List<Tab>,
 ) {
     NavigationRail(
         modifier = modifier.fillMaxHeight().alpha(0.95F),
         containerColor = MaterialTheme.colorScheme.surface,
-        header = {
-            /*Icon(
-                modifier = Modifier.size(42.dp),
-                imageVector = Icons.Default.AccountBox,
-                // painter = painterResource("n_logo.png"),
-                contentDescription = "Logo",
-            )*/
-        },
+        header = {},
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        navRailItems.forEachIndexed() { index, item ->
-            val isSelected = tabNavigator.current == item
-            if (index == navRailItems.size - 1) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
+            ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
+
+        NavRail.entries.forEachIndexed { index, navigationItem ->
+            val isSelected by remember(currentRoute) {
+                derivedStateOf { currentRoute == navigationItem.route::class.qualifiedName }
+            }
+            if (index == NavRail.entries.size - 1) {
                 Spacer(Modifier.weight(1f))
             }
             NavigationRailItem(
                 modifier = Modifier.padding(vertical = 12.dp),
                 icon = {
-                    item.options.icon?.let {
-                        Icon(
-                            painter = if (isSelected) {
-                                FilledIcon(item)
-                            } else {
-                                it
-                            },
-                            contentDescription = item.options.title,
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(if (isSelected) navigationItem.selectedIcon else navigationItem.unselectedIcon),
+                        contentDescription = navigationItem.label,
+                    )
                 },
-                label = { Text(text = item.options.title) },
+                label = {
+                    Text(
+                        text = navigationItem.label,
+                    )
+                },
                 alwaysShowLabel = true,
-                selected = tabNavigator.current == item,
-                onClick = { tabNavigator.current = item },
+                selected = isSelected,
+                onClick = {
+                    navController.navigate(navigationItem.route)
+                },
             )
         }
     }

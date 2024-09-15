@@ -82,12 +82,6 @@ kotlin {
 
             implementation(compose.components.resources)
 
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.bottomSheetNavigator)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tabNavigator)
-            implementation(libs.voyager.koin)
-
             implementation(libs.kotlinX.serializationJson)
 
             implementation(libs.material3.window.size.multiplatform)
@@ -107,6 +101,7 @@ kotlin {
             implementation(libs.stdlib)
 
             implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.navigation.compose)
         }
 
         androidMain.dependencies {

@@ -69,7 +69,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.TaskType
 import com.joelkanyi.focusbloom.core.domain.model.TextFieldState
@@ -79,7 +79,6 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomDateBoxField
 import com.joelkanyi.focusbloom.core.presentation.component.BloomDropDown
 import com.joelkanyi.focusbloom.core.presentation.component.BloomIncrementer
 import com.joelkanyi.focusbloom.core.presentation.component.BloomInputTextField
-import com.joelkanyi.focusbloom.core.presentation.component.BloomTab
 import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.presentation.theme.SuccessColor
 import com.joelkanyi.focusbloom.core.utils.UiEvents
@@ -105,6 +104,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
+    navController: NavController,
     taskId: Int? = null,
     viewModel: AddTaskViewModel = koinViewModel(),
 ) {
@@ -128,7 +128,6 @@ fun AddTaskScreen(
     val taskDate = viewModel.taskDate.collectAsState().value
     val startTime = viewModel.startTime.collectAsState().value
     val endTime = viewModel.endTime.collectAsState().value
-    val tabNavigator = LocalTabNavigator.current
 
     val startTimeState = rememberTimePickerState(
         initialHour = today().hour,
@@ -166,7 +165,7 @@ fun AddTaskScreen(
                     }
 
                     UiEvents.NavigateBack -> {
-                        tabNavigator.current = BloomTab.HomeTab
+                        navController.popBackStack()
                     }
 
                     else -> {}
@@ -368,7 +367,8 @@ private fun AddTaskScreenContent(
                                     modifier = Modifier
                                         .size(32.dp),
                                     painter = painterResource(
-                                        Res.drawable.ic_complete),
+                                        Res.drawable.ic_complete
+                                    ),
                                     contentDescription = "Task Options",
                                 )
                             }
@@ -407,7 +407,6 @@ private fun AddTaskScreenContent(
                         Text(
                             text = "Enter Task Name",
                             style = MaterialTheme.typography.titleSmall,
-
                         )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -429,7 +428,6 @@ private fun AddTaskScreenContent(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
                             ),
-
                         )
                     },
                     value = TextFieldState(text = taskDescription),
