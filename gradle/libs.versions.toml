@@ -5,7 +5,7 @@ kotlin = "2.0.20"
 compose = "1.7.0-beta02"
 
 koin = "3.5.6"
-koinCompose = "3.6.0-wasm-alpha2"
+koinCompose = "4.0.0"
 koinComposeMultiplatform = "1.2.0-alpha3"
 
 gradle = "8.5.2"
