@@ -57,6 +57,12 @@ fun MainScreen(
 ) {
     val windowSizeClass = calculateWindowSizeClass()
     val useNavRail = windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
+        ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
+    val showBottomNavigation =
+        currentRoute in BottomNav.entries.map { it.route::class.qualifiedName }
+    val addTask = Destinations.AddTask::class.qualifiedName?.substringBefore("?")
 
     if (useNavRail) {
         Row {
@@ -81,35 +87,31 @@ fun MainScreen(
             },
             floatingActionButtonPosition = FabPosition.Center,
             floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier
+                if (showBottomNavigation || currentRoute == addTask) {
+                    FloatingActionButton(
+                        modifier = Modifier
                         .offset(y = 60.dp)
-                        .size(42.dp),
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = {
-                        navController.navigate(Destinations.AddTask())
-                    },
-                    elevation = FloatingActionButtonDefaults.elevation(
-                        defaultElevation = 0.dp,
-                    ),
-                    shape = CircleShape,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Task",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp),
-                    )
+                            .size(42.dp),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        onClick = {
+                            navController.navigate(Destinations.AddTask())
+                        },
+                        elevation = FloatingActionButtonDefaults.elevation(
+                            defaultElevation = 0.dp,
+                        ),
+                        shape = CircleShape,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add Task",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 }
+
             },
             bottomBar = {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
-                    ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
-                val showBottomNavigation =
-                    currentRoute in BottomNav.entries.map { it.route::class.qualifiedName }
-
-                val addTask = Destinations.AddTask::class.qualifiedName?.substringBefore("?")
 
                 if (showBottomNavigation || currentRoute == addTask) {
                     BottomNavigation(
