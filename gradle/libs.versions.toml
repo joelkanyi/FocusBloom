@@ -1,7 +1,7 @@
 [versions]
 
 androidDriver = "2.0.2"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 compose = "1.7.0-beta02"
 
 koin = "3.5.6"
