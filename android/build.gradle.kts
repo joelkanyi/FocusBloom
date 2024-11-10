@@ -22,7 +22,7 @@ plugins {
 
 android {
     namespace = "com.joelkanyi.focusbloom.android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.joelkanyi.focusbloom.android"
