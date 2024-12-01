@@ -66,7 +66,7 @@ jobs:
             desktop/build/compose/jars/*.jar  
 
       - name: Release
-        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9
+        uses: softprops/action-gh-release@f138a074094d2971f64c437ce38e846cef869b2f
         with:
           prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
           files: |
@@ -109,7 +109,7 @@ jobs:
           path: android/build/outputs/apk/release/*.apk
 
       - name: Release
-        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9
+        uses: softprops/action-gh-release@f138a074094d2971f64c437ce38e846cef869b2f
         with:
           prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
           files: |
@@ -136,7 +136,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
-        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9
+        uses: softprops/action-gh-release@f138a074094d2971f64c437ce38e846cef869b2f
         with:
           body: ${{steps.github_release.outputs.changelog}}
           prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
