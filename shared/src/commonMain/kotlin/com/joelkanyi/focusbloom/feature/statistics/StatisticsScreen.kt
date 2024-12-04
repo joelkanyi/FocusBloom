@@ -16,7 +16,6 @@
 package com.joelkanyi.focusbloom.feature.statistics
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -84,11 +83,10 @@ import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.redo
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
-import io.github.koalaplot.core.xychart.TickPosition
+import io.github.koalaplot.core.xygraph.TickPosition
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StatisticsScreen(
     navController: NavController,
@@ -116,19 +114,10 @@ fun StatisticsScreen(
     val selectedWeekTasks = tasksHistory.completedTasks(
         lastFiftyTwoWeeks[pagerState.currentPage].second,
     ).map { it.toFloat() }
-    val tickPositionState by remember {
-        mutableStateOf(
-            TickPositionState(
-                TickPosition.Outside,
-                TickPosition.Outside,
-            ),
-        )
-    }
 
     StatisticsScreenContent(
         hourFormat = hourFormat,
         sessionTime = sessionTime,
-        tickPositionState = tickPositionState,
         shortBreakTime = shortBreakTime,
         longBreakTime = longBreakTime,
         pagerState = pagerState,
@@ -171,7 +160,6 @@ fun StatisticsScreen(
 @OptIn(
     ExperimentalKoalaPlotApi::class,
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
 )
 @Composable
 fun StatisticsScreenContent(
@@ -181,7 +169,6 @@ fun StatisticsScreenContent(
     shortBreakTime: Int,
     longBreakTime: Int,
     selectedWeekTasks: List<Float>,
-    tickPositionState: TickPositionState,
     tasksHistory: List<Task>,
     onClickSeeAllTasks: () -> Unit,
     pagerState: PagerState,
@@ -193,6 +180,15 @@ fun StatisticsScreenContent(
     showTaskOption: (task: Task) -> Boolean,
     onShowTaskOption: (task: Task) -> Unit,
 ) {
+    val tickPositionState by remember {
+        mutableStateOf(
+            TickPositionState(
+                TickPosition.Outside,
+                TickPosition.Outside,
+            ),
+        )
+    }
+
     Scaffold(
         topBar = {
             BloomTopAppBar(

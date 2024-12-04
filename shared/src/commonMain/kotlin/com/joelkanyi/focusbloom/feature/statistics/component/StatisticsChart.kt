@@ -29,23 +29,17 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.core.utils.aAllEntriesAreZero
-import io.github.koalaplot.core.ChartLayout
-import io.github.koalaplot.core.bar.BarChartEntry
-import io.github.koalaplot.core.bar.DefaultBarChartEntry
 import io.github.koalaplot.core.bar.DefaultVerticalBar
-import io.github.koalaplot.core.bar.VerticalBarChart
-import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
+import io.github.koalaplot.core.bar.VerticalBarPlot
 import io.github.koalaplot.core.util.VerticalRotation
 import io.github.koalaplot.core.util.rotateVertically
 import io.github.koalaplot.core.util.toString
-import io.github.koalaplot.core.xychart.LinearAxisModel
-import io.github.koalaplot.core.xychart.TickPosition
-import io.github.koalaplot.core.xychart.XYChart
-import io.github.koalaplot.core.xychart.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.TickPosition
+import io.github.koalaplot.core.xygraph.XYGraph
+import io.github.koalaplot.core.xygraph.rememberAxisStyle
+import io.github.koalaplot.core.xygraph.rememberFloatLinearAxisModel
 
 internal val padding = 8.dp
-internal val paddingMod = Modifier.padding(padding)
-
 private const val BarWidth = 0.8f
 
 @Composable
@@ -70,96 +64,73 @@ fun AxisLabel(label: String, modifier: Modifier = Modifier) {
     )
 }
 
-fun barChartEntries(fibonacci: List<Float>): List<BarChartEntry<Float, Float>> {
-    return buildList {
-        fibonacci.forEachIndexed { index, fl ->
-            add(
-                DefaultBarChartEntry(
-                    xValue = (index + 1).toFloat(),
-                    yMin = 0f,
-                    yMax = fl,
-                ),
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
 fun BarChart(tickPositionState: TickPositionState, entries: List<Float>) {
     val yAxisRange = 0f..if (entries.aAllEntriesAreZero()) 20f else entries.maxOf { it }
     val xAxisRange = 0.5f..7.5f
-    ChartLayout(
-        modifier = paddingMod,
-        title = { },
-    ) {
-        XYChart(
-            xAxisModel = LinearAxisModel(
-                xAxisRange,
-                minimumMajorTickIncrement = 1f,
-                minimumMajorTickSpacing = 10.dp,
-                zoomRangeLimit = 3f,
-                minorTickCount = 0,
-            ),
-            yAxisModel = LinearAxisModel(
-                yAxisRange,
-                minimumMajorTickIncrement = 1f,
-                minorTickCount = 0,
-            ),
-            xAxisStyle = rememberAxisStyle(
-                tickPosition = tickPositionState.horizontalAxis,
-                color = Color.LightGray,
-            ),
-            xAxisLabels = {
-                AxisLabel(
-                    when (it) {
-                        1f -> "Mon"
-                        2f -> "Tue"
-                        3f -> "Wed"
-                        4f -> "Thu"
-                        5f -> "Fri"
-                        6f -> "Sat"
-                        7f -> "Sun"
-                        else -> ""
-                    },
-                    Modifier.padding(top = 2.dp),
-                )
-            },
-            xAxisTitle = {
-                AxisTitle(
-                    "Day of the Week",
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            },
-            yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
-            yAxisLabels = {
-                AxisLabel(it.toString(0), Modifier.absolutePadding(right = 2.dp))
-            },
-            yAxisTitle = {
-                AxisTitle(
-                    "Tasks Completed",
-                    modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
-                        .padding(bottom = padding),
-                )
-            },
-            verticalMajorGridLineStyle = null,
-        ) {
-            VerticalBarChart(
-                series = listOf(
-                    barChartEntries(
-                        fibonacci = entries,
-                    ),
-                ),
-                bar = { _, _, value ->
-                    DefaultVerticalBar(
-                        brush = SolidColor(MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.fillMaxWidth(BarWidth),
-                    ) {
-                        HoverSurface { Text(value.yMax.toString()) }
-                    }
+
+    XYGraph(
+        xAxisModel = rememberFloatLinearAxisModel(
+            xAxisRange,
+            minimumMajorTickIncrement = 1f,
+            minimumMajorTickSpacing = 10.dp,
+            minorTickCount = 0,
+        ),
+        yAxisModel = rememberFloatLinearAxisModel(
+            yAxisRange,
+            minimumMajorTickIncrement = 1f,
+            minorTickCount = 0,
+        ),
+        xAxisStyle = rememberAxisStyle(
+            tickPosition = tickPositionState.horizontalAxis,
+        ),
+        xAxisLabels = {
+            AxisLabel(
+                when (it) {
+                    1f -> "Mon"
+                    2f -> "Tue"
+                    3f -> "Wed"
+                    4f -> "Thu"
+                    5f -> "Fri"
+                    6f -> "Sat"
+                    7f -> "Sun"
+                    else -> ""
                 },
+                Modifier.padding(top = 2.dp),
             )
-        }
+        },
+        xAxisTitle = {
+            AxisTitle(
+                "Day of the Week",
+                modifier = Modifier
+                    .padding(top = 8.dp),
+            )
+        },
+        yAxisStyle = rememberAxisStyle(tickPosition = tickPositionState.verticalAxis),
+        yAxisLabels = {
+            AxisLabel(it.toString(0), Modifier.absolutePadding(right = 2.dp))
+        },
+        yAxisTitle = {
+            AxisTitle(
+                "Tasks Completed",
+                modifier = Modifier.rotateVertically(VerticalRotation.COUNTER_CLOCKWISE)
+                    .padding(bottom = padding),
+            )
+        },
+        verticalMajorGridLineStyle = null,
+    ) {
+        VerticalBarPlot(
+            xData = (1..7).map { it.toFloat() }, // Days of the week
+            yData = entries,
+            bar = { value ->
+                DefaultVerticalBar(
+                    brush = SolidColor(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.fillMaxWidth(BarWidth),
+                ) {
+                    HoverSurface { Text(value.toString()) }
+                }
+            },
+        )
     }
 }
 
