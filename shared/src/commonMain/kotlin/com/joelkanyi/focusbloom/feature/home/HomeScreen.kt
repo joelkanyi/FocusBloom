@@ -236,12 +236,13 @@ private fun HomeScreenContent(
                     val tasks = tasksState.tasks.sortedByDescending { it.completed.not() }
                     val overdueTasks = tasksState.overdueTasks
                     val activeTask = tasks.firstOrNull { it.active }
+
                     LazyColumn(
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        item {
-                            if (activeTask != null) {
+                        if (activeTask != null) {
+                            item {
                                 val containerColor = when (activeTask.current.sessionType()) {
                                     SessionType.Focus -> {
                                         if (focusTimeColor == null || focusTimeColor == 0L) {
@@ -283,17 +284,20 @@ private fun HomeScreenContent(
                                 )
                             }
                         }
+
                         item {
                             Text(
                                 text = "Hello, ${username.pickFirstName()}!",
                                 style = MaterialTheme.typography.displaySmall,
                             )
                         }
-                        item {
-                            if (tasks.isNotEmpty() && tasks.all { it.completed }.not()) {
-                                TodayTaskProgressCard(tasks = tasks)
+
+                        if (tasks.isNotEmpty() && tasks.all { it.completed }.not()) {
+                            item {
+                                TodayTaskProgressCard(tasks)
                             }
                         }
+
                         if (overdueTasks.isNotEmpty()) {
                             item {
                                 Row(
@@ -392,76 +396,88 @@ private fun HomeScreenContent(
                             }
                         }
 
-                        if (tasks.all { it.completed } || tasks.isEmpty()) {
-                            item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    horizontalAlignment = CenterHorizontally,
-                                ) {
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    Image(
-                                        modifier = Modifier
-                                            .size(300.dp)
-                                            .align(CenterHorizontally),
-                                        painter = painterResource(if (tasks.isEmpty()) Res.drawable.il_empty else Res.drawable.il_completed),
-                                        contentDescription = null,
-                                    )
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .align(CenterHorizontally),
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                        text = if (tasks.isEmpty()) {
-                                            "Start your day productively! Add your first task."
-                                        } else if (tasks.all { it.completed }) {
-                                            "Great job! You've finished all your tasks for today."
-                                        } else {
-                                            ""
-                                        },
-                                        textAlign = TextAlign.Center,
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(horizontal = 24.dp)
-                                            .fillMaxWidth(),
-                                        text = if (tasks.isEmpty()) {
-                                            "To add a task, simply tap the '+' button on the screen. Fill in the task details and tap 'Save'."
-                                        } else if (tasks.all { it.completed }) {
-                                            "Now, take some time to have fun, recharge, maybe do some exercise, and consider opening your calendar to plan for tomorrow's tasks. Keep up the fantastic work!"
-                                        } else {
-                                            ""
-                                        },
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontSize = 14.sp,
-                                        ),
-                                        textAlign = TextAlign.Center,
-                                    )
 
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    if (tasks.isEmpty()) {
-                                        BloomButton(
-                                            onClick = onClickAddTask,
-                                        ) {
-                                            Text(
-                                                modifier = Modifier.padding(horizontal = 24.dp),
-                                                text = "Add Your First Task",
-                                                style = MaterialTheme.typography.labelMedium.copy(
-                                                    fontWeight = FontWeight.Bold,
-                                                ),
-                                            )
-                                        }
-                                    }
-                                }
+                        if ((tasks.all { it.completed } || tasks.isEmpty()) && overdueTasks.isEmpty()) {
+                            item {
+                                StartOrCompletedTaskComponent(
+                                    tasks = tasks,
+                                    onClickAddTask = onClickAddTask
+                                )
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StartOrCompletedTaskComponent(
+    tasks: List<Task>,
+    onClickAddTask: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        Image(
+            modifier = Modifier
+                .size(300.dp)
+                .align(CenterHorizontally),
+            painter = painterResource(if (tasks.isEmpty()) Res.drawable.il_empty else Res.drawable.il_completed),
+            contentDescription = null,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+            text = if (tasks.isEmpty()) {
+                "Start your day productively! Add your first task."
+            } else if (tasks.all { it.completed }) {
+                "Great job! You've finished all your tasks for today."
+            } else {
+                ""
+            },
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
+            text = if (tasks.isEmpty()) {
+                "To add a task, simply tap the '+' button on the screen. Fill in the task details and tap 'Save'."
+            } else if (tasks.all { it.completed }) {
+                "Now, take some time to have fun, recharge, maybe do some exercise, and consider opening your calendar to plan for tomorrow's tasks. Keep up the fantastic work!"
+            } else {
+                ""
+            },
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 14.sp,
+            ),
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+        if (tasks.isEmpty()) {
+            BloomButton(
+                onClick = onClickAddTask,
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    text = "Add Your First Task",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
             }
         }
     }
