@@ -25,7 +25,7 @@ compose-activity = "1.9.3"
 spotless = "6.25.0"
 accompanist-systemUIController = "0.36.0"
 androidx-lifecycle = "2.8.4"
-androidx-navigation = "2.8.0-alpha10"
+androidx-navigation = "2.8.0-SNAPSHOT+pull-1739"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
