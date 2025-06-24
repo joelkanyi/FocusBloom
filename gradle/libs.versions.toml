@@ -8,7 +8,7 @@ koin = "4.0.0"
 koinCompose = "4.0.0"
 koinComposeMultiplatform = "4.0.0"
 
-gradle = "8.5.2"
+gradle = "8.11.0"
 sqlDelight = " 2.0.2"
 multiplatformSettings = "1.3.0"
 core = "1.13.1"
