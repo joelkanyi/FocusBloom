@@ -22,11 +22,11 @@ plugins {
 
 android {
     namespace = "com.joelkanyi.focusbloom.android"
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.joelkanyi.focusbloom.android"
-        minSdk = 21
+        minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = compileSdk
         versionCode = 5
         versionName = properties["version"] as String

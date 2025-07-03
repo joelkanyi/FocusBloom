@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -30,18 +33,16 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     // sourceSets["main"].res.srcDirs("src/androidMain/res")
     // sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 21
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     jvm()
@@ -61,13 +62,13 @@ kotlin {
         }
     }
 
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+    targets.withType<KotlinNativeTarget> {
+        binaries.withType<Framework> {
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             transitiveExport = true
-            compilations.all {
-                kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
-            }
+//            compilations.all {
+//                kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+//            }
         }
     }
 
