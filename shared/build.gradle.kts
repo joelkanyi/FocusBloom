@@ -22,7 +22,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    id("app.cash.sqldelight") version "2.0.2"
+    id("app.cash.sqldelight") version "2.1.0"
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
