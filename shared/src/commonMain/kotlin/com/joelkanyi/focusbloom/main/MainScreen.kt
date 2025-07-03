@@ -16,6 +16,7 @@
 package com.joelkanyi.focusbloom.main
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -74,7 +75,9 @@ fun MainScreen(
         Scaffold(
             content = { innerPadding ->
                 AppNavHost(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding),
                     navController = navController,
                     completedOnboarding = onBoardingCompleted,
                 )
