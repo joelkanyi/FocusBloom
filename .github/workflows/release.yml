@@ -20,7 +20,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v3
@@ -83,7 +83,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v3
@@ -123,7 +123,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build Changelog
         id: github_release
