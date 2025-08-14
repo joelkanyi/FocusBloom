@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.nativeCocoapod) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.spotless)
-    id("dev.iurysouza.modulegraph") version "0.12.0"
+    id("dev.iurysouza.modulegraph") version "0.12.1"
     alias(libs.plugins.compose.compiler) apply false
 }
 
