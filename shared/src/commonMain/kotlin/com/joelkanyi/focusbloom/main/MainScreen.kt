@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -48,6 +49,8 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomNavigationRailB
 import com.joelkanyi.focusbloom.core.presentation.navigation.AppNavHost
 import com.joelkanyi.focusbloom.core.presentation.navigation.BottomNav
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -99,7 +102,7 @@ fun MainScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Task",
+                        contentDescription = stringResource(Res.string.nav_add_task),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(24.dp),
                     )
@@ -138,14 +141,14 @@ fun MainScreen(
                                     selected = isSelected,
                                     label = {
                                         Text(
-                                            text = navigationItem.label,
+                                            text = stringResource(navigationItem.label),
                                             style = MaterialTheme.typography.labelSmall
                                         )
                                     },
                                     icon = {
                                         Icon(
                                             painter = painterResource(if (isSelected) navigationItem.selectedIcon else navigationItem.unselectedIcon),
-                                            contentDescription = navigationItem.label,
+                                            contentDescription = stringResource(navigationItem.label),
                                             tint = if (isSelected) {
                                                 MaterialTheme.colorScheme.primary
                                             } else {

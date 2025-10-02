@@ -88,6 +88,9 @@ import com.joelkanyi.focusbloom.core.utils.isDigitsOnly
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.timeFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SettingsScreen(
@@ -244,7 +247,7 @@ fun SettingsScreenContent(
             BloomTopAppBar(
                 hasBackNavigation = false,
             ) {
-                Text(text = "Settings")
+                Text(text = stringResource(Res.string.settings))
             }
         },
     ) { paddingValues ->
@@ -469,7 +472,7 @@ fun ThemeSetting(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = "Sessions Color Scheme")
+                Text(text = stringResource(Res.string.sessions_color_scheme))
                 ColorsSelection(
                     onSelectSessionColor = {
                         onShowColorDialog(true)

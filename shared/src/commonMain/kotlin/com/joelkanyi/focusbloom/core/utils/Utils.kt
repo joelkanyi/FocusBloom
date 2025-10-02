@@ -315,11 +315,11 @@ fun taskCompletionPercentage(tasks: List<Task>): Int {
 }
 
 fun String.taskColor(): Long {
-    return taskTypes.find { it.name == this }?.color ?: 0xFFAFBBF2
+    return taskTypes.find { it.name.toString() == this }?.color ?: 0xFFAFBBF2
 }
 
 fun String.taskIcon(): DrawableResource {
-    return taskTypes.find { it.name == this }?.icon ?: Res.drawable.other
+    return taskTypes.find { it.name.toString() == this }?.icon ?: Res.drawable.other
 }
 
 fun getThisWeek(): List<LocalDate> {

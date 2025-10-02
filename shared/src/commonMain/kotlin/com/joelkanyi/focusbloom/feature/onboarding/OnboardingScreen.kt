@@ -49,12 +49,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import focusbloom.shared.generated.resources.Res
-import focusbloom.shared.generated.resources.il_statistics
-import focusbloom.shared.generated.resources.il_tasks
-import focusbloom.shared.generated.resources.il_work_time
+import focusbloom.shared.generated.resources.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OnboardingScreen(
@@ -91,13 +90,13 @@ fun OnboardingScreenContent(
             if (pagerState.currentPage == pageCount - 1) {
                 OnBoardingNavigationButton(
                     modifier = Modifier.padding(16.dp),
-                    text = "Get Started",
+                    text = stringResource(Res.string.get_started),
                     onClick = onClickGetStarted,
                 )
             } else {
                 OnBoardingNavigationButton(
                     modifier = Modifier.padding(16.dp),
-                    text = "Next",
+                    text = stringResource(Res.string.next),
                     onClick = onClickNext,
                 )
             }
@@ -160,8 +159,8 @@ private fun ColumnScope.PageIndicators(pageCount: Int, currentPage: Int) {
 @Composable
 private fun OnboardingFirstPage() {
     PageContent(
-        title = "Organize Tasks and Boost Productivity",
-        description = "Welcome to FocusBloom, your task management and productivity companion. Effortlessly organize your tasks and supercharge your productivity journey.",
+        title = stringResource(Res.string.onboarding_title_1),
+        description = stringResource(Res.string.onboarding_description_1),
         illustration = Res.drawable.il_tasks,
     )
 }
@@ -169,8 +168,8 @@ private fun OnboardingFirstPage() {
 @Composable
 private fun OnboardingSecondPage() {
     PageContent(
-        title = "Tailor Your Work Sessions",
-        description = "With FocusBloom, you have the power to customize your work and break durations to match your preferences and maximize efficiency.",
+        title = stringResource(Res.string.onboarding_title_2),
+        description = stringResource(Res.string.onboarding_description_2),
         illustration = Res.drawable.il_work_time,
     )
 }
@@ -178,8 +177,8 @@ private fun OnboardingSecondPage() {
 @Composable
 private fun OnboardingThirdPage() {
     PageContent(
-        title = "Visualize Your Progress",
-        description = "Experience the power of progress tracking with FocusBloom. Gain insights into your productivity journey and visualize task completion trends.",
+        title = stringResource(Res.string.onboarding_title_3),
+        description = stringResource(Res.string.onboarding_description_3),
         illustration = Res.drawable.il_statistics,
     )
 }

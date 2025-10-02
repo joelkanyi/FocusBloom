@@ -56,8 +56,10 @@ import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.core.utils.prettyTimeDifference
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.ic_complete
+import focusbloom.shared.generated.resources.minutes_duration
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -154,14 +156,15 @@ fun TaskCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${
-                        task.durationInMinutes(
-                            focusSessions = focusSessions,
-                            sessionTime = sessionTime,
-                            shortBreakTime = shortBreakTime,
-                            longBreakTime = longBreakTime,
-                        )
-                        } minutes",
+                        text = stringResource(
+                            Res.string.minutes_duration,
+                            task.durationInMinutes(
+                                focusSessions = focusSessions,
+                                sessionTime = sessionTime,
+                                shortBreakTime = shortBreakTime,
+                                longBreakTime = longBreakTime,
+                            )
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(4.dp))

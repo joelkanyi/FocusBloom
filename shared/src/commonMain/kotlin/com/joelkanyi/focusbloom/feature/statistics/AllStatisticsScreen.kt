@@ -43,7 +43,10 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomTopAppBar
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
 import com.joelkanyi.focusbloom.core.utils.prettyFormat
 import com.joelkanyi.focusbloom.platform.StatusBarColors
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.*
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AllStatisticsScreen(
@@ -106,12 +109,12 @@ fun AllStatisticsScreenContent(
                     IconButton(onClick = onClickNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Back",
+                                                        contentDescription = stringResource(Res.string.back),
                         )
                     }
                 },
             ) {
-                Text(text = "Tasks History")
+                Text(text = stringResource(Res.string.tasks_history))
             }
         },
     ) { paddingValues ->

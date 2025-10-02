@@ -81,11 +81,13 @@ import com.joelkanyi.focusbloom.feature.statistics.component.TickPositionState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.redo
+import focusbloom.shared.generated.resources.*
 import io.github.koalaplot.core.ChartLayout
 import io.github.koalaplot.core.util.ExperimentalKoalaPlotApi
 import io.github.koalaplot.core.xygraph.TickPosition
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StatisticsScreen(
@@ -196,7 +198,7 @@ fun StatisticsScreenContent(
                 title = {
                     Text(
                         modifier = Modifier.fillMaxWidth(.7f),
-                        text = "Your Statistics",
+                        text = stringResource(Res.string.your_statistics),
                         style = MaterialTheme.typography.displaySmall.copy(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -218,7 +220,7 @@ fun StatisticsScreenContent(
                                     contentDescription = "This Week",
                                 )
                                 Text(
-                                    text = "This Week",
+                                    text = stringResource(Res.string.this_week),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.primary,
@@ -270,7 +272,7 @@ fun StatisticsScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Your History",
+                        text = stringResource(Res.string.your_history),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                         ),
@@ -278,7 +280,7 @@ fun StatisticsScreenContent(
                     if (tasksHistory.size > 3) {
                         TextButton(onClick = onClickSeeAllTasks) {
                             Text(
-                                text = "See All",
+                                text = stringResource(Res.string.see_all),
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.primary,
@@ -460,14 +462,15 @@ fun HistoryCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "${
-                            task.durationInMinutes(
-                                focusSessions = task.focusSessions,
-                                sessionTime = sessionTime,
-                                shortBreakTime = shortBreakTime,
-                                longBreakTime = longBreakTime,
-                            )
-                            } minutes",
+                            text = stringResource(
+                                Res.string.minutes_duration,
+                                task.durationInMinutes(
+                                    focusSessions = task.focusSessions,
+                                    sessionTime = sessionTime,
+                                    shortBreakTime = shortBreakTime,
+                                    longBreakTime = longBreakTime,
+                                )
+                            ),
                             style = MaterialTheme.typography.displaySmall.copy(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -505,7 +508,7 @@ fun HistoryCard(
                             onClickCancel(task)
                         }) {
                             Text(
-                                text = "Cancel",
+                                text = stringResource(Res.string.cancel),
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontWeight = FontWeight.SemiBold,
                                 ),
@@ -516,7 +519,7 @@ fun HistoryCard(
                             onClickDelete(task)
                         }) {
                             Text(
-                                text = "Delete",
+                                text = stringResource(Res.string.delete),
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontWeight = FontWeight.ExtraBold,

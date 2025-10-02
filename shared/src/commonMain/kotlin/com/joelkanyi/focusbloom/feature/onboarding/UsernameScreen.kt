@@ -51,9 +51,12 @@ import androidx.navigation.NavController
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import com.joelkanyi.focusbloom.core.utils.koinViewModel
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun UsernameScreen(
@@ -105,7 +108,7 @@ fun UsernameScreenContent(
     ) {
         item {
             TypewriterText(
-                baseText = "Focus Bloom app is what you need to",
+                baseText = stringResource(Res.string.focus_bloom_tagline),
                 parts = typeWriterTextParts,
             )
         }
@@ -113,7 +116,7 @@ fun UsernameScreenContent(
         item {
             Spacer(modifier = Modifier.height(56.dp))
             Text(
-                text = "What's your username?",
+                text = stringResource(Res.string.whats_your_username),
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontSize = 18.sp,
                 ),
@@ -153,7 +156,7 @@ fun UsernameScreenContent(
                         onClick = onClickContinue,
                     ) {
                         Text(
-                            text = "Continue",
+                            text = stringResource(Res.string.continue_btn),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.SemiBold,
                             ),
@@ -180,7 +183,7 @@ private fun UsernameTextField(
         singleLine = true,
         placeholder = {
             Text(
-                text = "John Doe",
+                text = stringResource(Res.string.username_placeholder),
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.ExtraLight,
                     fontSize = 18.sp,

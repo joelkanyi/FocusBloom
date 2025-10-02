@@ -109,7 +109,7 @@ import com.joelkanyi.focusbloom.core.utils.truncatedTo
 import com.joelkanyi.focusbloom.feature.home.component.TaskOptionsBottomSheet
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
-import focusbloom.shared.generated.resources.redo
+import focusbloom.shared.generated.resources.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -117,6 +117,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
@@ -245,7 +246,7 @@ fun CalendarScreenContent(
             BloomTopAppBar(
                 hasBackNavigation = false,
                 title = {
-                    Text(text = "Calendar")
+                    Text(text = stringResource(Res.string.calendar))
                 },
                 actions = {
                     AnimatedVisibility(selectedDay.insideThisWeek().not()) {
@@ -262,7 +263,7 @@ fun CalendarScreenContent(
                                     contentDescription = "Today",
                                 )
                                 Text(
-                                    text = "TODAY",
+                                    text = stringResource(Res.string.today),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.primary,

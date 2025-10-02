@@ -76,10 +76,11 @@ import com.joelkanyi.focusbloom.core.utils.toPercentage
 import com.joelkanyi.focusbloom.core.utils.toTimer
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
-import focusbloom.shared.generated.resources.ic_complete
+import focusbloom.shared.generated.resources.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TaskProgressScreen(
@@ -258,7 +259,7 @@ fun FocusTimeScreenContent(
             if (task == null) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = "Task not found",
+                    text = stringResource(Res.string.task_not_found),
                 )
             } else {
                 LazyColumn(
@@ -306,21 +307,25 @@ fun FocusTimeScreenContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
-                                        text = "Total: ${
-                                            task.durationInMinutes(
-                                                sessionTime = focusTime.toMinutes(),
-                                                shortBreakTime = shortBreakTime.toMinutes(),
-                                                longBreakTime = longBreakTime.toMinutes(),
-                                                focusSessions = task.focusSessions,
+                                        text = stringResource(
+                                            Res.string.total_label,
+                                            stringResource(
+                                                Res.string.minutes_duration,
+                                                task.durationInMinutes(
+                                                    sessionTime = focusTime.toMinutes(),
+                                                    shortBreakTime = shortBreakTime.toMinutes(),
+                                                    longBreakTime = longBreakTime.toMinutes(),
+                                                    focusSessions = task.focusSessions,
+                                                )
                                             )
-                                        } minutes",
+                                        ),
                                         style = MaterialTheme.typography.bodySmall,
                                     )
                                     Text(
                                         text = when (task.current.sessionType()) {
-                                            SessionType.Focus -> "${focusTime.toMinutes()} min"
-                                            SessionType.ShortBreak -> "${shortBreakTime.toMinutes()} min"
-                                            SessionType.LongBreak -> "${longBreakTime.toMinutes()} min"
+                                            SessionType.Focus -> stringResource(Res.string.minutes_duration, focusTime.toMinutes())
+                                            SessionType.ShortBreak -> stringResource(Res.string.minutes_duration, shortBreakTime.toMinutes())
+                                            SessionType.LongBreak -> stringResource(Res.string.minutes_duration, longBreakTime.toMinutes())
                                         },
                                     )
                                 }
@@ -428,7 +433,7 @@ fun SuccessfulCompletionOfTask(
                 onClick = onConfirm,
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(Res.string.ok),
                     style = MaterialTheme.typography.titleSmall,
                 )
             }

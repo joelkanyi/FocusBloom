@@ -93,6 +93,7 @@ import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.end_time
 import focusbloom.shared.generated.resources.ic_complete
 import focusbloom.shared.generated.resources.start_time
+import focusbloom.shared.generated.resources.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -100,6 +101,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -266,7 +268,7 @@ fun AddTaskScreen(
                         date = taskDate,
                         focusSessions = focusSessions,
                         completed = false,
-                        type = selectedTaskType.name,
+                        type = selectedTaskType.name.toString(),
                         consumedFocusTime = 0L,
                         consumedShortBreakTime = 0L,
                         consumedLongBreakTime = 0L,
@@ -290,7 +292,7 @@ fun AddTaskScreen(
                         date = taskDate,
                         focusSessions = focusSessions,
                         completed = false,
-                        type = selectedTaskType.name,
+                        type = selectedTaskType.name.toString(),
                         consumedFocusTime = 0L,
                         consumedShortBreakTime = 0L,
                         consumedLongBreakTime = 0L,
@@ -369,7 +371,7 @@ private fun AddTaskScreenContent(
                                     painter = painterResource(
                                         Res.drawable.ic_complete
                                     ),
-                                    contentDescription = "Task Options",
+                                    contentDescription = stringResource(Res.string.task_options),
                                 )
                             }
                         }
@@ -379,7 +381,7 @@ private fun AddTaskScreenContent(
         },
         topBar = {
             BloomTopAppBar {
-                Text(text = "Add Task")
+                Text(text = stringResource(Res.string.add_task))
             }
         },
     ) { paddingValues ->
@@ -394,7 +396,7 @@ private fun AddTaskScreenContent(
                     maxLines = 3,
                     label = {
                         Text(
-                            text = "Task Name",
+                            text = stringResource(Res.string.task_name),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
@@ -405,7 +407,7 @@ private fun AddTaskScreenContent(
                     onValueChange = onTaskNameChange,
                     placeholder = {
                         Text(
-                            text = "Enter Task Name",
+                            text = stringResource(Res.string.enter_task_name),
                             style = MaterialTheme.typography.titleSmall,
                         )
                     },
@@ -423,7 +425,7 @@ private fun AddTaskScreenContent(
                     maxLines = 5,
                     label = {
                         Text(
-                            text = "Description",
+                            text = stringResource(Res.string.description),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
@@ -434,7 +436,7 @@ private fun AddTaskScreenContent(
                     onValueChange = onTaskDescriptionChange,
                     placeholder = {
                         Text(
-                            text = "Enter Description",
+                            text = stringResource(Res.string.enter_description),
                             style = MaterialTheme.typography.titleSmall,
                         )
                     },
@@ -452,7 +454,7 @@ private fun AddTaskScreenContent(
                         .fillMaxWidth(),
                     label = {
                         Text(
-                            text = "Date",
+                            text = stringResource(Res.string.date),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
@@ -473,7 +475,7 @@ private fun AddTaskScreenContent(
                 BloomDropDown(
                     label = {
                         Text(
-                            text = "Task Type",
+                            text = stringResource(Res.string.task_type),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
@@ -482,7 +484,7 @@ private fun AddTaskScreenContent(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     options = taskOptions,
-                    selectedOption = TextFieldState(selectedTaskType.name),
+                    selectedOption = TextFieldState(selectedTaskType.name.toString()),
                     onOptionSelected = onSelectedTaskTypeChange,
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontSize = 16.sp,
@@ -529,7 +531,7 @@ private fun AddTaskScreenContent(
             item {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Focus Sessions",
+                    text = stringResource(Res.string.focus_sessions),
                     style = MaterialTheme.typography.titleMedium.copy(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.SemiBold,
@@ -562,7 +564,7 @@ private fun AddTaskScreenContent(
                         .height(56.dp),
                     onClick = onClickAddTask,
                     content = {
-                        Text(text = "Save")
+                        Text(text = stringResource(Res.string.action_save))
                     },
                 )
             }
@@ -645,7 +647,7 @@ fun TimerInputDialog(
             TextButton(
                 onClick = onDismiss,
                 content = {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(Res.string.cancel))
                 },
             )
         },
@@ -661,7 +663,7 @@ fun TimerInputDialog(
                     onDismiss()
                 },
                 content = {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.ok))
                 },
             )
         },
@@ -679,7 +681,7 @@ fun TaskDatePicker(
         onDismissRequest = { dismiss() },
         dismissButton = {
             TextButton(onClick = dismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(Res.string.cancel))
             }
         },
         confirmButton = {
@@ -689,7 +691,7 @@ fun TaskDatePicker(
                     dismiss()
                 },
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(Res.string.ok))
             }
         },
     ) {

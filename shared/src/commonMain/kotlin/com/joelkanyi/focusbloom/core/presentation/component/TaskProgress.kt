@@ -41,6 +41,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.percentage
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TaskProgress(
@@ -113,7 +116,7 @@ fun TaskProgress(
                     )
                 } else {
                     Text(
-                        text = "${(currentPercentage.value).toInt()}%",
+                        text = stringResource(Res.string.percentage, (currentPercentage.value).toInt()),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = counterColor,

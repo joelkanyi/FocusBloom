@@ -77,9 +77,9 @@ import com.joelkanyi.focusbloom.feature.taskprogress.Timer
 import com.joelkanyi.focusbloom.feature.taskprogress.TimerState
 import com.joelkanyi.focusbloom.platform.StatusBarColors
 import focusbloom.shared.generated.resources.Res
-import focusbloom.shared.generated.resources.il_completed
-import focusbloom.shared.generated.resources.il_empty
+import focusbloom.shared.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -287,7 +287,7 @@ private fun HomeScreenContent(
 
                         item {
                             Text(
-                                text = "Hello, ${username.pickFirstName()}!",
+                                text = stringResource(Res.string.hello_user, username.pickFirstName()),
                                 style = MaterialTheme.typography.displaySmall,
                             )
                         }
@@ -306,7 +306,7 @@ private fun HomeScreenContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
-                                        text = "Overdue Tasks (${overdueTasks.size})",
+                                        text = stringResource(Res.string.overdue_tasks, overdueTasks.size),
                                         style = MaterialTheme.typography.titleLarge.copy(
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.error,
@@ -317,7 +317,7 @@ private fun HomeScreenContent(
                                             modifier = Modifier.clickable {
                                                 onClickSeeAllTasks("overdue")
                                             },
-                                            text = "See All",
+                                            text = stringResource(Res.string.see_all),
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = MaterialTheme.colorScheme.error,
@@ -355,7 +355,7 @@ private fun HomeScreenContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
-                                        text = "Today's Tasks (${tasks.size})",
+                                        text = stringResource(Res.string.todays_tasks, tasks.size),
                                         style = MaterialTheme.typography.titleLarge.copy(
                                             fontWeight = FontWeight.Bold,
                                         ),
@@ -365,7 +365,7 @@ private fun HomeScreenContent(
                                             modifier = Modifier.clickable {
                                                 onClickSeeAllTasks("today")
                                             },
-                                            text = "See All",
+                                            text = stringResource(Res.string.see_all),
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = MaterialTheme.colorScheme.primary,
@@ -440,9 +440,9 @@ private fun StartOrCompletedTaskComponent(
                 fontWeight = FontWeight.Bold,
             ),
             text = if (tasks.isEmpty()) {
-                "Start your day productively! Add your first task."
+                stringResource(Res.string.home_empty_title)
             } else if (tasks.all { it.completed }) {
-                "Great job! You've finished all your tasks for today."
+                stringResource(Res.string.home_completed_title)
             } else {
                 ""
             },
@@ -454,9 +454,9 @@ private fun StartOrCompletedTaskComponent(
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
             text = if (tasks.isEmpty()) {
-                "To add a task, simply tap the '+' button on the screen. Fill in the task details and tap 'Save'."
+                stringResource(Res.string.home_empty_description)
             } else if (tasks.all { it.completed }) {
-                "Now, take some time to have fun, recharge, maybe do some exercise, and consider opening your calendar to plan for tomorrow's tasks. Keep up the fantastic work!"
+                stringResource(Res.string.home_completed_description)
             } else {
                 ""
             },
@@ -473,7 +473,7 @@ private fun StartOrCompletedTaskComponent(
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 24.dp),
-                    text = "Add Your First Task",
+                    text = stringResource(Res.string.home_add_first_task),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Bold,
                     ),
@@ -521,23 +521,15 @@ fun ActiveTaskCard(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "${
+                    text = stringResource(
+                        Res.string.session_timer,
                         when (task.current.sessionType()) {
-                            SessionType.Focus -> {
-                                "Focus Session"
-                            }
-
-                            SessionType.ShortBreak -> {
-                                "Short Break"
-                            }
-
-                            SessionType.LongBreak -> {
-                                "Long Break"
-                            }
-                        }
-                    } - ${
+                            SessionType.Focus -> stringResource(Res.string.session_focus)
+                            SessionType.ShortBreak -> stringResource(Res.string.session_short_break)
+                            SessionType.LongBreak -> stringResource(Res.string.session_long_break)
+                        },
                         tickingTime.toTimer()
-                    }",
+                    ),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold,
@@ -564,7 +556,7 @@ fun ActiveTaskCard(
                             Icons.Default.PlayArrow
                         }
                     },
-                    contentDescription = "Play/Pause",
+                    contentDescription = stringResource(Res.string.play_pause),
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
@@ -599,7 +591,7 @@ private fun TodayTaskProgressCard(tasks: List<Task>) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${tasks.filter { it.completed }.size} of ${tasks.size} tasks completed",
+                    text = stringResource(Res.string.tasks_progress, tasks.filter { it.completed }.size, tasks.size),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                     ),

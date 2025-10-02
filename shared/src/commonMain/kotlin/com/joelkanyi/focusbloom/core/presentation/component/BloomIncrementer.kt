@@ -29,6 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.task_count
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BloomIncrementer(
@@ -57,7 +60,7 @@ fun BloomIncrementer(
         Spacer(modifier = Modifier.width(12.dp))
 
         Text(
-            text = "$currentValue",
+            text = stringResource(Res.string.task_count, currentValue),
             style = MaterialTheme.typography.titleLarge,
         )
 

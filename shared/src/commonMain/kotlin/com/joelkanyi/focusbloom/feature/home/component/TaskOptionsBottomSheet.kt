@@ -32,6 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.joelkanyi.focusbloom.core.domain.model.Task
+import focusbloom.shared.generated.resources.Res
+import focusbloom.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +59,7 @@ fun TaskOptionsBottomSheet(
         ) {
             Option(
                 icon = Icons.Default.Edit,
-                text = "Edit Task",
+                text = stringResource(Res.string.edit_task),
                 onClick = {
                     onClickEditTask(task)
                     onDismissRequest()
@@ -72,7 +75,7 @@ fun TaskOptionsBottomSheet(
             )
             Option(
                 icon = Icons.Outlined.Done,
-                text = "Mark as Completed",
+                text = stringResource(Res.string.mark_as_completed),
                 onClick = {
                     onClickMarkAsCompleted(task)
                     onDismissRequest()
@@ -80,7 +83,7 @@ fun TaskOptionsBottomSheet(
             )
             Option(
                 icon = Icons.Outlined.Delete,
-                text = "Delete Task",
+                text = stringResource(Res.string.delete_task),
                 onClick = {
                     onClickDelete(task)
                     onDismissRequest()
@@ -88,7 +91,7 @@ fun TaskOptionsBottomSheet(
             )
             Option(
                 icon = Icons.Outlined.Close,
-                text = "Cancel",
+                text = stringResource(Res.string.cancel),
                 onClick = {
                     onClickCancel(task)
                     onDismissRequest()

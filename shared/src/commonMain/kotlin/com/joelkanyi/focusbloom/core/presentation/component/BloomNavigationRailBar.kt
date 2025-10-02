@@ -76,12 +76,12 @@ fun BloomNavigationRailBar(
                     icon = {
                         Icon(
                             painter = painterResource(if (isSelected) navigationItem.selectedIcon else navigationItem.unselectedIcon),
-                            contentDescription = navigationItem.label,
+                            contentDescription = navigationItem.label.toString(),
                         )
                     },
                     label = {
                         Text(
-                            text = navigationItem.label,
+                            text = navigationItem.label.toString(),
                         )
                     },
                     alwaysShowLabel = true,

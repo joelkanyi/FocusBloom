@@ -216,7 +216,7 @@ class AddTaskViewModel(
         setTaskDescription(it?.description ?: "")
         setSelectedOption(
             taskTypes.firstOrNull { taskType ->
-                taskType.name == it?.type
+                taskType.name.toString() == it?.type
             } ?: taskTypes.last(),
         )
         setFocusSessions(it?.focusSessions ?: 1)
