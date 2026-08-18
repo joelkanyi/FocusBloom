@@ -24,6 +24,6 @@ import org.koin.core.context.startKoin
  */
 object DiModule {
     val koin: Koin = startKoin {
-        modules(iosAppModule)
+        modules(appModule, iosAppModule)
     }.koin
 }

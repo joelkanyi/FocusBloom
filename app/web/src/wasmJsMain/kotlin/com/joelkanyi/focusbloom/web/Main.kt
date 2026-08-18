@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.web
 
+import com.joelkanyi.focusbloom.shell.appModule
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import com.joelkanyi.focusbloom.shell.FocusBloomApp
@@ -23,7 +24,7 @@ import org.koin.core.context.startKoin
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    startKoin { modules(webAppModule) }
+    startKoin { modules(appModule, webAppModule) }
     ComposeViewport(document.body!!) {
         FocusBloomApp()
     }

@@ -48,6 +48,18 @@ kotlin {
             api(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.common)
+
+            // The shared composition graph: :shell binds capability impls and feature view
+            // models so every platform launcher only adds its platform pieces.
+            implementation(projects.feature.focus)
+            implementation(projects.core.database)
+            implementation(projects.capability.session.api)
+            implementation(projects.capability.session.impl)
+            implementation(projects.capability.items.api)
+            implementation(projects.capability.items.impl)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         // :shell is also the iOS umbrella framework, so the iOS composition root (the entry
         // point and its Koin graph) lives here. These deps are iOS-only and do not leak to the

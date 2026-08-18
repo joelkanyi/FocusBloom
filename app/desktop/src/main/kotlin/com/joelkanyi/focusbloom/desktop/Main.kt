@@ -15,13 +15,14 @@
  */
 package com.joelkanyi.focusbloom.desktop
 
+import com.joelkanyi.focusbloom.shell.appModule
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.joelkanyi.focusbloom.shell.FocusBloomApp
 import org.koin.core.context.startKoin
 
 fun main() {
-    startKoin { modules(desktopAppModule) }
+    startKoin { modules(appModule, desktopAppModule) }
     application {
         Window(
             onCloseRequest = ::exitApplication,
