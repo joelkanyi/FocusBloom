@@ -48,3 +48,4 @@ rootProject.name = "FocusBloom"
 include(":core:model")
 include(":core:common")
 include(":core:testing")
+include(":core:designsystem")
