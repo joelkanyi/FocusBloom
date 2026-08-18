@@ -1,8 +1,9 @@
 [versions]
 
 androidDriver = "2.1.0"
-kotlin = "2.2.20"
-compose = "1.8.2"
+kotlin = "2.3.20"
+compose = "1.11.1"
+jenga = "0.4.0-SNAPSHOT"
 
 koin = "4.1.0"
 koinCompose = "4.1.0"
@@ -32,6 +33,7 @@ android-minSdk = "24"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
+jenga = { module = "io.github.joelkanyi:jenga", version.ref = "jenga" }
 core = { module = "androidx.core:core", version.ref = "core" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
@@ -71,6 +73,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 nativeCocoapod = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "gradle" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle" }
 android-application = { id = "com.android.application", version.ref = "gradle" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
