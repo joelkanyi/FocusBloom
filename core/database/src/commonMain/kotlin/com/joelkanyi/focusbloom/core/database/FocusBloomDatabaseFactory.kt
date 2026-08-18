@@ -15,21 +15,12 @@
  */
 package com.joelkanyi.focusbloom.core.database
 
-import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 
 /**
- * Builds the database from a platform [SqlDriver]. Each app creates the driver
- * (the Web driver needs a web worker webpack cannot supply from here) and its
- * schema, then hands it in. Repositories in :capability:* impls take the result.
+ * Builds the database from a platform [SqlDriver]. Each app creates the driver (the Web driver
+ * needs a web worker webpack cannot supply from here) and its schema, then hands it in.
+ * Repositories in :capability:* impls take the result.
  */
 fun createFocusBloomDatabase(driver: SqlDriver): FocusBloomDatabase =
-    FocusBloomDatabase(
-        driver = driver,
-        focusSessionAdapter = FocusSession.Adapter(
-            focusMinutesAdapter = IntColumnAdapter,
-            shortBreakMinutesAdapter = IntColumnAdapter,
-            longBreakMinutesAdapter = IntColumnAdapter,
-            cyclesAdapter = IntColumnAdapter,
-        ),
-    )
+    FocusBloomDatabase(driver)

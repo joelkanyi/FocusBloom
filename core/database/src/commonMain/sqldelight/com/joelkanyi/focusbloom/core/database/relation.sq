@@ -1,0 +1,22 @@
+-- A typed, directional link between two items. kind is the RelationKind enum value as TEXT.
+CREATE TABLE relation (
+    fromId INTEGER NOT NULL,
+    toId INTEGER NOT NULL,
+    kind TEXT NOT NULL,
+    PRIMARY KEY (fromId, toId, kind)
+);
+
+selectFrom:
+SELECT * FROM relation WHERE fromId = ?;
+
+selectTo:
+SELECT * FROM relation WHERE toId = ?;
+
+insert:
+INSERT OR IGNORE INTO relation(fromId, toId, kind) VALUES (?, ?, ?);
+
+delete:
+DELETE FROM relation WHERE fromId = ? AND toId = ? AND kind = ?;
+
+deleteForItem:
+DELETE FROM relation WHERE fromId = ? OR toId = ?;

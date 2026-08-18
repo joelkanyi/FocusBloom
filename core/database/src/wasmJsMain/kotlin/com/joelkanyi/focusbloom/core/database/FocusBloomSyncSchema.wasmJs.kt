@@ -18,10 +18,7 @@ package com.joelkanyi.focusbloom.core.database
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlSchema
 
-/**
- * The schema adapted for synchronous drivers (Android, Desktop, iOS). The database is generated
- * async so it can run on the Web web-worker driver; the blocking platforms adapt it with
- * synchronous(), while Web uses [FocusBloomDatabase.Schema] directly (its actual errors, since it
- * is never called there).
- */
-expect fun focusBloomSyncSchema(): SqlSchema<QueryResult.Value<Unit>>
+// Web uses the async FocusBloomDatabase.Schema with the web-worker driver; the synchronous
+// adapter has no meaning here and is never called.
+actual fun focusBloomSyncSchema(): SqlSchema<QueryResult.Value<Unit>> =
+    error("Web uses the async FocusBloomDatabase.Schema directly")
