@@ -19,7 +19,7 @@ import android.content.Context
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.joelkanyi.focusbloom.core.database.FocusBloomDatabase
-import com.joelkanyi.focusbloom.core.database.FocusBloomSyncSchema
+import com.joelkanyi.focusbloom.core.database.focusBloomSyncSchema
 import com.joelkanyi.focusbloom.core.database.createFocusBloomDatabase
 import com.joelkanyi.focusbloom.core.datastore.FocusBloomSettings
 import com.russhwolf.settings.ObservableSettings
@@ -42,7 +42,7 @@ val androidAppModule = module {
 
     single<SqlDriver> {
         AndroidSqliteDriver(
-            schema = FocusBloomSyncSchema,
+            schema = focusBloomSyncSchema(),
             context = androidContext(),
             name = "focusbloom.db",
         )

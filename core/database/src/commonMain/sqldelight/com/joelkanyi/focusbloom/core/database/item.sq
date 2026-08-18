@@ -1,0 +1,41 @@
+-- The single content table. type and location are stored as plain TEXT (the enum values);
+-- mapping TEXT <-> domain enums and epoch <-> Instant happens in the repository, so the
+-- database stays decoupled from :core:model.
+CREATE TABLE item (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    note TEXT,
+    location TEXT NOT NULL DEFAULT 'SHELF',
+    drawnOn TEXT,
+    createdAt INTEGER NOT NULL,
+    lastTouchedAt INTEGER NOT NULL
+);
+
+CREATE INDEX item_location ON item(location);
+
+selectAll:
+SELECT * FROM item ORDER BY lastTouchedAt DESC;
+
+selectByLocation:
+SELECT * FROM item WHERE location = ? ORDER BY lastTouchedAt DESC;
+
+selectById:
+SELECT * FROM item WHERE id = ?;
+
+insert:
+INSERT INTO item(type, title, note, location, drawnOn, createdAt, lastTouchedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE item SET title = ?, note = ?, location = ?, drawnOn = ?, lastTouchedAt = ?
+WHERE id = ?;
+
+updateLocation:
+UPDATE item SET location = ?, drawnOn = ?, lastTouchedAt = ? WHERE id = ?;
+
+deleteById:
+DELETE FROM item WHERE id = ?;
+
+lastInsertId:
+SELECT last_insert_rowid();

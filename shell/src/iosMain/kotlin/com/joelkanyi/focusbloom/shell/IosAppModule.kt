@@ -18,7 +18,7 @@ package com.joelkanyi.focusbloom.shell
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.joelkanyi.focusbloom.core.database.FocusBloomDatabase
-import com.joelkanyi.focusbloom.core.database.FocusBloomSyncSchema
+import com.joelkanyi.focusbloom.core.database.focusBloomSyncSchema
 import com.joelkanyi.focusbloom.core.database.createFocusBloomDatabase
 import com.joelkanyi.focusbloom.core.datastore.FocusBloomSettings
 import com.russhwolf.settings.NSUserDefaultsSettings
@@ -33,6 +33,6 @@ import platform.Foundation.NSUserDefaults
 val iosAppModule = module {
     single<ObservableSettings> { NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults) }
     single { FocusBloomSettings(get()) }
-    single<SqlDriver> { NativeSqliteDriver(FocusBloomSyncSchema, "focusbloom.db") }
+    single<SqlDriver> { NativeSqliteDriver(focusBloomSyncSchema(), "focusbloom.db") }
     single<FocusBloomDatabase> { createFocusBloomDatabase(get()) }
 }

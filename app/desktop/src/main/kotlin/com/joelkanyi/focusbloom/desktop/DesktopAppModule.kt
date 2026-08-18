@@ -18,7 +18,7 @@ package com.joelkanyi.focusbloom.desktop
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.joelkanyi.focusbloom.core.database.FocusBloomDatabase
-import com.joelkanyi.focusbloom.core.database.FocusBloomSyncSchema
+import com.joelkanyi.focusbloom.core.database.focusBloomSyncSchema
 import com.joelkanyi.focusbloom.core.database.createFocusBloomDatabase
 import com.joelkanyi.focusbloom.core.datastore.FocusBloomSettings
 import com.russhwolf.settings.ObservableSettings
@@ -43,7 +43,7 @@ val desktopAppModule = module {
         dbFile.parentFile?.mkdirs()
         JdbcSqliteDriver(
             url = "jdbc:sqlite:${dbFile.absolutePath}",
-            schema = FocusBloomSyncSchema,
+            schema = focusBloomSyncSchema(),
         )
     }
     single<FocusBloomDatabase> { createFocusBloomDatabase(get()) }
