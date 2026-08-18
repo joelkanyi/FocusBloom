@@ -25,6 +25,8 @@ kotlin {
             api(libs.coroutines.extensions)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.primitive.adapters)
+            // Adapts the async-generated schema for the synchronous drivers (see synchronous()).
+            implementation(libs.sqlDelight.async.extensions)
         }
     }
 }
