@@ -76,3 +76,50 @@ tasks.register("checkModuleGraph") {
         logger.lifecycle("checkModuleGraph: ok (${subprojects.size} modules)")
     }
 }
+
+// ---- Features must use jenga, not raw Compose --------------------------------
+// A :feature:* module renders only through jenga (JengaBox/JengaStack/JengaInline,
+// Jenga* components) and jenga tokens. Raw Compose containers, Canvas, Material, or
+// hardcoded dp belong in :core:designsystem composites, never in a feature.
+tasks.register("checkFeatureUi") {
+    group = "verification"
+    description = "Fails if a :feature:* module uses raw Compose layout, Canvas, Material, or hardcoded dp."
+    doLast {
+        val forbiddenImports = listOf(
+            "import androidx.compose.foundation.layout.Column",
+            "import androidx.compose.foundation.layout.Row",
+            "import androidx.compose.foundation.layout.Box",
+            "import androidx.compose.foundation.layout.FlowRow",
+            "import androidx.compose.foundation.lazy.",
+            "import androidx.compose.foundation.Canvas",
+            "import androidx.compose.material",
+        )
+        val dpLiteral = Regex("""\b\d+(\.\d+)?\.dp\b""")
+        val violations = mutableListOf<String>()
+        subprojects.filter { it.path.startsWith(":feature:") }.forEach { project ->
+            val src = project.projectDir.resolve("src")
+            if (!src.exists()) return@forEach
+            src.walkTopDown()
+                .filter { it.isFile && it.extension == "kt" }
+                .forEach { file ->
+                    file.readLines().forEachIndexed { index, line ->
+                        val trimmed = line.trimStart()
+                        forbiddenImports.forEach { bad ->
+                            if (trimmed.startsWith(bad)) {
+                                violations += "${file.relativeTo(rootDir)}:${index + 1}: ${bad.removePrefix("import ")}"
+                            }
+                        }
+                        if (dpLiteral.containsMatchIn(line)) {
+                            violations += "${file.relativeTo(rootDir)}:${index + 1}: hardcoded dp (use a jenga token or a :core:designsystem composite)"
+                        }
+                    }
+                }
+        }
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Features must render through jenga, not raw Compose:\n" + violations.joinToString("\n"),
+            )
+        }
+        logger.lifecycle("checkFeatureUi: ok")
+    }
+}
