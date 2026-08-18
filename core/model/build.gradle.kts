@@ -16,3 +16,11 @@
 plugins {
     id("focusbloom.kmp.library")
 }
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.kotlinX.dateTime)
+        }
+    }
+}

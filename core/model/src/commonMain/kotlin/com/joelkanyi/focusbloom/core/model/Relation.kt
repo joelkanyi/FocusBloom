@@ -15,16 +15,15 @@
  */
 package com.joelkanyi.focusbloom.core.model
 
+/** The small, fixed set of ways two items relate. Kept closed so the model stays meaningful. */
+enum class RelationKind { BELONGS_TO, REFERENCES, BLOCKS }
+
 /**
- * A single deep-work session: the hero unit of FocusBloom. A session runs one
- * or more focus/break cycles and is optionally tied to the task it advances.
+ * A typed, directional link between two items: a task belongs to a project, a session references a
+ * task, one task blocks another. Relations are how structure emerges without a generic graph.
  */
-data class FocusSession(
-    val id: Long,
-    val label: String,
-    val focusMinutes: Int,
-    val shortBreakMinutes: Int,
-    val longBreakMinutes: Int,
-    val cycles: Int,
-    val taskId: Long?,
+data class Relation(
+    val fromId: Long,
+    val toId: Long,
+    val kind: RelationKind,
 )
