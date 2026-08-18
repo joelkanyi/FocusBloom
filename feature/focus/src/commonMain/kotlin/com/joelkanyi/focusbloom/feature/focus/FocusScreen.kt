@@ -1,28 +1,35 @@
+/*
+ * Copyright 2026 Joel Kanyi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.joelkanyi.focusbloom.feature.focus
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.joelkanyi.focusbloom.capability.session.SessionState
+import com.joelkanyi.focusbloom.core.designsystem.component.FocusBloomTimerRing
 import com.joelkanyi.focusbloom.core.designsystem.util.ObserveAsEvents
 import io.github.joelkanyi.jenga.component.button.JengaButton
 import io.github.joelkanyi.jenga.component.button.JengaButtonVariant
+import io.github.joelkanyi.jenga.component.layout.JengaBox
+import io.github.joelkanyi.jenga.component.layout.JengaInline
+import io.github.joelkanyi.jenga.component.layout.JengaStack
 import io.github.joelkanyi.jenga.component.text.JengaText
 import io.github.joelkanyi.jenga.theme.JengaTheme
 import kotlin.time.Duration
@@ -47,16 +54,15 @@ fun FocusScreenContent(
     state: FocusUiState,
     onEvent: (FocusUiEvent) -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(JengaTheme.colors.background)
-            .padding(JengaTheme.spacing.xl),
+    JengaBox(
+        modifier = Modifier.fillMaxSize(),
+        background = JengaTheme.colors.background,
+        padding = PaddingValues(JengaTheme.spacing.xl),
         contentAlignment = Alignment.Center,
     ) {
-        Column(
+        JengaStack(
+            space = JengaTheme.spacing.xl,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(JengaTheme.spacing.xl),
         ) {
             when (val session = state.session) {
                 is SessionState.Idle -> {
@@ -79,13 +85,12 @@ fun FocusScreenContent(
                     } else {
                         0f
                     }
-                    Box(contentAlignment = Alignment.Center) {
-                        TimerRing(
+                    JengaBox(contentAlignment = Alignment.Center) {
+                        FocusBloomTimerRing(
                             fraction = fraction,
                             bloom = session.pastHorizon,
-                            modifier = Modifier.size(260.dp),
                         )
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        JengaStack(horizontalAlignment = Alignment.CenterHorizontally) {
                             JengaText(
                                 text = session.elapsed.asClock(),
                                 style = JengaTheme.typography.display,
@@ -100,7 +105,7 @@ fun FocusScreenContent(
                             }
                         }
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(JengaTheme.spacing.md)) {
+                    JengaInline(space = JengaTheme.spacing.md) {
                         JengaButton(
                             text = "Life happened",
                             onClick = { onEvent(FocusUiEvent.Park) },
@@ -148,7 +153,7 @@ fun FocusScreenContent(
                         style = JengaTheme.typography.display,
                         color = JengaTheme.colors.textMuted,
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(JengaTheme.spacing.md)) {
+                    JengaInline(space = JengaTheme.spacing.md) {
                         JengaButton(
                             text = "Resume",
                             onClick = { onEvent(FocusUiEvent.Resume) },
@@ -180,53 +185,6 @@ fun FocusScreenContent(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun TimerRing(
-    fraction: Float,
-    bloom: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val track = JengaTheme.colors.border
-    val accent = JengaTheme.colors.brand
-    Canvas(modifier) {
-        val strokeWidth = size.minDimension * 0.06f
-        val diameter = size.minDimension - strokeWidth
-        val topLeft = Offset((size.width - diameter) / 2f, (size.height - diameter) / 2f)
-        val arcSize = Size(diameter, diameter)
-        val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-
-        drawArc(
-            color = track,
-            startAngle = -90f,
-            sweepAngle = 360f,
-            useCenter = false,
-            topLeft = topLeft,
-            size = arcSize,
-            style = stroke,
-        )
-        drawArc(
-            color = accent,
-            startAngle = -90f,
-            sweepAngle = 360f * fraction.coerceIn(0f, 1f),
-            useCenter = false,
-            topLeft = topLeft,
-            size = arcSize,
-            style = stroke,
-        )
-        if (bloom) {
-            drawArc(
-                color = accent.copy(alpha = 0.35f),
-                startAngle = -90f,
-                sweepAngle = 360f,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth * 0.5f, cap = StrokeCap.Round),
-            )
         }
     }
 }
