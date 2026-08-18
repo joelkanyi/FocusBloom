@@ -46,3 +46,5 @@ rootProject.name = "FocusBloom"
 // feature:   UI + presentation, one per screen
 // app:       composition roots (added in Phase 0.6)
 include(":core:model")
+include(":core:common")
+include(":core:testing")
