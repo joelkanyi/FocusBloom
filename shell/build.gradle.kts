@@ -16,9 +16,31 @@
 plugins {
     id("focusbloom.kmp.library")
     id("focusbloom.compose")
+    alias(libs.plugins.nativeCocoapod)
 }
 
 kotlin {
+    // :shell is the iOS umbrella framework, exported to the Xcode app as "shared" so the
+    // existing Swift (import shared, MainKt.MainViewController(), DiModule.koin) is unchanged.
+    cocoapods {
+        version = "1.0"
+        summary = "FocusBloom shared iOS framework"
+        homepage = "https://github.com/joelkanyi/FocusBloom"
+        ios.deploymentTarget = "14.1"
+        podfile = project.file("../ios/Podfile")
+        framework {
+            baseName = "shared"
+            isStatic = false
+        }
+    }
+
+    // The SQLDelight native driver (sqliter) needs the system SQLite linked into the framework.
+    targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java) {
+        binaries.withType(org.jetbrains.kotlin.gradle.plugin.mpp.Framework::class.java) {
+            linkerOpts("-lsqlite3")
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             // The shared app root. Consumes the design system (which brings Jenga + Compose
@@ -26,6 +48,16 @@ kotlin {
             api(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.common)
+        }
+        // :shell is also the iOS umbrella framework, so the iOS composition root (the entry
+        // point and its Koin graph) lives here. These deps are iOS-only and do not leak to the
+        // Android, Desktop, or Web launchers, which bring their own graphs.
+        iosMain.dependencies {
+            implementation(projects.core.database)
+            implementation(projects.core.datastore)
+            implementation(libs.koin.core)
+            implementation(libs.native.driver)
+            implementation(libs.multiplatformSettings.base)
         }
     }
 }

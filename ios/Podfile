@@ -1,4 +1,4 @@
 target 'iosApp' do
     use_frameworks!
-    pod 'shared', :path => '../shared'
+    pod 'shell', :path => '../shell'
 end
