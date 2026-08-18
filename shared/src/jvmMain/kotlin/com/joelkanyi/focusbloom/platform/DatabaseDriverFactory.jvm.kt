@@ -15,6 +15,7 @@
  */
 package com.joelkanyi.focusbloom.platform
 
+import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.joelkanyi.focusbloom.database.BloomDatabase
@@ -25,7 +26,7 @@ actual class DatabaseDriverFactory {
         return JdbcSqliteDriver(
             url = "jdbc:sqlite:${databaseFile.absolutePath}",
         ).also { db ->
-            BloomDatabase.Schema.create(db)
+            BloomDatabase.Schema.synchronous().create(db)
         }
     }
 

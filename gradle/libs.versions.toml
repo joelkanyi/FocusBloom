@@ -2,21 +2,21 @@
 
 androidDriver = "2.1.0"
 kotlin = "2.2.20"
-compose = "1.8.2"
+compose = "1.10.3"
 
 koin = "4.1.0"
 koinCompose = "4.1.0"
 koinComposeMultiplatform = "4.1.0"
 
 gradle = "8.13.0"
-sqlDelight = " 2.1.0"
+sqlDelight = "2.1.0"
 multiplatformSettings = "1.3.0"
 core = "1.16.0"
 jna = "5.17.0"
 koalaplotCore = "0.9.0"
 kotlinxCoroutinesSwing = "1.10.2"
 kotlinxSerializationJson = "1.9.0"
-kotlinxDateTime = "0.6.2"
+kotlinxDateTime = "0.7.1"
 material3WindowSizeClassMultiplatform = "0.5.0"
 napier = "2.7.1"
 core-library-desugaring = "2.1.5"
@@ -52,9 +52,11 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinX-dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
 multiplatformSettings-noArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
+multiplatformSettings-makeObservable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "multiplatformSettings" }
 
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
 sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "androidDriver" }
+web-worker-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlDelight" }
 toast4j = { module = "de.mobanisto:toast4j", version.ref = "toast4j" }
 
 core-library-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "core-library-desugaring" }

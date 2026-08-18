@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -22,7 +23,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinX.serialization.plugin)
-    id("app.cash.sqldelight") version "2.1.0"
+    alias(libs.plugins.sqlDelight.plugin)
     alias(libs.plugins.nativeCocoapod)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
@@ -40,12 +41,21 @@ android {
 }
 
 kotlin {
+    sourceSets.all {
+        languageSettings.optIn("kotlin.time.ExperimentalTime")
+    }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     jvm()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
 
     iosArm64()
     iosSimulatorArm64()
@@ -93,6 +103,7 @@ kotlin {
 
             api(libs.multiplatformSettings.noArg)
             api(libs.multiplatformSettings.coroutines)
+            api(libs.multiplatformSettings.makeObservable)
 
             api(libs.napier)
 
@@ -138,9 +149,16 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.native.driver)
 
-
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)        }
+            implementation(compose.components.resources)
+        }
+
+        wasmJsMain.dependencies {
+            implementation(libs.web.worker.driver)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+            implementation(npm("sql.js", "1.8.0"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+        }
     }
 }
 
@@ -148,6 +166,7 @@ sqldelight {
     databases {
         create("BloomDatabase") {
             packageName.set("com.joelkanyi.focusbloom.database")
+            generateAsync.set(true)
         }
     }
 }

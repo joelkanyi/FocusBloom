@@ -48,6 +48,7 @@ import com.joelkanyi.focusbloom.core.presentation.component.BloomNavigationRailB
 import com.joelkanyi.focusbloom.core.presentation.navigation.AppNavHost
 import com.joelkanyi.focusbloom.core.presentation.navigation.BottomNav
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
+import com.joelkanyi.focusbloom.core.presentation.navigation.routeNameOf
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -108,11 +109,11 @@ fun MainScreen(
             bottomBar = {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
-                    ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
+                    ?: routeNameOf(Destinations.Onboarding)
                 val showBottomNavigation =
-                    currentRoute in BottomNav.entries.map { it.route::class.qualifiedName }
+                    currentRoute in BottomNav.entries.map { routeNameOf(it.route) }
 
-                val addTask = Destinations.AddTask::class.qualifiedName?.substringBefore("?")
+                val addTask = routeNameOf(Destinations.AddTask()).substringBefore("?")
 
                 if (showBottomNavigation || currentRoute == addTask) {
                     BottomNavigation(
@@ -121,7 +122,7 @@ fun MainScreen(
                         BottomNav.entries
                             .forEach { navigationItem ->
                                 val isSelected by remember(currentRoute) {
-                                    derivedStateOf { currentRoute == navigationItem.route::class.qualifiedName }
+                                    derivedStateOf { currentRoute == routeNameOf(navigationItem.route) }
                                 }
                                 BottomNavigationItem(
                                     modifier = Modifier

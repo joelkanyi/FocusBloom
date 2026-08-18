@@ -95,7 +95,7 @@ import focusbloom.shared.generated.resources.ic_complete
 import focusbloom.shared.generated.resources.start_time
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.DrawableResource

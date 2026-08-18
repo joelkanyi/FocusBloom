@@ -40,6 +40,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.joelkanyi.focusbloom.core.presentation.navigation.Destinations
 import com.joelkanyi.focusbloom.core.presentation.navigation.NavRail
+import com.joelkanyi.focusbloom.core.presentation.navigation.routeNameOf
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -58,7 +59,7 @@ fun BloomNavigationRailBar(
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
-            ?: Destinations.Onboarding::class.qualifiedName.orEmpty()
+            ?: routeNameOf(Destinations.Onboarding)
 
         Column(
             modifier = Modifier.fillMaxHeight()
@@ -66,7 +67,7 @@ fun BloomNavigationRailBar(
         ) {
             NavRail.entries.forEachIndexed { index, navigationItem ->
                 val isSelected by remember(currentRoute) {
-                    derivedStateOf { currentRoute == navigationItem.route::class.qualifiedName }
+                    derivedStateOf { currentRoute == routeNameOf(navigationItem.route) }
                 }
                 if (setWeight && index == NavRail.entries.size - 1) {
                     Spacer(Modifier.weight(1f))

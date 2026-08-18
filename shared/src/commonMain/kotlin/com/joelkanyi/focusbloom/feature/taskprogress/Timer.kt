@@ -18,7 +18,6 @@ package com.joelkanyi.focusbloom.feature.taskprogress
 import com.joelkanyi.focusbloom.core.utils.UiEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
@@ -28,15 +27,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlin.native.concurrent.ThreadLocal
-
-@ThreadLocal
 object Timer {
     private val _eventsFlow = Channel<UiEvents>(Channel.UNLIMITED)
     val eventsFlow = _eventsFlow.receiveAsFlow()
 
     private var job: Job? = null
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private val _tickingTime = MutableStateFlow(0L)
     val tickingTime: StateFlow<Long> = _tickingTime.asStateFlow()

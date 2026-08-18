@@ -30,9 +30,9 @@ import com.joelkanyi.focusbloom.core.domain.model.Task
 import com.joelkanyi.focusbloom.core.domain.model.taskTypes
 import focusbloom.shared.generated.resources.Res
 import focusbloom.shared.generated.resources.other
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime

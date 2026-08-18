@@ -15,7 +15,12 @@
  */
 package com.joelkanyi.focusbloom.core.presentation.navigation
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
+
+@OptIn(InternalSerializationApi::class)
+fun routeNameOf(route: Any): String = route::class.serializer().descriptor.serialName
 
 sealed class Destinations {
     @Serializable
