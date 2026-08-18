@@ -7,6 +7,14 @@ plan, then implementation). It is the single source of truth for the reimagining
 non-trivial decision below carries a provenance tag: `[doc]` from a reference we studied,
 `[ref]` from a reference library or my doctrine, `[inference]` my own reasoning.
 
+> **Amended by [STRATEGY.md](STRATEGY.md).** A product-strategy pass (four research passes plus
+> a synthesis) reshapes the product this engineering foundation carries. The foundation here
+> stands; the deltas are: `Task` gains `location` (SHELF / TODAY / COMPOST), `drawnOn`,
+> `lastTouchedAt`; the session state machine gains `SoftHorizonReached`, `Parked`, `Overrun`; a
+> `:capability:assist:api` seam is added in Phase 0.3; no streak fields ever enter the schema;
+> and two new phases land after the current five (Phase 6 Sync/accounts/Bloom, Phase 7
+> Assist/MCP). Read STRATEGY.md for the product; read on here for the architecture.
+
 ---
 
 ## 1. Decisions locked with Joel
