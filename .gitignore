@@ -6,21 +6,14 @@ captures
 
 /local.properties
 
-# IntelliJ .idea folder
-.idea/workspace.xml
-.idea/misc.xml
-.idea/libraries
-.idea/caches
-.idea/navEditor.xml
-.idea/tasks.xml
-.idea/modules.xml
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/deploymentTargetDropDown.xml
-.idea/androidTestResultsUserPreferences.xml
-.idea/appInsightsSettings.xml
-.idea/artifacts
-gradle.xml
+# Kotlin / JS / Web toolchain
+.kotlin
+node_modules/
+# kotlin-js-store/yarn.lock is committed for reproducible Web builds; do not ignore it.
+
+# IntelliJ / Android Studio: ignore the whole IDE folder rather than a fragile allowlist
+# (that allowlist was letting new .idea files leak into commits).
+.idea/
 *.iml
 .fleet
 
@@ -99,5 +92,3 @@ screenshots/**/*.png
 test_output
 
 *.env*
-
-.kotlin
