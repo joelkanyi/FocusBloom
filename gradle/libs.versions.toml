@@ -16,6 +16,8 @@ core = "1.16.0"
 jna = "5.17.0"
 koalaplotCore = "0.9.0"
 kotlinxCoroutinesSwing = "1.10.2"
+kotlinxCoroutines = "1.10.2"
+turbine = "1.2.1"
 kotlinxSerializationJson = "1.9.0"
 kotlinxDateTime = "0.6.2"
 material3WindowSizeClassMultiplatform = "0.5.0"
@@ -36,6 +38,10 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 jenga = { module = "io.github.joelkanyi:jenga", version.ref = "jenga" }
 core = { module = "androidx.core:core", version.ref = "core" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 koalaplot-core = { module = "io.github.koalaplot:koalaplot-core", version.ref = "koalaplotCore" }
 
