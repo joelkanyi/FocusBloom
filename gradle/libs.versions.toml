@@ -59,6 +59,7 @@ sqlDelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sq
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinX-dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDateTime" }
 multiplatformSettings-noArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
+multiplatformSettings-base = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
